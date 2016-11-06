@@ -40,5 +40,7 @@ defmodule ClassificationUtility.DadiCategory do
     |> Floki.find(".topictitle a")
     |> Floki.attribute("href")
     |> List.first
+    |> String.split(";")
+    |> List.first
   end
 end
