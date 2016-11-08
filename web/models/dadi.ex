@@ -1,4 +1,5 @@
 defmodule ClassificationUtility.Dadi do
+  use Ecto.Schema
   @base_url "http://c.dadi360.com"
 
   def post_list do
