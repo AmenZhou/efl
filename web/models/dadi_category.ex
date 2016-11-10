@@ -1,16 +1,41 @@
 defmodule ClassificationUtility.DadiCategory do
-  @base_url "http://c.dadi360.com"
   require IEx
 
+  alias ClassificationUtility.Repo
+  alias ClassificationUtility.Dadi
+
+  @base_url "http://c.dadi360.com"
+
   def parse_items(url) do
-    Enum.map(html(url) |> items, &parse_item/1)
+    Enum.map(html(url) |> find_raw_items, fn(item) ->
+      item
+      |> parsed_item
+      |> insert
+    end)
   end
 
-  def parse_item(item) do
-    %{ title: get_title(item), url: @base_url <> get_link(item)}
+  def parsed_item(item) do
+    %{
+      title: get_title(item),
+      url: @base_url <> get_link(item),
+      post_date: get_date(item)
+    }
   end
 
-  def html(url) do
+  def insert(item) do
+    IO.inspect item
+    #set = Dadi.changeset(%Dadi{}, item)
+    #post_url = item |> Map.get(:url)
+
+    #case Repo.insert(set) do
+      #{ :ok, _ } ->
+        #{ :ok, %{ url: post_url } }
+      #{ :error, _ } ->
+        #{ :error, "Create Dadi Error url #{post_url}" }
+    #end
+  end
+
+  defp html(url) do
     case HTTPotion.get(url) do
       %{ body: body } ->
         { :ok, body }
@@ -19,7 +44,7 @@ defmodule ClassificationUtility.DadiCategory do
     end
   end
 
-  def items(html) do
+  defp find_raw_items(html) do
     case html do
       { :ok, html_body } ->
         html_body |> Floki.parse |> Floki.find(".bg_small_yellow")
@@ -28,19 +53,28 @@ defmodule ClassificationUtility.DadiCategory do
     end
   end
 
-  def get_title(item) do
+  defp get_title(item) do
     item
     |> Floki.find(".topictitle a")
     |> Floki.text
     |> String.strip
   end
 
-  def get_link(item) do
+  defp get_link(item) do
     item
     |> Floki.find(".topictitle a")
     |> Floki.attribute("href")
     |> List.first
     |> String.split(";")
     |> List.first
+  end
+
+  defp get_date(item) do
+    item
+    |> Floki.find(".postdetails")
+    |> Floki.text
+    |> String.strip
+    |> String.slice(3..-1)
+    |> Timex.parse("%Y/%_m/%e", :strftime)
   end
 end

@@ -40,7 +40,8 @@ defmodule ClassificationUtility.Mixfile do
       {:gettext, "~> 0.11"},
       {:cowboy, "~> 1.0"},
       {:floki, "~> 0.11.0"},
-      {:httpotion, "~> 3.0.2"}
+      {:httpotion, "~> 3.0.2"},
+      {:timex, "~> 3.0"}
     ]
   end
 
