@@ -7,11 +7,17 @@ defmodule ClassificationUtility.DadiCategory do
   @base_url "http://c.dadi360.com"
 
   def parse_items(url) do
-    Enum.map(html(url) |> find_raw_items, fn(item) ->
-      item
-      |> parsed_item
-      |> insert
-    end)
+    case html(url) |> find_raw_items do
+      { :ok, items } ->
+        { :ok, Enum.map(items, fn(item) ->
+            item
+            |> parsed_item
+            |> insert
+          end)
+        }
+      { :error, message } ->
+        { :error, message }
+    end
   end
 
   def parsed_item(item) do
@@ -23,16 +29,16 @@ defmodule ClassificationUtility.DadiCategory do
   end
 
   def insert(item) do
-    IO.inspect item
-    #set = Dadi.changeset(%Dadi{}, item)
-    #post_url = item |> Map.get(:url)
+    #IO.inspect item
+    set = Dadi.changeset(%Dadi{}, item)
+    post_url = item |> Map.get(:url)
 
-    #case Repo.insert(set) do
-      #{ :ok, _ } ->
-        #{ :ok, %{ url: post_url } }
-      #{ :error, _ } ->
-        #{ :error, "Create Dadi Error url #{post_url}" }
-    #end
+    case Repo.insert(set) do
+      { :ok, _ } ->
+        { :ok, %{ url: post_url } }
+      { :error, _ } ->
+        { :error, "Create Dadi Error url #{post_url}" }
+    end
   end
 
   defp html(url) do
@@ -47,9 +53,13 @@ defmodule ClassificationUtility.DadiCategory do
   defp find_raw_items(html) do
     case html do
       { :ok, html_body } ->
-        html_body |> Floki.parse |> Floki.find(".bg_small_yellow")
-      { :error, message } ->
-        message
+        { :ok,
+          html_body
+          |> Floki.parse
+          |> Floki.find(".bg_small_yellow")
+        }
+      _ ->
+        html
     end
   end
 
@@ -70,11 +80,20 @@ defmodule ClassificationUtility.DadiCategory do
   end
 
   defp get_date(item) do
+    case item |> parse_date do
+      { :ok, date } ->
+        date
+      { :error, _ } ->
+        nil
+    end
+  end
+
+  defp parse_date(item) do
     item
     |> Floki.find(".postdetails")
+    |> List.last
     |> Floki.text
     |> String.strip
-    |> String.slice(3..-1)
     |> Timex.parse("%Y/%_m/%e", :strftime)
   end
 end
