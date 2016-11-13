@@ -1,7 +1,22 @@
 defmodule ClassificationUtility.DadiPost do
+  alias ClassificationUtility.DadiPost
+
   def parse_posts(urls) do
     urls
     |> Enum.map(&parse_post/1)
+  end
+
+  def async_parse_posts(urls) do
+    tasks = urls
+            |> Enum.map(fn(url) ->
+              :timer.sleep(100)
+              Task.async(DadiPost, :parse_post, [url])
+            end)
+
+    tasks
+    |> Enum.map(fn(task) ->
+      Task.await(task)
+    end)
   end
 
   def parse_post(url) do

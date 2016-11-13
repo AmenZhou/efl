@@ -18,7 +18,7 @@ defmodule ClassificationUtility.Dadi do
 
   def start do
     DadiCategory.parse_and_return_post_urls(url)
-    |> DadiPost.parse_posts
+    |> DadiPost.async_parse_posts
   end
 
   def url do
