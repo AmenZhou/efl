@@ -3,7 +3,7 @@ defmodule ClassificationUtility.Dadi do
 
   #alias ClassificationUtility.Dadi
   alias ClassificationUtility.DadiCategory
-  #alias ClassificationUtility.DadiPost
+  alias ClassificationUtility.DadiPost
   #alias ClassificationUtility.Repo
 
   schema "dadi" do
@@ -17,7 +17,8 @@ defmodule ClassificationUtility.Dadi do
   @base_url "http://c.dadi360.com"
 
   def start do
-    DadiCategory.parse_items(url)
+    DadiCategory.parse_and_return_post_urls(url)
+    |> DadiPost.parse_posts
   end
 
   def url do
@@ -28,5 +29,11 @@ defmodule ClassificationUtility.Dadi do
     struct
     |> cast(params, [:title, :url, :content, :post_date])
     |> validate_required([:title, :url, :post_date])
+  end
+
+  def update_changeset(struct, params \\ %{}) do
+    struct
+    |> cast(params, [:content])
+    |> validate_required([:content])
   end
 end

@@ -6,6 +6,23 @@ defmodule ClassificationUtility.DadiCategory do
 
   @base_url "http://c.dadi360.com"
 
+  def parse_and_return_post_urls(url) do
+    items = parse_items(url)
+    case items do
+      { :error, message } -> { :error, message }
+      { :ok, items } ->
+        Enum.map(items, fn(item) ->
+          case item do
+            { :ok, item } ->
+              item
+              |> Map.get(:url)
+            { :error, message } ->
+              IO.puts message
+          end
+        end)
+    end
+  end
+
   def parse_items(url) do
     case html(url) |> find_raw_items do
       { :ok, items } ->
@@ -29,16 +46,8 @@ defmodule ClassificationUtility.DadiCategory do
   end
 
   def insert(item) do
-    #IO.inspect item
     set = Dadi.changeset(%Dadi{}, item)
-    post_url = item |> Map.get(:url)
-
-    case Repo.insert(set) do
-      { :ok, _ } ->
-        { :ok, %{ url: post_url } }
-      { :error, _ } ->
-        { :error, "Create Dadi Error url #{post_url}" }
-    end
+    Repo.insert(set)
   end
 
   defp html(url) do
