@@ -23,15 +23,25 @@ defmodule ClassificationUtility.DadiCategory do
     end
   end
 
-  def parse_items(url) do
-    case html(url) |> find_raw_items do
+  def parse_items(ref_category) do
+    raw_items = ref_category
+          |> Map.get(:url)
+          |> concat_url
+          |> html
+          |> find_raw_items
+
+    ref_category_id = ref_category
+                      |> Map.get(:id)
+
+    case raw_items do
       { :ok, items } ->
-        { :ok, Enum.map(items, fn(item) ->
-            item
-            |> parsed_item
-            |> insert
-          end)
-        }
+      categories = Enum.map(items, fn(item) ->
+        item
+        |> parsed_item
+        |> Map.merge(%{ ref_category_id: ref_category_id })
+        |> insert
+        end)
+        { :ok, categories }
       { :error, message } ->
         { :error, message }
     end
@@ -48,6 +58,10 @@ defmodule ClassificationUtility.DadiCategory do
   def insert(item) do
     set = Dadi.changeset(%Dadi{}, item)
     Repo.insert(set)
+  end
+
+  defp concat_url(url) do
+    @base_url <> url
   end
 
   defp html(url) do
