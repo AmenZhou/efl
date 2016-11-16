@@ -11,15 +11,15 @@ defmodule ClassificationUtility.DadiCategory do
     case items do
       { :error, message } -> { :error, message }
       { :ok, items } ->
-        Enum.map(items, fn(item) ->
-          case item do
-            { :ok, item } ->
-              item
-              |> Map.get(:url)
-            { :error, message } ->
-              IO.puts message
-          end
-        end)
+      Enum.map(items, fn(item) ->
+        case item do
+          { :ok, item } ->
+            item
+            |> Map.get(:url)
+          { :error, message } ->
+            IO.puts message
+        end
+      end)
     end
   end
 

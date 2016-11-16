@@ -37,5 +37,6 @@ defmodule ClassificationUtility.Dadi do
     struct
     |> cast(params, [:content])
     |> validate_required([:content])
+    |> unique_constraint(:url)
   end
 end
