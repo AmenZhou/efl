@@ -31,12 +31,6 @@ defmodule ClassificationUtility.Dadi do
     struct
     |> cast(params, [:title, :url, :content, :post_date, :ref_category_id])
     |> validate_required([:title, :url, :post_date, :ref_category_id])
-  end
-
-  def update_changeset(struct, params \\ %{}) do
-    struct
-    |> cast(params, [:content])
-    |> validate_required([:content])
     |> unique_constraint(:url)
   end
 end
