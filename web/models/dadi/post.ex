@@ -1,5 +1,5 @@
-defmodule ClassificationUtility.DadiPost do
-  alias ClassificationUtility.DadiPost
+defmodule ClassificationUtility.Dadi.Post do
+  alias ClassificationUtility.Dadi.Post
 
   def parse_posts(urls) do
     urls

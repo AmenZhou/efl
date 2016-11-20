@@ -1,4 +1,4 @@
-defmodule ClassificationUtility.DadiCategory do
+defmodule ClassificationUtility.Dadi.Category do
   require IEx
 
   alias ClassificationUtility.Repo

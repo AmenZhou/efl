@@ -1,4 +1,4 @@
-defmodule ClassificationUtility.Dadi do
+defmodule ClassificationUtility.Dadi.Main do
   use ClassificationUtility.Web, :model
 
   #alias ClassificationUtility.Dadi
