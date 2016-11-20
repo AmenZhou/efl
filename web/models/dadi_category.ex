@@ -4,42 +4,42 @@ defmodule ClassificationUtility.DadiCategory do
   alias ClassificationUtility.Repo
   alias ClassificationUtility.Dadi
 
-  @base_url "http://c.dadi360.com"
+  @base_url "http://c.dadi360.com/"
 
   def parse_and_return_post_urls(url) do
     items = parse_items(url)
     case items do
       { :error, message } -> { :error, message }
       { :ok, items } ->
-      Enum.map(items, fn(item) ->
-        case item do
-          { :ok, item } ->
-            item
-            |> Map.get(:url)
-          { :error, message } ->
-            IO.puts message
-        end
-      end)
+        Enum.map(items, fn(item) ->
+          case item do
+            { :ok, item } ->
+              item
+              |> Map.get(:url)
+            { :error, message } ->
+              IO.puts message
+          end
+        end)
     end
   end
 
+  #[{ :ok, %Dadi{}}, { :ok, %Dadi{} }, ...]
   def parse_items(ref_category) do
-    raw_items = ref_category
-          |> Map.get(:url)
-          |> concat_url
-          |> html
-          |> find_raw_items
+    ref_category
+    |> raw_items
+    |> Enum.map(fn(items) -> parse_item(items) end)
+    |> Enum.concat
+  end
 
-    ref_category_id = ref_category
-                      |> Map.get(:id)
-
-    case raw_items do
+  #The returned value should be [{ :ok, %Dadi{} }, ...]
+  def parse_item(item) do
+    case item do
       { :ok, items } ->
-      categories = Enum.map(items, fn(item) ->
-        item
-        |> parsed_item
-        |> Map.merge(%{ ref_category_id: ref_category_id })
-        |> insert
+        categories = Enum.map(items, fn(item) ->
+          item
+          |> dadi_params
+          |> Map.merge(%{ ref_category_id: ref_category_id })
+          |> insert
         end)
         { :ok, categories }
       { :error, message } ->
@@ -47,7 +47,7 @@ defmodule ClassificationUtility.DadiCategory do
     end
   end
 
-  def parsed_item(item) do
+  def dadi_params(item) do
     %{
       title: get_title(item),
       url: @base_url <> get_link(item),
@@ -58,10 +58,6 @@ defmodule ClassificationUtility.DadiCategory do
   def insert(item) do
     set = Dadi.changeset(%Dadi{}, item)
     Repo.insert(set)
-  end
-
-  defp concat_url(url) do
-    @base_url <> url
   end
 
   defp html(url) do
@@ -118,5 +114,17 @@ defmodule ClassificationUtility.DadiCategory do
     |> Floki.text
     |> String.strip
     |> Timex.parse("%Y/%_m/%e", :strftime)
+  end
+
+  #Return a List of raw items
+  #The returned value should be [{ :ok, [item1, item2, ...]}, { :ok, [item3, ...]}]
+  defp raw_items(ref_category) do
+    ref_category
+    |> RefCategory.get_urls
+    |> Enum.map(fn(url) ->
+      url
+      |> html
+      |> find_raw_items
+    end)
   end
 end
