@@ -14,15 +14,9 @@ defmodule ClassificationUtility.Dadi.Main do
     timestamps()
   end
 
-  @base_url "http://c.dadi360.com"
-
   def start(ref_category \\ %{}) do
     ref_category = Repo.get(RefCategory, 1)
-    Category.parse_items(ref_category)
-  end
-
-  def url do
-    @base_url <> "/c/forums/show/53.page"
+    Category.create_items(ref_category)
   end
 
   def changeset(struct, params \\ %{}) do
