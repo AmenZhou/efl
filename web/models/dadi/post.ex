@@ -10,7 +10,7 @@ defmodule ClassificationUtility.Dadi.Post do
     tasks = urls
             |> Enum.map(fn(url) ->
               :timer.sleep(100)
-              Task.async(DadiPost, :parse_post, [url])
+              Task.async(Post, :parse_post, [url])
             end)
 
     tasks

@@ -1,10 +1,8 @@
 defmodule ClassificationUtility.Dadi.Main do
   use ClassificationUtility.Web, :model
 
-  #alias ClassificationUtility.Dadi
   alias ClassificationUtility.RefCategory
-  alias ClassificationUtility.DadiCategory
-  #alias ClassificationUtility.DadiPost
+  alias ClassificationUtility.Dadi.Category
   alias ClassificationUtility.Repo
 
   schema "dadi" do
@@ -20,7 +18,7 @@ defmodule ClassificationUtility.Dadi.Main do
 
   def start(ref_category \\ %{}) do
     ref_category = Repo.get(RefCategory, 1)
-    DadiCategory.parse_items(ref_category)
+    Category.parse_items(ref_category)
   end
 
   def url do

@@ -2,7 +2,7 @@ defmodule ClassificationUtility.Dadi.Category do
   require IEx
 
   alias ClassificationUtility.Repo
-  alias ClassificationUtility.Dadi
+  alias ClassificationUtility.Dadi.Main
 
   @base_url "http://c.dadi360.com/"
 
@@ -56,7 +56,7 @@ defmodule ClassificationUtility.Dadi.Category do
   end
 
   def insert(item) do
-    set = Dadi.changeset(%Dadi{}, item)
+    set = Main.changeset(%Dadi{}, item)
     Repo.insert(set)
   end
 
