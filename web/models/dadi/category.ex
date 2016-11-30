@@ -32,14 +32,9 @@ defmodule ClassificationUtility.Dadi.Category do
   end
 
   def insert(dadi, ref_category) do
-    case dadi do
-      { :ok, dadi_params } ->
-        dadi_params = dadi_params
-                      |> Map.merge(%{ ref_category_id: ref_category.ref_category_id })
-        set = Dadi.changeset(%Dadi{}, dadi_params)
-        Repo.insert(set)
-      _ ->
-        dadi
-    end
+    dadi_params = dadi
+                  |> Map.merge(%{ ref_category_id: ref_category.id })
+    set = Dadi.changeset(%Dadi{}, dadi_params)
+    Repo.insert(set)
   end
 end

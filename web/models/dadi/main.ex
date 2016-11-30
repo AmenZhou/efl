@@ -15,7 +15,7 @@ defmodule ClassificationUtility.Dadi.Main do
   end
 
   def start(ref_category \\ %{}) do
-    ref_category = Repo.get(RefCategory, 1)
+    ref_category = RefCategory |> first |> Repo.one
     Category.create_items(ref_category)
   end
 

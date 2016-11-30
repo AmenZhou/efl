@@ -1,4 +1,6 @@
 defmodule ClassificationUtility.RefCategory do
+  require IEx
+
   use ClassificationUtility.Web, :model
 
   schema "ref_categories" do
@@ -34,6 +36,6 @@ defmodule ClassificationUtility.RefCategory do
     page_size = Map.get(ref_category, :page_size, 1)
 
     for n <- 0..(page_size - 1),
-      do: @base_url <> n <> ref_category.url
+      do: "#{@base_url}#{n}#{ref_category.url}"
   end
 end

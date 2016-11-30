@@ -1,4 +1,5 @@
 defmodule ClassificationUtility.HtmlParsers.Dadi.Category do 
+  require IEx
   alias ClassificationUtility.RefCategory
 
   @base_url "http://c.dadi360.com/"
@@ -17,15 +18,15 @@ defmodule ClassificationUtility.HtmlParsers.Dadi.Category do
           item
           |> dadi_params
         end)
-        { :ok, categories }
+        categories
       _ ->
-        html_items
+        raise "Error HtmlParsers.Dadi.Category HTML parse error #{html_items}"
     end
   end
 
   #Return a List of raw items
   #The returned value should be [{ :ok, [item1, item2, ...]}, { :ok, [item3, ...]}]
-  defp raw_items(ref_category) do
+  def raw_items(ref_category) do
     ref_category
     |> RefCategory.get_urls
     |> Enum.map(fn(url) ->
