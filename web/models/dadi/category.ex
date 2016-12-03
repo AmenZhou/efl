@@ -35,6 +35,9 @@ defmodule ClassificationUtility.Dadi.Category do
     dadi_params = dadi
                   |> Map.merge(%{ ref_category_id: ref_category.id })
     set = Dadi.changeset(%Dadi{}, dadi_params)
-    Repo.insert(set)
+    case Repo.insert(set) do
+      {:ok, struct} -> IO.puts("Insert one record successfully #{Map.get(struct, :title)}")
+      {:error, changeset} -> IO.inspect(Map.get(changeset, :errors))
+    end
   end
 end

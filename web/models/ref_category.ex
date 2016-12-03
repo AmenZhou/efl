@@ -6,6 +6,7 @@ defmodule ClassificationUtility.RefCategory do
   schema "ref_categories" do
     field :name
     field :url
+    field :page_size, :integer
     #has_many :dadi_posts, Dadi
     timestamps()
   end
@@ -14,6 +15,7 @@ defmodule ClassificationUtility.RefCategory do
   alias ClassificationUtility.Repo
 
   @base_url "http://c.dadi360.com/c/forums/show/"
+  @number_of_single_page_rows 60
 
   def seeds do
     set = changeset(
@@ -29,13 +31,13 @@ defmodule ClassificationUtility.RefCategory do
 
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:name, :url])
+    |> cast(params, [:name, :url, :page_size])
   end
 
   def get_urls(ref_category) do
     page_size = Map.get(ref_category, :page_size, 1)
 
     for n <- 0..(page_size - 1),
-      do: "#{@base_url}#{n}#{ref_category.url}"
+      do: "#{@base_url}#{n * @number_of_single_page_rows}#{ref_category.url}"
   end
 end
