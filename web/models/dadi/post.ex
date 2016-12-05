@@ -1,41 +1,39 @@
 defmodule ClassificationUtility.Dadi.Post do
-  alias ClassificationUtility.Dadi.Post
+  alias ClassificationUtility.Repo
+  alias ClassificationUtility.Dadi.Main, as: Dadi
+  alias ClassificationUtility.HtmlParsers.Dadi.Post, as: HtmlParser
+  import Ecto.Query, only: [from: 2] 
 
-  def parse_posts(urls) do
-    urls
-    |> Enum.map(&parse_post/1)
-  end
-
-  def async_parse_posts(urls) do
-    tasks = urls
-            |> Enum.map(fn(url) ->
-              :timer.sleep(100)
-              Task.async(Post, :parse_post, [url])
-            end)
-
-    tasks
-    |> Enum.map(fn(task) ->
-      Task.await(task)
+  def update_contents do
+    get_all_blank_records
+    |> Enum.map(fn(d) -> d.url end)
+    |> HtmlParser.async_parse_posts
+    |> Enum.map(fn(p) ->
+      Map.get(p, :url)
+      |> find_dadi_by_url
+      |> update(p)
     end)
   end
 
-  def parse_post(url) do
-    case html(url) do
-      { :ok, body } ->
-        content = body
-                  |> Floki.find(".postbody")
-                  |> Floki.text
-                  |> String.strip
-        %{ content: content }
-    end
+  def get_all_blank_records do
+    query = from d in Dadi,
+      where: is_nil(d.content),
+      limit: 120
+    Repo.all(query)
   end
 
-  def html(url) do
-    case HTTPotion.get(url) do
-      %{ body: body } ->
-        { :ok, body }
-      %{ message: message } ->
-        { :error, message }
+  def find_dadi_by_url(url) do
+    query = from d in Dadi,
+      where: (d.url == ^url),
+      limit: 1
+    Repo.one(query)
+  end
+
+  def update(dadi, params) do
+    set = Dadi.update_changeset(dadi, params)
+    case Repo.update(set) do
+      {:ok, struct} -> IO.puts("Insert one record successfully #{Map.get(struct, :content)}")
+      {:error, changeset} -> IO.inspect(Map.get(changeset, :errors))
     end
   end
 end

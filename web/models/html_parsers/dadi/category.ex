@@ -2,7 +2,8 @@ defmodule ClassificationUtility.HtmlParsers.Dadi.Category do
   require IEx
   alias ClassificationUtility.RefCategory
 
-  @base_url "http://c.dadi360.com/"
+  #Don't add / at the tail of the url
+  @base_url "http://c.dadi360.com"
 
   #The returned value should be [{ :ok, %Dadi{} }, ...]
   def parse(ref_category) do

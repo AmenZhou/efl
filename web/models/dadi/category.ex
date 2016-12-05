@@ -5,25 +5,6 @@ defmodule ClassificationUtility.Dadi.Category do
   alias ClassificationUtility.Dadi.Main, as: Dadi
   alias ClassificationUtility.HtmlParsers.Dadi.Category, as: HtmlParser 
 
-  @base_url "http://c.dadi360.com/"
-
-  #def parse_and_return_post_urls(url) do
-    #items = parse_items(url)
-    #case items do
-      #{ :error, message } -> { :error, message }
-      #{ :ok, items } ->
-        #Enum.map(items, fn(item) ->
-          #case item do
-            #{ :ok, item } ->
-              #item
-              #|> Map.get(:url)
-            #{ :error, message } ->
-              #IO.puts message
-          #end
-        #end)
-    #end
-  #end
-
   #[{ :ok, %Dadi{}}, { :ok, %Dadi{} }, ...]
   def create_items(ref_category) do
     ref_category

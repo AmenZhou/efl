@@ -3,6 +3,7 @@ defmodule ClassificationUtility.Dadi.Main do
 
   alias ClassificationUtility.RefCategory
   alias ClassificationUtility.Dadi.Category
+  alias ClassificationUtility.Dadi.Post
   alias ClassificationUtility.Repo
 
   schema "dadi" do
@@ -24,5 +25,11 @@ defmodule ClassificationUtility.Dadi.Main do
     |> cast(params, [:title, :url, :content, :post_date, :ref_category_id])
     |> validate_required([:title, :url, :post_date, :ref_category_id])
     |> unique_constraint(:url)
+  end
+
+  def update_changeset(struct, params \\ %{}) do
+    struct
+    |> cast(params, [:content])
+    |> validate_required([:content])
   end
 end

@@ -22,7 +22,7 @@ defmodule ClassificationUtility.RefCategory do
                     %RefCategory{},
                     %{
                       name: "FLUSHING_HOUSE_RENTAL",
-                      url: "/53.page",
+                      url: "/26.page",
                       page_size: 2
                     }
     )
