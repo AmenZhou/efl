@@ -16,7 +16,7 @@ defmodule ClassificationUtility.Router do
   scope "/", ClassificationUtility do
     pipe_through :browser # Use the default browser stack
 
-    get "/", PageController, :index
+    get "/", DadiController, :index
   end
 
   # Other scopes may use custom stacks.
