@@ -1,12 +1,14 @@
 # ClassificationUtility
 
-Developing Plan
+## Sprint 1 Developing Plan
 
 - [ ] Optimize the home page table (adjust width and height) 
 - [ ] Add pagination on the home page
 - [ ] Add a selection on the main page, which includes all classified pages
 - [ ] Add 2 buttons, one for updating categories, the other for updating contents
-- [ ] 
+
+
+======
 
 
 To start your Phoenix app:
