@@ -2,7 +2,10 @@ exports.config = {
   // See http://brunch.io/#documentation for docs.
   files: {
     javascripts: {
-      joinTo: "js/app.js"
+     joinTo: {
+       "js/app.js": /^(web\/static\/js)/,
+       "js/vendor.js": /^(node_modules)/
+     }
 
       // To use a separate vendor.js bundle, specify two files path
       // http://brunch.io/docs/config#-files-
@@ -54,6 +57,14 @@ exports.config = {
     babel: {
       // Do not use ES6 compiler in vendor code
       ignore: [/web\/static\/vendor/]
+    },
+    sass: {
+      options: {
+        includePaths: [
+          'node_modules/foundation-sites/scss',
+          'node_modules/motion-ui/src'
+        ]
+      }
     }
   },
 
@@ -64,6 +75,11 @@ exports.config = {
   },
 
   npm: {
-    enabled: true
+    enabled: true,
+    whitelist: ["phoenix", "phoenix_html", "jquery"],
+    globals: {
+      $: 'jquery',
+      jQuery: 'jquery'
+    }
   }
 };
