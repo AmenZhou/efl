@@ -1,4 +1,4 @@
-defmodule ClassificationUtility.ChannelCase do
+defmodule Efl.ChannelCase do
   @moduledoc """
   This module defines the test case to be used by
   channel tests.
@@ -20,22 +20,22 @@ defmodule ClassificationUtility.ChannelCase do
       # Import conveniences for testing with channels
       use Phoenix.ChannelTest
 
-      alias ClassificationUtility.Repo
+      alias Efl.Repo
       import Ecto
       import Ecto.Changeset
       import Ecto.Query
 
 
       # The default endpoint for testing
-      @endpoint ClassificationUtility.Endpoint
+      @endpoint Efl.Endpoint
     end
   end
 
   setup tags do
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(ClassificationUtility.Repo)
+    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Efl.Repo)
 
     unless tags[:async] do
-      Ecto.Adapters.SQL.Sandbox.mode(ClassificationUtility.Repo, {:shared, self()})
+      Ecto.Adapters.SQL.Sandbox.mode(Efl.Repo, {:shared, self()})
     end
 
     :ok

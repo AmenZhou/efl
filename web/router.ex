@@ -1,5 +1,5 @@
-defmodule ClassificationUtility.Router do
-  use ClassificationUtility.Web, :router
+defmodule Efl.Router do
+  use Efl.Web, :router
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -13,14 +13,14 @@ defmodule ClassificationUtility.Router do
     plug :accepts, ["json"]
   end
 
-  scope "/", ClassificationUtility do
+  scope "/", Efl do
     pipe_through :browser # Use the default browser stack
 
     get "/", DadiController, :index
   end
 
   # Other scopes may use custom stacks.
-  # scope "/api", ClassificationUtility do
+  # scope "/api", Efl do
   #   pipe_through :api
   # end
 end

@@ -1,12 +1,12 @@
-defmodule ClassificationUtility.Web do
+defmodule Efl.Web do
   @moduledoc """
   A module that keeps using definitions for controllers,
   views and so on.
 
   This can be used in your application as:
 
-      use ClassificationUtility.Web, :controller
-      use ClassificationUtility.Web, :view
+      use Efl.Web, :controller
+      use Efl.Web, :view
 
   The definitions below will be executed for every view,
   controller, etc, so keep them short and clean, focused
@@ -30,12 +30,12 @@ defmodule ClassificationUtility.Web do
     quote do
       use Phoenix.Controller
 
-      alias ClassificationUtility.Repo
+      alias Efl.Repo
       import Ecto
       import Ecto.Query
 
-      import ClassificationUtility.Router.Helpers
-      import ClassificationUtility.Gettext
+      import Efl.Router.Helpers
+      import Efl.Gettext
     end
   end
 
@@ -49,9 +49,9 @@ defmodule ClassificationUtility.Web do
       # Use all HTML functionality (forms, tags, etc)
       use Phoenix.HTML
 
-      import ClassificationUtility.Router.Helpers
-      import ClassificationUtility.ErrorHelpers
-      import ClassificationUtility.Gettext
+      import Efl.Router.Helpers
+      import Efl.ErrorHelpers
+      import Efl.Gettext
     end
   end
 
@@ -65,10 +65,10 @@ defmodule ClassificationUtility.Web do
     quote do
       use Phoenix.Channel
 
-      alias ClassificationUtility.Repo
+      alias Efl.Repo
       import Ecto
       import Ecto.Query
-      import ClassificationUtility.Gettext
+      import Efl.Gettext
     end
   end
 

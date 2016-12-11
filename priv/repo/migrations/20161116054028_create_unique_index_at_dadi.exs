@@ -1,4 +1,4 @@
-defmodule ClassificationUtility.Repo.Migrations.CreateUniqueIndexAtDadi do
+defmodule Efl.Repo.Migrations.CreateUniqueIndexAtDadi do
   use Ecto.Migration
 
   def up do

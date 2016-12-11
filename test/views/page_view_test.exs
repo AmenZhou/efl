@@ -1,3 +1,3 @@
-defmodule ClassificationUtility.PageViewTest do
-  use ClassificationUtility.ConnCase, async: true
+defmodule Efl.PageViewTest do
+  use Efl.ConnCase, async: true
 end

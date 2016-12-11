@@ -1,9 +1,9 @@
-defmodule ClassificationUtility.Dadi.Category do
+defmodule Efl.Dadi.Category do
   require IEx
 
-  alias ClassificationUtility.Repo
-  alias ClassificationUtility.Dadi.Main, as: Dadi
-  alias ClassificationUtility.HtmlParsers.Dadi.Category, as: HtmlParser 
+  alias Efl.Repo
+  alias Efl.Dadi.Main, as: Dadi
+  alias Efl.HtmlParsers.Dadi.Category, as: HtmlParser 
 
   #[{ :ok, %Dadi{}}, { :ok, %Dadi{} }, ...]
   def create_items(ref_category) do

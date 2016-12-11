@@ -1,8 +1,8 @@
-defmodule ClassificationUtility.Mixfile do
+defmodule Efl.Mixfile do
   use Mix.Project
 
   def project do
-    [app: :classification_utility,
+    [app: :efl,
      version: "0.0.1",
      elixir: "~> 1.2",
      elixirc_paths: elixirc_paths(Mix.env),
@@ -17,7 +17,7 @@ defmodule ClassificationUtility.Mixfile do
   #
   # Type `mix help compile.app` for more information.
   def application do
-    [mod: {ClassificationUtility, []},
+    [mod: {Efl, []},
      applications: [:phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger, :gettext,
                     :phoenix_ecto, :mariaex, :httpotion]]
   end

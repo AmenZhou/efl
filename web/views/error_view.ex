@@ -1,5 +1,5 @@
-defmodule ClassificationUtility.ErrorView do
-  use ClassificationUtility.Web, :view
+defmodule Efl.ErrorView do
+  use Efl.Web, :view
 
   def render("404.html", _assigns) do
     "Page not found"

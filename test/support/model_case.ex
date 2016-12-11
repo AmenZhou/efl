@@ -1,4 +1,4 @@
-defmodule ClassificationUtility.ModelCase do
+defmodule Efl.ModelCase do
   @moduledoc """
   This module defines the test case to be used by
   model tests.
@@ -16,20 +16,20 @@ defmodule ClassificationUtility.ModelCase do
 
   using do
     quote do
-      alias ClassificationUtility.Repo
+      alias Efl.Repo
 
       import Ecto
       import Ecto.Changeset
       import Ecto.Query
-      import ClassificationUtility.ModelCase
+      import Efl.ModelCase
     end
   end
 
   setup tags do
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(ClassificationUtility.Repo)
+    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Efl.Repo)
 
     unless tags[:async] do
-      Ecto.Adapters.SQL.Sandbox.mode(ClassificationUtility.Repo, {:shared, self()})
+      Ecto.Adapters.SQL.Sandbox.mode(Efl.Repo, {:shared, self()})
     end
 
     :ok
@@ -59,7 +59,7 @@ defmodule ClassificationUtility.ModelCase do
   """
   def errors_on(struct, data) do
     struct.__struct__.changeset(struct, data)
-    |> Ecto.Changeset.traverse_errors(&ClassificationUtility.ErrorHelpers.translate_error/1)
+    |> Ecto.Changeset.traverse_errors(&Efl.ErrorHelpers.translate_error/1)
     |> Enum.flat_map(fn {key, errors} -> for msg <- errors, do: {key, msg} end)
   end
 end

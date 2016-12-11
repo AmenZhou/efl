@@ -1,3 +1,3 @@
-defmodule ClassificationUtility.LayoutViewTest do
-  use ClassificationUtility.ConnCase, async: true
+defmodule Efl.LayoutViewTest do
+  use Efl.ConnCase, async: true
 end

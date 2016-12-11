@@ -1,4 +1,4 @@
-defmodule ClassificationUtility.Repo.Migrations.CreateScratch do
+defmodule Efl.Repo.Migrations.CreateScratch do
   use Ecto.Migration
 
   def change do

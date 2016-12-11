@@ -1,4 +1,4 @@
-defmodule ClassificationUtility.Repo.Migrations.CreateRefCategoriesTable do
+defmodule Efl.Repo.Migrations.CreateRefCategoriesTable do
   use Ecto.Migration
 
   def up do

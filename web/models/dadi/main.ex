@@ -1,10 +1,10 @@
-defmodule ClassificationUtility.Dadi.Main do
-  use ClassificationUtility.Web, :model
+defmodule Efl.Dadi.Main do
+  use Efl.Web, :model
 
-  alias ClassificationUtility.RefCategory
-  alias ClassificationUtility.Dadi.Category
-  alias ClassificationUtility.Dadi.Post
-  alias ClassificationUtility.Repo
+  alias Efl.RefCategory
+  alias Efl.Dadi.Category
+  alias Efl.Dadi.Post
+  alias Efl.Repo
 
   schema "dadi" do
     field :title

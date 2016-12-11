@@ -1,14 +1,14 @@
-defmodule ClassificationUtility.Endpoint do
-  use Phoenix.Endpoint, otp_app: :classification_utility
+defmodule Efl.Endpoint do
+  use Phoenix.Endpoint, otp_app: :efl
 
-  socket "/socket", ClassificationUtility.UserSocket
+  socket "/socket", Efl.UserSocket
 
   # Serve at "/" the static files from "priv/static" directory.
   #
   # You should set gzip to true if you are running phoenix.digest
   # when deploying your static files in production.
   plug Plug.Static,
-    at: "/", from: :classification_utility, gzip: false,
+    at: "/", from: :efl, gzip: false,
     only: ~w(css fonts images js favicon.ico robots.txt)
 
   # Code reloading can be explicitly enabled under the
@@ -38,5 +38,5 @@ defmodule ClassificationUtility.Endpoint do
     key: "_classification_utility_key",
     signing_salt: "jlaQpSJR"
 
-  plug ClassificationUtility.Router
+  plug Efl.Router
 end

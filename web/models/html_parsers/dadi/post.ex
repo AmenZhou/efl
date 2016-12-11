@@ -1,5 +1,5 @@
-defmodule ClassificationUtility.HtmlParsers.Dadi.Post do
-  alias ClassificationUtility.HtmlParsers.Dadi.Post, as: HtmlParser
+defmodule Efl.HtmlParsers.Dadi.Post do
+  alias Efl.HtmlParsers.Dadi.Post, as: HtmlParser
   require IEx
 
   def parse_posts(urls) do

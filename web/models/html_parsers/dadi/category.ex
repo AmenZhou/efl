@@ -1,6 +1,6 @@
-defmodule ClassificationUtility.HtmlParsers.Dadi.Category do 
+defmodule Efl.HtmlParsers.Dadi.Category do 
   require IEx
-  alias ClassificationUtility.RefCategory
+  alias Efl.RefCategory
 
   #Don't add / at the tail of the url
   @base_url "http://c.dadi360.com"

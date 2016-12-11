@@ -1,5 +1,5 @@
-defmodule ClassificationUtility.PageControllerTest do
-  use ClassificationUtility.ConnCase
+defmodule Efl.PageControllerTest do
+  use Efl.ConnCase
 
   test "GET /", %{conn: conn} do
     conn = get conn, "/"

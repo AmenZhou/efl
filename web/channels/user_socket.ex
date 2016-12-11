@@ -1,8 +1,8 @@
-defmodule ClassificationUtility.UserSocket do
+defmodule Efl.UserSocket do
   use Phoenix.Socket
 
   ## Channels
-  # channel "room:*", ClassificationUtility.RoomChannel
+  # channel "room:*", Efl.RoomChannel
 
   ## Transports
   transport :websocket, Phoenix.Transports.WebSocket
@@ -30,7 +30,7 @@ defmodule ClassificationUtility.UserSocket do
   # Would allow you to broadcast a "disconnect" event and terminate
   # all active sockets and channels for a given user:
   #
-  #     ClassificationUtility.Endpoint.broadcast("users_socket:#{user.id}", "disconnect", %{})
+  #     Efl.Endpoint.broadcast("users_socket:#{user.id}", "disconnect", %{})
   #
   # Returning `nil` makes this socket anonymous.
   def id(_socket), do: nil

@@ -1,7 +1,7 @@
-defmodule ClassificationUtility.RefCategory do
+defmodule Efl.RefCategory do
   require IEx
 
-  use ClassificationUtility.Web, :model
+  use Efl.Web, :model
 
   schema "ref_categories" do
     field :name
@@ -11,8 +11,8 @@ defmodule ClassificationUtility.RefCategory do
     timestamps()
   end
 
-  alias ClassificationUtility.RefCategory
-  alias ClassificationUtility.Repo
+  alias Efl.RefCategory
+  alias Efl.Repo
 
   @base_url "http://c.dadi360.com/c/forums/show/"
   @number_of_single_page_rows 60

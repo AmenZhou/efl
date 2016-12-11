@@ -1,3 +1,3 @@
-defmodule ClassificationUtility.PageView do
-  use ClassificationUtility.Web, :view
+defmodule Efl.PageView do
+  use Efl.Web, :view
 end

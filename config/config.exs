@@ -6,15 +6,15 @@
 use Mix.Config
 
 # General application configuration
-config :classification_utility,
-  ecto_repos: [ClassificationUtility.Repo]
+config :efl,
+  ecto_repos: [Efl.Repo]
 
 # Configures the endpoint
-config :classification_utility, ClassificationUtility.Endpoint,
+config :efl, Efl.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "rb1/HYHuCiIqol5wDRX1lZHGRkMGzZ1P4a9KYXd+1vondVXLVLQFaV9lX3AkswnW",
-  render_errors: [view: ClassificationUtility.ErrorView, accepts: ~w(html json)],
-  pubsub: [name: ClassificationUtility.PubSub,
+  render_errors: [view: Efl.ErrorView, accepts: ~w(html json)],
+  pubsub: [name: Efl.PubSub,
            adapter: Phoenix.PubSub.PG2]
 
 # Configures Elixir's Logger

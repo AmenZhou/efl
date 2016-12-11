@@ -1,4 +1,4 @@
-defmodule ClassificationUtility.Repo.Migrations.AddPageCountToRefCategories do
+defmodule Efl.Repo.Migrations.AddPageCountToRefCategories do
   use Ecto.Migration
 
   def up do

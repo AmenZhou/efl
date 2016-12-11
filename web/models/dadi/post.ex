@@ -1,7 +1,7 @@
-defmodule ClassificationUtility.Dadi.Post do
-  alias ClassificationUtility.Repo
-  alias ClassificationUtility.Dadi.Main, as: Dadi
-  alias ClassificationUtility.HtmlParsers.Dadi.Post, as: HtmlParser
+defmodule Efl.Dadi.Post do
+  alias Efl.Repo
+  alias Efl.Dadi.Main, as: Dadi
+  alias Efl.HtmlParsers.Dadi.Post, as: HtmlParser
   import Ecto.Query, only: [from: 2] 
 
   def update_contents do
