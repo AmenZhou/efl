@@ -41,7 +41,8 @@ defmodule Efl.Mixfile do
       {:cowboy, "~> 1.0"},
       {:floki, "~> 0.11.0"},
       {:httpotion, "~> 3.0.2"},
-      {:timex, "~> 3.0"}
+      {:timex, "~> 3.0"},
+      {:elixlsx, "~> 0.1.0"}
     ]
   end
 
