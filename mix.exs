@@ -19,7 +19,7 @@ defmodule Efl.Mixfile do
   def application do
     [mod: {Efl, []},
      applications: [:phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger, :gettext,
-                    :phoenix_ecto, :mariaex, :httpotion]]
+                    :phoenix_ecto, :mariaex, :httpotion, :timex_ecto]]
   end
 
   # Specifies which paths to compile per environment.
@@ -42,6 +42,7 @@ defmodule Efl.Mixfile do
       {:floki, "~> 0.11.0"},
       {:httpotion, "~> 3.0.2"},
       {:timex, "~> 3.0"},
+      {:timex_ecto, "~> 3.0"},
       {:elixlsx, "~> 0.1.0"}
     ]
   end
