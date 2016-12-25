@@ -1,7 +1,7 @@
 defmodule Efl.DadiController do
   use Efl.Web, :controller
   alias Efl.Repo
-  alias Efl.Dadi.Main, as: Dadi
+  alias Efl.Dadi
 
   def index(conn, _params) do
     posts = Dadi |> Repo.all

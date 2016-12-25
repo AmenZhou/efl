@@ -1,18 +1,20 @@
 defmodule Efl.RefCategory do
   require IEx
 
+  alias Efl.Dadi
   use Efl.Web, :model
 
   schema "ref_categories" do
     field :name
     field :url
     field :page_size, :integer
-    #has_many :dadi_posts, Dadi
+    has_many :dadis, Dadi
     timestamps()
   end
 
   alias Efl.RefCategory
   alias Efl.Repo
+  alias Efl.Dadi
 
   @base_url "http://c.dadi360.com/c/forums/show/"
   @number_of_single_page_rows 60

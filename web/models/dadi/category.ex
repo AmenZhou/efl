@@ -2,7 +2,7 @@ defmodule Efl.Dadi.Category do
   require IEx
 
   alias Efl.Repo
-  alias Efl.Dadi.Main, as: Dadi
+  alias Efl.Dadi
   alias Efl.HtmlParsers.Dadi.Category, as: HtmlParser 
 
   #[{ :ok, %Dadi{}}, { :ok, %Dadi{} }, ...]
