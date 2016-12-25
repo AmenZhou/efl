@@ -4,21 +4,64 @@ defmodule Efl.Xls.Dadi do
   alias Elixlsx.Sheet
   alias Elixlsx.Workbook
   alias Efl.Repo
-  alias Efl.Dadi.Main, as: Dadi
+  alias Efl.RefCategory
+  import Ecto.Query
+  use Timex
 
   def create_xls do
-    Dadi
-    |> Repo.all
-    |> Enum.each(fn(d) ->
-      
-    end)
-    #sheet2 = %Sheet{name: 'Third', rows: [[1,2,3,4,5],
-      #[1,2],
-      #["increased row height"],
-      #["hello", "world"]]}
-  #Sheet.set_row_height(3, 40)
+    %Workbook{sheets: sheets}
+    |> Elixlsx.write_to("empty.xlsx")
+  end
 
-  #workbook = Workbook.append_sheet(workbook, sheet2)
-  #Elixlsx.write_to("empty.xlsx")
+  def sheets do
+    cat = RefCategory
+    |> first
+    |> Repo.one
+    |> Repo.preload(:dadis) 
+
+    [cat]
+    |> Enum.map(&one_sheet(&1))
+  end
+
+  def one_sheet(ref_category) do
+    %Sheet{
+      name: ref_category.name,
+      rows: ref_category.dadis |> rows
+    }
+    |> Sheet.set_row_height(3, 40)
+  end
+
+  def rows(dadis) do
+    dadis
+    |> Enum.map(&one_row(&1))
+    |> List.insert_at(0, titles)
+  end
+
+  def one_row(dadi) do
+    [
+      dadi |> post_date,
+      #Todo Telephone
+      dadi.title,
+      dadi.content
+    ]
+  end
+
+  def post_date(dadi) do
+    date = dadi.post_date
+           |> Timex.format("%m/%d/%Y", :strftime)
+
+    case date do
+      { :ok, f_date } -> f_date
+      _ -> raise "Efl.Xls.Dadi post_date/1, parse date failly"
+    end
+  end
+
+  def titles do
+    [
+      "发布日期",
+      #"电话",
+      "标题",
+      "内容"
+    ]
   end
 end
