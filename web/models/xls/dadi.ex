@@ -10,7 +10,7 @@ defmodule Efl.Xls.Dadi do
 
   def create_xls do
     %Workbook{sheets: sheets}
-    |> Elixlsx.write_to("empty.xlsx")
+    |> Elixlsx.write_to(file_name)
   end
 
   def sheets do
@@ -63,5 +63,17 @@ defmodule Efl.Xls.Dadi do
       "标题",
       "内容"
     ]
+  end
+
+  def file_name do
+    today_date = Timex.now
+                 |> Timex.format("%m-%d-%Y", :strftime)
+
+    case today_date do
+      { :ok, today_date } ->
+        "分类抓取数据-" <> today_date <> ".xls"
+      _ ->
+        raise "Efl.Xls.Dadi create_xls/0 parse date failly"
+    end
   end
 end
