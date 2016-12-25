@@ -1,4 +1,4 @@
-defmodule Efl.Dadi.Main do
+defmodule Efl.Dadi do
   use Efl.Web, :model
   use Timex.Ecto.Timestamps
 

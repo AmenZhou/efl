@@ -2,7 +2,7 @@ defmodule Efl.Dadi.Post do
   require IEx
 
   alias Efl.Repo
-  alias Efl.Dadi.Main, as: Dadi
+  alias Efl.Dadi
   alias Efl.HtmlParsers.Dadi.Post, as: HtmlParser
   import Ecto.Query, only: [from: 2] 
 
