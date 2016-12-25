@@ -12,7 +12,7 @@ defmodule Efl.Dadi.Main do
     field :title
     field :url
     field :content
-    field :post_date, Timex.Ecto.Date
+    field :post_date, Timex.Ecto.DateTime
     belongs_to :ref_category, RefCategory, foreign_key: :ref_category_id
     timestamps()
   end
@@ -20,6 +20,7 @@ defmodule Efl.Dadi.Main do
   def start(ref_category \\ %{}) do
     ref_category = RefCategory |> first |> Repo.one
     Category.create_items(ref_category)
+    Post.update_contents 
   end
 
   def changeset(struct, params \\ %{}) do
@@ -37,14 +38,14 @@ defmodule Efl.Dadi.Main do
   end
 
   defp validate_post_date(changeset) do
-    post_date = get_field(changeset, :post_date)
+    post_date = get_field(changeset, :post_date) |> Timex.to_date
     today = Timex.now |> Timex.to_date
     yesterday = today |> Timex.shift(days: -1)
     validate_post_date(changeset, today, post_date)
   end
 
   defp validate_post_date(changeset, ideal_date, post_date) do
-    if Timex.compare(today, post_date) != 0 do
+    if Timex.compare(ideal_date, post_date) != 0 do
       IO.inspect(post_date)
       add_error(changeset, :post_date, "The post was not published today")
     else

@@ -1,4 +1,6 @@
 defmodule Efl.Dadi.Post do
+  require IEx
+
   alias Efl.Repo
   alias Efl.Dadi.Main, as: Dadi
   alias Efl.HtmlParsers.Dadi.Post, as: HtmlParser
@@ -18,6 +20,7 @@ defmodule Efl.Dadi.Post do
   def get_all_blank_records do
     query = from d in Dadi,
       where: is_nil(d.content),
+      #This limit is used to prevent generating huge amount of http calls
       limit: 120
     Repo.all(query)
   end
