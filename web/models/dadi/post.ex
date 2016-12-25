@@ -6,6 +6,8 @@ defmodule Efl.Dadi.Post do
   alias Efl.HtmlParsers.Dadi.Post, as: HtmlParser
   import Ecto.Query, only: [from: 2] 
 
+  @max_posts 500
+
   def update_contents do
     get_all_blank_records
     |> Enum.map(fn(d) -> d.url end)
@@ -21,7 +23,7 @@ defmodule Efl.Dadi.Post do
     query = from d in Dadi,
       where: is_nil(d.content),
       #This limit is used to prevent generating huge amount of http calls
-      limit: 120
+      limit: @max_posts
     Repo.all(query)
   end
 

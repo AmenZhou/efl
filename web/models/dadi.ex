@@ -17,9 +17,20 @@ defmodule Efl.Dadi do
     timestamps()
   end
 
-  def start(ref_category \\ %{}) do
-    ref_category = RefCategory |> first |> Repo.one
-    Category.create_items(ref_category)
+  def start(ref_category) do
+    ref_category
+    |> Category.create_items
+
+    Post.update_contents 
+  end
+
+  def start do
+    RefCategory
+    |> Repo.all
+    |> Enum.each(fn(cat) ->
+      Category.create_items(cat)
+    end)
+    
     Post.update_contents 
   end
 
@@ -40,7 +51,7 @@ defmodule Efl.Dadi do
   defp validate_post_date(changeset) do
     post_date = get_field(changeset, :post_date) |> Timex.to_date
     today = Timex.now |> Timex.to_date
-    yesterday = today |> Timex.shift(days: -1)
+    #yesterday = today |> Timex.shift(days: -1)
     validate_post_date(changeset, today, post_date)
   end
 

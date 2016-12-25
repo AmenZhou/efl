@@ -5,6 +5,7 @@ defmodule Efl.Xls.Dadi do
   alias Elixlsx.Workbook
   alias Efl.Repo
   alias Efl.RefCategory
+  alias Efl.Dadi
   import Ecto.Query
   use Timex
 
@@ -14,12 +15,7 @@ defmodule Efl.Xls.Dadi do
   end
 
   def sheets do
-    cat = RefCategory
-    |> first
-    |> Repo.one
-    |> Repo.preload(:dadis) 
-
-    [cat]
+    available_dadis 
     |> Enum.map(&one_sheet(&1))
   end
 
@@ -75,5 +71,16 @@ defmodule Efl.Xls.Dadi do
       _ ->
         raise "Efl.Xls.Dadi create_xls/0 parse date failly"
     end
+  end
+
+  def available_dadis do
+    today = Timex.now |> Timex.to_date
+
+    query = from d in Dadi,
+      where: (d.post_date <=  ^today)
+
+    RefCategory
+    |> Repo.all
+    |> Repo.preload(dadis: query)
   end
 end
