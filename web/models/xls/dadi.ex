@@ -71,7 +71,7 @@ defmodule Efl.Xls.Dadi do
 
     case today_date do
       { :ok, today_date } ->
-        "分类抓取数据-" <> today_date <> ".xls"
+        "分类抓取数据-" <> today_date <> ".xlsx"
       _ ->
         raise "Efl.Xls.Dadi create_xls/0 parse date failly"
     end
