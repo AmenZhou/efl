@@ -21,7 +21,7 @@ defmodule Efl.Xls.Dadi do
 
   def one_sheet(ref_category) do
     %Sheet{
-      name: ref_category.name,
+      name: ref_category.display_name,
       rows: ref_category.dadis |> rows
     }
     |> Sheet.set_row_height(3, 40)
