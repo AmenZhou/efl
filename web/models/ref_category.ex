@@ -6,6 +6,7 @@ defmodule Efl.RefCategory do
 
   schema "ref_categories" do
     field :name
+    field :display_name
     field :url
     field :page_size, :integer
     has_many :dadis, Dadi
@@ -121,7 +122,7 @@ defmodule Efl.RefCategory do
 
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:name, :url, :page_size])
+    |> cast(params, [:name, :url, :page_size, :display_name])
   end
 
   def get_urls(ref_category) do

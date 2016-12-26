@@ -63,11 +63,11 @@ defmodule Efl.Xls.Dadi do
   end
 
   def file_name do
-    yesterday = TimeUtil.yesterday
-                     |> Timex.format("%m-%d-%Y", :strftime)
+    yesterday = TimeUtil.yesterday_date
+                |> Timex.format("%m-%d-%Y", :strftime)
 
     case yesterday do
-      { :ok, yesterday_date } ->
+      { :ok, yesterday } ->
         "分类抓取数据-" <> yesterday <> ".xlsx"
       _ ->
         raise "Efl.Xls.Dadi create_xls/0 parse date failly"
@@ -76,7 +76,7 @@ defmodule Efl.Xls.Dadi do
 
   def available_dadis do
     query = from d in Dadi,
-      where: (d.post_date |> Timex.to_date == TimeUtil.yesterday)
+      where: (d.post_date == ^TimeUtil.yesterday_date)
 
     RefCategory
     |> Repo.all
