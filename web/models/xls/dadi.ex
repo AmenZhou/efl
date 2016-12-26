@@ -6,6 +6,7 @@ defmodule Efl.Xls.Dadi do
   alias Efl.Repo
   alias Efl.RefCategory
   alias Efl.Dadi
+  alias Efl.TimeUtil
   import Ecto.Query
   use Timex
 
@@ -62,22 +63,20 @@ defmodule Efl.Xls.Dadi do
   end
 
   def file_name do
-    today_date = Timex.now
-                 |> Timex.format("%m-%d-%Y", :strftime)
+    yesterday = TimeUtil.yesterday
+                     |> Timex.format("%m-%d-%Y", :strftime)
 
-    case today_date do
-      { :ok, today_date } ->
-        "分类抓取数据-" <> today_date <> ".xlsx"
+    case yesterday do
+      { :ok, yesterday_date } ->
+        "分类抓取数据-" <> yesterday <> ".xlsx"
       _ ->
         raise "Efl.Xls.Dadi create_xls/0 parse date failly"
     end
   end
 
   def available_dadis do
-    today = Timex.now |> Timex.to_date
-
     query = from d in Dadi,
-      where: (d.post_date <=  ^today)
+      where: (d.post_date |> Timex.to_date == TimeUtil.yesterday)
 
     RefCategory
     |> Repo.all
