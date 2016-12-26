@@ -6,6 +6,7 @@ defmodule Efl.Dadi do
   alias Efl.Dadi.Category
   alias Efl.Dadi.Post
   alias Efl.Repo
+  alias Efl.TimeUtil
   require IEx
 
   schema "dadi" do
@@ -50,15 +51,13 @@ defmodule Efl.Dadi do
 
   defp validate_post_date(changeset) do
     post_date = get_field(changeset, :post_date) |> Timex.to_date
-    today = Timex.now |> Timex.to_date
-    #yesterday = today |> Timex.shift(days: -1)
-    validate_post_date(changeset, today, post_date)
+    validate_post_date(changeset, TimeUtil.target_date, post_date)
   end
 
   defp validate_post_date(changeset, ideal_date, post_date) do
     if Timex.compare(ideal_date, post_date) != 0 do
       IO.inspect(post_date)
-      add_error(changeset, :post_date, "The post was not published today")
+      add_error(changeset, :post_date, "The post date is not ideal")
     else
       changeset
     end 
