@@ -51,7 +51,7 @@ defmodule Efl.Dadi do
 
   defp validate_post_date(changeset) do
     post_date = get_field(changeset, :post_date) |> Timex.to_date
-    validate_post_date(changeset, TimeUtil.yesterday_date, post_date)
+    validate_post_date(changeset, TimeUtil.target_date, post_date)
   end
 
   defp validate_post_date(changeset, ideal_date, post_date) do

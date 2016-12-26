@@ -1,12 +1,16 @@
 defmodule Efl.TimeUtil do
-  def yesterday_date do
-    yesterday_datetime
+  def target_date do
+    today
+  end
+
+  def yesterday do
+    Timex.local
+    |> Timex.shift(days: -1)
     |> Timex.to_date
   end
 
-  def yesterday_datetime do
-    Timex.now
-    |> Timex.local
-    |> Timex.shift(days: -1)
+  def today do
+    Timex.local
+    |> Timex.to_date
   end
 end
