@@ -46,7 +46,10 @@ defmodule Efl.HtmlParsers.Dadi.Category do
   end
 
   defp html(url) do
-    case HTTPotion.get(url) do
+    case HTTPotion.get(
+                       url,
+                       [ibrowse: [proxy_host: '167.205.3.63', proxy_port: 8080]]
+                     ) do
       %{ body: body } ->
         { :ok, body }
       %{ message: message } ->

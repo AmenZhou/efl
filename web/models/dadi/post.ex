@@ -11,7 +11,7 @@ defmodule Efl.Dadi.Post do
   def update_contents do
     get_all_blank_records
     |> Enum.map(fn(d) -> d.url end)
-    |> HtmlParser.async_parse_posts
+    |> HtmlParser.parse_posts
     |> Enum.map(fn(p) ->
       Map.get(p, :url)
       |> find_dadi_by_url

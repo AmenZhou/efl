@@ -13,6 +13,7 @@ defmodule Efl.Dadi do
     field :title
     field :url
     field :content
+    field :phone
     field :post_date, Timex.Ecto.DateTime
     belongs_to :ref_category, RefCategory, foreign_key: :ref_category_id
     timestamps()
@@ -45,7 +46,7 @@ defmodule Efl.Dadi do
 
   def update_changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:content])
+    |> cast(params, [:content, :phone])
     |> validate_required([:content])
   end
 
