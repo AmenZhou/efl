@@ -37,7 +37,7 @@ defmodule Efl.HtmlParsers.Dadi.Post do
           phone: find_phone_from_content(content)
         }
       { :error, message } ->
-        raise "Error HtmlParsers.Dadi.Post HTML parse error, #{message}"
+        IO.puts("Error HtmlParsers.Dadi.Post HTML parse error, #{message}")
     end
   end
 

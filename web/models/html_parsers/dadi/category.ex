@@ -19,13 +19,14 @@ defmodule Efl.HtmlParsers.Dadi.Category do
   def parse_one_page(html_items) do
     case html_items do
       { :ok, items } ->
+        IO.puts("Category has parsed one page")
         categories = Enum.map(items, fn(item) ->
           item
           |> dadi_params
         end)
         categories
-      _ ->
-        raise "Error HtmlParsers.Dadi.Category HTML parse error #{html_items}"
+      { :error, message } ->
+        IO.puts("Error HtmlParsers.Dadi.Category HTML parse error: #{message}"
     end
   end
 
