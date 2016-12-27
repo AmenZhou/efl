@@ -4,6 +4,10 @@ defmodule Efl.HtmlParsers.Dadi.Category do
 
   #Don't add / at the tail of the url
   @base_url "http://c.dadi360.com"
+  @http_config [
+    ibrowse: [proxy_host: '167.205.3.63', proxy_port: 8080],
+    timeout: 50_000
+  ]
 
   #The returned value should be [{ :ok, %Dadi{} }, ...]
   def parse(ref_category) do
@@ -46,10 +50,7 @@ defmodule Efl.HtmlParsers.Dadi.Category do
   end
 
   defp html(url) do
-    case HTTPotion.get(
-                       url,
-                       [ibrowse: [proxy_host: '167.205.3.63', proxy_port: 8080]]
-                     ) do
+    case HTTPotion.get(url, @http_config) do
       %{ body: body } ->
         { :ok, body }
       %{ message: message } ->

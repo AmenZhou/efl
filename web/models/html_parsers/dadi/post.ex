@@ -2,6 +2,11 @@ defmodule Efl.HtmlParsers.Dadi.Post do
   alias Efl.HtmlParsers.Dadi.Post, as: HtmlParser
   require IEx
 
+  @http_config [
+    ibrowse: [proxy_host: '167.205.3.63', proxy_port: 8080],
+    timeout: 50_000
+  ]
+
   def parse_posts(urls) do
     urls
     |> Enum.map(&parse_post(&1))
@@ -55,13 +60,7 @@ defmodule Efl.HtmlParsers.Dadi.Post do
   end
     
   defp html(url) do
-    case HTTPotion.get(
-                       url,
-                       [
-                         ibrowse: [proxy_host: '167.205.3.63', proxy_port: 8080],
-                         timeout: 10_000
-                       ]
-                     ) do
+    case HTTPotion.get(url, @http_config) do
       %{ body: body } ->
         { :ok, body }
       %{ message: message } ->
