@@ -1,6 +1,6 @@
 defmodule Efl.TimeUtil do
   def target_date do
-    yesterday
+    today
   end
 
   def yesterday do

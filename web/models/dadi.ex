@@ -40,7 +40,8 @@ defmodule Efl.Dadi do
     struct
     |> cast(params, [:title, :url, :content, :post_date, :ref_category_id, :phone])
     |> validate_required([:title, :url, :post_date, :ref_category_id])
-    |> unique_constraint(:url, :phone)
+    |> unique_constraint(:url, name: :dadi_url_index)
+    |> unique_constraint(:phone, name: :dadi_phone_index)
     |> validate_post_date
   end
 

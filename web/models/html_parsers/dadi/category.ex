@@ -1,6 +1,7 @@
 defmodule Efl.HtmlParsers.Dadi.Category do 
-  require IEx
   alias Efl.RefCategory
+  alias Efl.PhoneUtil
+  require IEx
 
   #Don't add / at the tail of the url
   @base_url "http://c.dadi360.com"

@@ -23,93 +23,93 @@ defmodule Efl.RefCategory do
       name: "FLUSHING_HOUSE_RENT",
       display_name: "法拉盛租房",
       url: "/26.page",
-      page_size: 2
+      page_size: 4
     },
     %{
       name: "QUEENS_HOUSE_RENT",
       display_name: "皇后区租房",
       url: "/53.page",
-      page_size: 1
+      page_size: 2
     },
     %{
       name: "ELMHURST_HOUSE_RENT",
       display_name: "艾姆赫斯特租房",
       url: "/48.page",
-      page_size: 1
+      page_size: 2
     },
     %{
       name: "BLOOKLYN_HOUSE_RENT",
       display_name: "布鲁克林租房",
       url: "/46.page",
-      page_size: 1
+      page_size: 2
     },
     %{
       name: "MANHATTAN_HOUSE_RENT",
       display_name: "曼哈顿租房",
       url: "/47.page",
-      page_size: 1
+      page_size: 2
     },
     %{
       name: "OTHER_HOUSE_RENT",
       display_name: "其他租房",
       url: "/89.page",
-      page_size: 1
+      page_size: 2
     },
     %{
       name: "NAIL_HIRING",
       display_name: "美甲招人",
       url: "/56.page",
-      page_size: 1
+      page_size: 2
     },
     %{
       name: "RESTAURANT_HIRING",
       display_name: "餐馆招人",
       url: "/57.page",
-      page_size: 1
+      page_size: 2
     },
     %{
       name: "MASSAGE_HIRING",
       display_name: "按摩请人",
       url: "/52.page",
-      page_size: 1
+      page_size: 2
     },
     %{
       name: "GENERAL_HIRING",
       display_name: "招聘",
       url: "/90.page",
-      page_size: 1
+      page_size: 2
     },
     %{
       name: "BUSINESS_TRANS",
       display_name: "生意转让",
       url: "/27.page",
-      page_size: 1
+      page_size: 2
     },
     %{
       name: "HOUSE_SALE",
       display_name: "房屋出售",
       url: "/27.page",
       url: "/36.page",
-      page_size: 1
+      page_size: 2
     },
     %{
       name: "CARS_SALE",
       display_name: "汽车出售",
       url: "/82.page",
-      page_size: 1
+      page_size: 2
     },
     %{
       name: "STORE_RENT",
       display_name: "店铺转让",
       url: "/82.page",
       url: "/27.page",
-      page_size: 1
+      page_size: 2
     },
     %{
       name: "USED_GOODS",
       display_name: "二手物品",
       url: "/23.page",
-      page_size: 1
+      page_size: 2
     }
   ]
 
