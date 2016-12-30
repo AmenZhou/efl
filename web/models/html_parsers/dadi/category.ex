@@ -1,9 +1,14 @@
 defmodule Efl.HtmlParsers.Dadi.Category do 
-  require IEx
   alias Efl.RefCategory
+  alias Efl.PhoneUtil
+  require IEx
 
   #Don't add / at the tail of the url
   @base_url "http://c.dadi360.com"
+  @http_config [
+    ibrowse: [proxy_host: '97.77.104.22', proxy_port: 3128],
+    timeout: 50_000
+  ]
 
   #The returned value should be [{ :ok, %Dadi{} }, ...]
   def parse(ref_category) do
@@ -15,13 +20,14 @@ defmodule Efl.HtmlParsers.Dadi.Category do
   def parse_one_page(html_items) do
     case html_items do
       { :ok, items } ->
+        IO.puts("Category has parsed one page")
         categories = Enum.map(items, fn(item) ->
           item
           |> dadi_params
         end)
         categories
-      _ ->
-        raise "Error HtmlParsers.Dadi.Category HTML parse error #{html_items}"
+      { :error, message } ->
+        IO.puts("Error HtmlParsers.Dadi.Category HTML parse error: #{message}")
     end
   end
 
@@ -38,15 +44,17 @@ defmodule Efl.HtmlParsers.Dadi.Category do
   end
 
   defp dadi_params(item) do
+    title = get_title(item)
     %{
-      title: get_title(item),
+      title: title,
       url: @base_url <> get_link(item),
-      post_date: get_date(item)
+      post_date: get_date(item),
+      phone: PhoneUtil.find_phone_from_content(title)
     }
   end
 
   defp html(url) do
-    case HTTPotion.get(url) do
+    case HTTPotion.get(url, @http_config) do
       %{ body: body } ->
         { :ok, body }
       %{ message: message } ->

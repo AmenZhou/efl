@@ -37,7 +37,7 @@ defmodule Efl.Xls.Dadi do
   def one_row(dadi) do
     [
       dadi |> post_date,
-      #Todo Telephone
+      dadi.phone,
       dadi.title,
       dadi.content
     ]
@@ -56,7 +56,7 @@ defmodule Efl.Xls.Dadi do
   def titles do
     [
       "发布日期",
-      #"电话",
+      "电话",
       "标题",
       "内容"
     ]

@@ -1,10 +1,16 @@
 defmodule Efl.HtmlParsers.Dadi.Post do
   alias Efl.HtmlParsers.Dadi.Post, as: HtmlParser
+  alias Efl.PhoneUtil
   require IEx
+
+  @http_config [
+    ibrowse: [proxy_host: '97.77.104.22', proxy_port: 3128],
+    timeout: 50_000
+  ]
 
   def parse_posts(urls) do
     urls
-    |> Enum.map(&parse_post/1)
+    |> Enum.map(&parse_post(&1))
   end
 
   def async_parse_posts(urls) do
@@ -21,18 +27,33 @@ defmodule Efl.HtmlParsers.Dadi.Post do
   def parse_post(url) do
     case html(url) do
       { :ok, body } ->
+        IO.puts("Post parsed one url: #{url}")
         content = body
                   |> Floki.find(".postbody")
                   |> Floki.text
                   |> String.strip
-        %{ content: content, url: url }
-      _ ->
-        raise "Error HtmlParsers.Dadi.Post HTML parse error"
+
+        phone = PhoneUtil.find_phone_from_content(content)
+
+        if(phone) do
+          %{
+            content: content,
+            url: url,
+            phone: phone
+          }
+        else
+          %{
+            content: content,
+            url: url,
+          }
+        end
+      { :error, message } ->
+        IO.puts("Error HtmlParsers.Dadi.Post HTML parse error, #{message}")
     end
   end
-
+    
   defp html(url) do
-    case HTTPotion.get(url) do
+    case HTTPotion.get(url, @http_config) do
       %{ body: body } ->
         { :ok, body }
       %{ message: message } ->
