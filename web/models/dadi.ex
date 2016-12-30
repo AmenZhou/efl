@@ -38,9 +38,9 @@ defmodule Efl.Dadi do
 
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:title, :url, :content, :post_date, :ref_category_id])
+    |> cast(params, [:title, :url, :content, :post_date, :ref_category_id, :phone])
     |> validate_required([:title, :url, :post_date, :ref_category_id])
-    |> unique_constraint(:url)
+    |> unique_constraint(:url, :phone)
     |> validate_post_date
   end
 

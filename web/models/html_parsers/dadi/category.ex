@@ -5,7 +5,7 @@ defmodule Efl.HtmlParsers.Dadi.Category do
   #Don't add / at the tail of the url
   @base_url "http://c.dadi360.com"
   @http_config [
-    ibrowse: [proxy_host: '167.205.3.63', proxy_port: 8080],
+    ibrowse: [proxy_host: '97.77.104.22', proxy_port: 3128],
     timeout: 50_000
   ]
 
@@ -26,7 +26,7 @@ defmodule Efl.HtmlParsers.Dadi.Category do
         end)
         categories
       { :error, message } ->
-        IO.puts("Error HtmlParsers.Dadi.Category HTML parse error: #{message}"
+        IO.puts("Error HtmlParsers.Dadi.Category HTML parse error: #{message}")
     end
   end
 
@@ -43,10 +43,12 @@ defmodule Efl.HtmlParsers.Dadi.Category do
   end
 
   defp dadi_params(item) do
+    title = get_title(item)
     %{
-      title: get_title(item),
+      title: title,
       url: @base_url <> get_link(item),
-      post_date: get_date(item)
+      post_date: get_date(item),
+      phone: PhoneUtil.find_phone_from_content(title)
     }
   end
 

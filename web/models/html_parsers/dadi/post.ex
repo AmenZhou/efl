@@ -1,9 +1,10 @@
 defmodule Efl.HtmlParsers.Dadi.Post do
   alias Efl.HtmlParsers.Dadi.Post, as: HtmlParser
+  alias Efl.PhoneUtil
   require IEx
 
   @http_config [
-    ibrowse: [proxy_host: '167.205.3.63', proxy_port: 8080],
+    ibrowse: [proxy_host: '97.77.104.22', proxy_port: 3128],
     timeout: 50_000
   ]
 
@@ -34,29 +35,11 @@ defmodule Efl.HtmlParsers.Dadi.Post do
         %{
           content: content,
           url: url,
-          phone: find_phone_from_content(content)
+          phone: PhoneUtil.find_phone_from_content(content)
         }
       { :error, message } ->
         IO.puts("Error HtmlParsers.Dadi.Post HTML parse error, #{message}")
     end
-  end
-
-  #Find and fetch the first phone number in the content
-  defp find_phone_from_content(content) do
-    ~r/(?<area_code>\d{3}).?(?<middle>\d{3}).?(?<last>\d{4})/
-    |> Regex.named_captures(content)
-    |> generate_phone_from_regex
-  end
-
-  defp generate_phone_from_regex(nil), do: nil
-
-  #The arg is a map %{"area_code" => "222", "middle" => "222", "last" => "2222"}
-  defp generate_phone_from_regex(regex) do
-    Map.get(regex, "area_code")
-    <> "-"
-    <> Map.get(regex, "middle")
-    <> "-"
-    <> Map.get(regex, "last")
   end
     
   defp html(url) do
