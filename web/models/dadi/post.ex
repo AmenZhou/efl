@@ -10,16 +10,14 @@ defmodule Efl.Dadi.Post do
 
   def update_contents do
     get_all_blank_records
-    |> Enum.map(fn(d) -> d.url end)
-    |> HtmlParser.parse_posts
-    |> Enum.map(fn(p) ->
-      Map.get(p, :url)
-      |> find_dadi_by_url
-      |> update(p)
+    |> Enum.map(fn(d) ->
+      d.url
+      |> HtmlParser.parse_post
+      |> update_by_parsed_result
     end)
   end
 
-  def get_all_blank_records do
+  defp get_all_blank_records do
     query = from d in Dadi,
       where: is_nil(d.content),
       #This limit is used to prevent generating huge amount of http calls
@@ -27,18 +25,27 @@ defmodule Efl.Dadi.Post do
     Repo.all(query)
   end
 
-  def find_dadi_by_url(url) do
+  defp find_dadi_by_url(url) do
     query = from d in Dadi,
       where: (d.url == ^url),
       limit: 1
     Repo.one(query)
   end
 
-  def update(dadi, params) do
+  defp update(dadi, params) do
     set = Dadi.update_changeset(dadi, params)
     case Repo.update(set) do
       {:ok, struct} -> IO.puts("Insert one record successfully #{Map.get(struct, :content)}")
       {:error, changeset} -> IO.inspect(Map.get(changeset, :errors))
     end
   end
+
+  defp update_by_parsed_result(p) when is_map(p) do
+    p
+    |> Map.get(:url)
+    |> find_dadi_by_url
+    |> update(p)
+  end
+
+  defp update_by_parsed_result(_), do: nil
 end

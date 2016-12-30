@@ -32,11 +32,21 @@ defmodule Efl.HtmlParsers.Dadi.Post do
                   |> Floki.find(".postbody")
                   |> Floki.text
                   |> String.strip
-        %{
-          content: content,
-          url: url,
-          phone: PhoneUtil.find_phone_from_content(content)
-        }
+
+        phone = PhoneUtil.find_phone_from_content(content)
+
+        if(phone) do
+          %{
+            content: content,
+            url: url,
+            phone: phone
+          }
+        else
+          %{
+            content: content,
+            url: url,
+          }
+        end
       { :error, message } ->
         IO.puts("Error HtmlParsers.Dadi.Post HTML parse error, #{message}")
     end
