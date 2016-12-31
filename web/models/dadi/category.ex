@@ -12,7 +12,7 @@ defmodule Efl.Dadi.Category do
     |> Enum.each(&insert(ref_category, &1))
   end
 
-  def insert(ref_category, dadi \\ %CategoryParser{}) do
+  defp insert(ref_category, dadi) when is_map(dadi) do
     dadi_params = %{ dadi | ref_category_id: ref_category.id }
                   |> Map.from_struct
     set = Dadi.changeset(%Dadi{}, dadi_params)
@@ -21,4 +21,6 @@ defmodule Efl.Dadi.Category do
       {:error, changeset} -> IO.inspect(Map.get(changeset, :errors))
     end
   end
+
+  defp insert(_, _), do: nil
 end
