@@ -33,12 +33,17 @@ defmodule Efl.Dadi do
   end
 
   def start do
+    IO.puts("Deleting all records")
+    Repo.delete_all(Dadi)
+
+    IO.puts("Start fetching categories")
     RefCategory
     |> Repo.all
     |> Enum.each(fn(cat) ->
       Category.create_items(cat)
     end)
     
+    IO.puts("Start fetching posts")
     Post.update_contents 
   end
 
