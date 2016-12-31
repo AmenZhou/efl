@@ -41,9 +41,9 @@ defmodule Efl.Dadi.Post do
     end
   end
 
+  #when the argument is a %PostParser{}
   defp update_by_parsed_result(p) when is_map(p) do
-    p
-    |> p.url
+    p.url
     |> find_dadi_by_url
     |> update(p)
   end

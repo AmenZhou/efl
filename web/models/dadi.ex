@@ -49,7 +49,7 @@ defmodule Efl.Dadi do
 
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:title, :url, :content, :post_date, :ref_category_id, :phone])
+    |> changeset_cast(params)
     |> validate_required([:title, :url, :post_date, :ref_category_id])
     |> unique_constraint(:url, name: :dadi_url_index)
     |> validate_post_date
@@ -57,8 +57,24 @@ defmodule Efl.Dadi do
 
   def update_changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:content, :phone])
+    |> update_cast(params)
     |> validate_required([:content])
+  end
+
+  defp changeset_cast(struct, %{phone: phone} = params) when is_binary(phone) do
+    cast(struct, params, [:title, :url, :content, :post_date, :ref_category_id, :phone])
+  end
+
+  defp changeset_cast(struct, params) do
+    cast(struct, params, [:title, :url, :content, :post_date, :ref_category_id])
+  end
+
+  defp update_cast(struct, %{phone: phone} = params) when is_binary(phone) do
+    cast(struct, params, [:content, :phone])
+  end
+
+  defp update_cast(struct, params) do
+    cast(struct, params, [:content])
   end
 
   defp validate_post_date(changeset) do

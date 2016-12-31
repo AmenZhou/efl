@@ -37,18 +37,11 @@ defmodule Efl.HtmlParsers.Dadi.Post do
 
         phone = PhoneUtil.find_phone_from_content(content)
 
-        if(phone) do
-          %PostParser{
-            content: content,
-            url: url,
-            phone: phone
-          }
-        else
-          %PostParser{
-            content: content,
-            url: url,
-          }
-        end
+        %PostParser{
+          content: content,
+          url: url,
+          phone: phone
+        }
       { :error, message } ->
         IO.puts("Error PostParser.Dadi.Post HTML parse error, #{message}")
     end
