@@ -1,7 +1,7 @@
 defmodule Efl.PhoneUtil do
   #Find and fetch the first phone number in the content
   def find_phone_from_content(content) do
-    ~r/(?<area_code>\d{3}).+?(?<middle>\d{3}).+?(?<last>\d{4})/
+    ~r/(?<area_code>\d{3}).?(?<middle>\d{3}).?(?<last>\d{4})/
     |> Regex.named_captures(content)
     |> generate_phone_from_regex
   end
