@@ -1,7 +1,10 @@
 defmodule Efl.HtmlParsers.Dadi.Category do 
   alias Efl.RefCategory
   alias Efl.PhoneUtil
+  alias Efl.HtmlParsers.Dadi.Category, as: CategoryParser
   require IEx
+
+  defstruct [:title, :url, :post_date, :phone, :ref_category_id]
 
   #Don't add / at the tail of the url
   @base_url "http://c.dadi360.com"
@@ -45,7 +48,7 @@ defmodule Efl.HtmlParsers.Dadi.Category do
 
   defp dadi_params(item) do
     title = get_title(item)
-    %{
+    %CategoryParser{
       title: title,
       url: @base_url <> get_link(item),
       post_date: get_date(item),

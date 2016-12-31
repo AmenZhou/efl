@@ -3,7 +3,7 @@ defmodule Efl.Dadi.Post do
 
   alias Efl.Repo
   alias Efl.Dadi
-  alias Efl.HtmlParsers.Dadi.Post, as: HtmlParser
+  alias Efl.HtmlParsers.Dadi.Post, as: PostParser
   import Ecto.Query, only: [from: 2] 
 
   @max_posts 500
@@ -12,7 +12,7 @@ defmodule Efl.Dadi.Post do
     get_all_blank_records
     |> Enum.map(fn(d) ->
       d.url
-      |> HtmlParser.parse_post
+      |> PostParser.parse_post
       |> update_by_parsed_result
     end)
   end
@@ -33,6 +33,7 @@ defmodule Efl.Dadi.Post do
   end
 
   defp update(dadi, params) do
+    params = Map.from_struct(params)
     set = Dadi.update_changeset(dadi, params)
     case Repo.update(set) do
       {:ok, struct} -> IO.puts("Insert one record successfully #{Map.get(struct, :content)}")
@@ -40,9 +41,9 @@ defmodule Efl.Dadi.Post do
     end
   end
 
+  #when the argument is a %PostParser{}
   defp update_by_parsed_result(p) when is_map(p) do
-    p
-    |> Map.get(:url)
+    p.url
     |> find_dadi_by_url
     |> update(p)
   end

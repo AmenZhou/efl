@@ -3,22 +3,24 @@ defmodule Efl.Dadi.Category do
 
   alias Efl.Repo
   alias Efl.Dadi
-  alias Efl.HtmlParsers.Dadi.Category, as: HtmlParser 
+  alias Efl.HtmlParsers.Dadi.Category, as: CategoryParser
 
   #[{ :ok, %Dadi{}}, { :ok, %Dadi{} }, ...]
   def create_items(ref_category) do
     ref_category
-    |> HtmlParser.parse
-    |> Enum.each(&insert(&1, ref_category))
+    |> CategoryParser.parse
+    |> Enum.each(&insert(ref_category, &1))
   end
 
-  def insert(dadi, ref_category) do
-    dadi_params = dadi
-                  |> Map.merge(%{ ref_category_id: ref_category.id })
+  defp insert(ref_category, dadi) when is_map(dadi) do
+    dadi_params = %{ dadi | ref_category_id: ref_category.id }
+                  |> Map.from_struct
     set = Dadi.changeset(%Dadi{}, dadi_params)
     case Repo.insert(set) do
       {:ok, struct} -> IO.puts("Insert one record successfully #{Map.get(struct, :title)}")
       {:error, changeset} -> IO.inspect(Map.get(changeset, :errors))
     end
   end
+
+  defp insert(_, _), do: nil
 end

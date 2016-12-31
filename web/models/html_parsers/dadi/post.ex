@@ -1,7 +1,9 @@
 defmodule Efl.HtmlParsers.Dadi.Post do
-  alias Efl.HtmlParsers.Dadi.Post, as: HtmlParser
+  alias Efl.HtmlParsers.Dadi.Post, as: PostParser
   alias Efl.PhoneUtil
   require IEx
+
+  defstruct [:url, :phone, :content]
 
   @http_config [
     ibrowse: [proxy_host: '97.77.104.22', proxy_port: 3128],
@@ -17,7 +19,7 @@ defmodule Efl.HtmlParsers.Dadi.Post do
     urls
     |> Enum.map(fn(url) ->
       :timer.sleep(100)
-      Task.async(HtmlParser, :parse_post, [url])
+      Task.async(PostParser, :parse_post, [url])
     end)
     |> Enum.map(fn(task) ->
       Task.await(task)
@@ -35,20 +37,13 @@ defmodule Efl.HtmlParsers.Dadi.Post do
 
         phone = PhoneUtil.find_phone_from_content(content)
 
-        if(phone) do
-          %{
-            content: content,
-            url: url,
-            phone: phone
-          }
-        else
-          %{
-            content: content,
-            url: url,
-          }
-        end
+        %PostParser{
+          content: content,
+          url: url,
+          phone: phone
+        }
       { :error, message } ->
-        IO.puts("Error HtmlParsers.Dadi.Post HTML parse error, #{message}")
+        IO.puts("Error PostParser.Dadi.Post HTML parse error, #{message}")
     end
   end
     
