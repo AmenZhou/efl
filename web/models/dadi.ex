@@ -6,6 +6,7 @@ defmodule Efl.Dadi do
   alias Efl.Dadi.Category
   alias Efl.Dadi.Post
   alias Efl.Repo
+  alias Efl.Dadi
   alias Efl.TimeUtil
   require IEx
 
@@ -20,9 +21,14 @@ defmodule Efl.Dadi do
   end
 
   def start(ref_category) do
+    IO.puts("Deleting all records")
+    Repo.delete_all(Dadi)
+
+    IO.puts("Start fetching categories")
     ref_category
     |> Category.create_items
 
+    IO.puts("Start fetching posts")
     Post.update_contents 
   end
 
