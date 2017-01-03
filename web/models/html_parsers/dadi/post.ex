@@ -6,7 +6,7 @@ defmodule Efl.HtmlParsers.Dadi.Post do
   defstruct [:url, :phone, :content]
 
   @http_config [
-    ibrowse: [proxy_host: '97.77.104.22', proxy_port: 3128],
+    ibrowse: [proxy_host: '165.138.65.233', proxy_port: 3128],
     timeout: 50_000
   ]
 
@@ -18,7 +18,7 @@ defmodule Efl.HtmlParsers.Dadi.Post do
   def async_parse_posts(urls) do
     urls
     |> Enum.map(fn(url) ->
-      :timer.sleep(100)
+      :timer.sleep(2000)
       Task.async(PostParser, :parse_post, [url])
     end)
     |> Enum.map(fn(task) ->
@@ -27,6 +27,7 @@ defmodule Efl.HtmlParsers.Dadi.Post do
   end
 
   def parse_post(url) do
+    :timer.sleep(2000)
     case html(url) do
       { :ok, body } ->
         IO.puts("Post parsed one url: #{url}")

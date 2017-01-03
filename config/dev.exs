@@ -41,3 +41,5 @@ config :efl, Efl.Repo,
   database: "classification_utility_dev",
   hostname: "localhost",
   pool_size: 10
+
+import_config "mailgun.exs"
