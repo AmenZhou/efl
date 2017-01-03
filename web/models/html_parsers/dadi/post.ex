@@ -27,7 +27,7 @@ defmodule Efl.HtmlParsers.Dadi.Post do
   end
 
   def parse_post(url) do
-    :timer.sleep(1000)
+    :timer.sleep(2000)
     case html(url) do
       { :ok, body } ->
         IO.puts("Post parsed one url: #{url}")
