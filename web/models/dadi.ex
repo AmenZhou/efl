@@ -45,6 +45,12 @@ defmodule Efl.Dadi do
     
     IO.puts("Start fetching posts")
     Post.update_contents 
+
+    IO.puts("Exporting Xls file")
+    Efl.Xls.Dadi.create_xls
+
+    IO.puts("Sending Emails")
+    Efl.Mailer.send_email_with_xls 
   end
 
   def changeset(struct, params \\ %{}) do

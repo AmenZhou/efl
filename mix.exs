@@ -44,7 +44,7 @@ defmodule Efl.Mixfile do
       {:timex, "~> 3.0"},
       {:timex_ecto, "~> 3.0"},
       {:elixlsx, "~> 0.1.0"},
-      {:mailgun, "~> 0.1.2"}
+      {:mailgun, github: "chrismccord/mailgun"}
     ]
   end
 
