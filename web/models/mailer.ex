@@ -12,15 +12,30 @@ defmodule Efl.Mailer do
   def send_email_with_xls do
     file_name = Xls.file_name
 
-    send_email(to: "chou.amen@gmail.com", #joyce.lei@epochtimes.com",
+    response = send_email(
+                          to: "chou.amen@gmail.com", #joyce.lei@epochtimes.com",
+                          from: @from,
+                          subject: "DADI 360 -- #{file_name}",
+                          text: "Please see the attachment",
+                          attachments: [
+                            %{
+                              path: file_name,
+                              filename: file_name,
+                            }
+    ])
+
+    case response do
+      {:error, _} -> send_alert
+      {:ok, sucess} -> sucess 
+    end
+  end
+
+  def send_alert do
+    send_email(
+               to: "chou.amen@gmail.com", #joyce.lei@epochtimes.com",
                from: @from,
-               subject: "DADI 360 -- #{file_name}",
-               text: "Please see the attachment",
-               attachments: [
-                 %{
-                   path: file_name,
-                   filename: file_name,
-                 }
-                ])
+               subject: "Alert! The excel file #{Xls.file_name} wasn't sent out successfully",
+               text: "Please contact admin, email: chou.amen@gmail.com"
+              )
   end
 end

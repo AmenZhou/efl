@@ -8,6 +8,7 @@ defmodule Efl.Dadi do
   alias Efl.Repo
   alias Efl.Dadi
   alias Efl.TimeUtil
+  alias Efl.Mailer
   require IEx
 
   schema "dadi" do
@@ -21,36 +22,50 @@ defmodule Efl.Dadi do
   end
 
   def start(ref_category) do
-    IO.puts("Deleting all records")
-    Repo.delete_all(Dadi)
+    try do
+      IO.puts("Deleting all records")
+      Repo.delete_all(Dadi)
 
-    IO.puts("Start fetching categories")
-    ref_category
-    |> Category.create_items
+      IO.puts("Start fetching categories")
+      ref_category
+      |> Category.create_items
 
-    IO.puts("Start fetching posts")
-    Post.update_contents 
+      IO.puts("Start fetching posts")
+      Post.update_contents 
+
+      IO.puts("Exporting Xls file")
+      Efl.Xls.Dadi.create_xls
+
+      IO.puts("Sending Emails")
+      Mailer.send_email_with_xls 
+    rescue
+      _ -> Mailer.send_alert
+    end
   end
 
   def start do
-    IO.puts("Deleting all records")
-    Repo.delete_all(Dadi)
+    try do
+      IO.puts("Deleting all records")
+      Repo.delete_all(Dadi)
 
-    IO.puts("Start fetching categories")
-    RefCategory
-    |> Repo.all
-    |> Enum.each(fn(cat) ->
-      Category.create_items(cat)
-    end)
-    
-    IO.puts("Start fetching posts")
-    Post.update_contents 
+      IO.puts("Start fetching categories")
+      RefCategory
+      |> Repo.all
+      |> Enum.each(fn(cat) ->
+        Category.create_items(cat)
+      end)
+      
+      IO.puts("Start fetching posts")
+      Post.update_contents 
 
-    IO.puts("Exporting Xls file")
-    Efl.Xls.Dadi.create_xls
+      IO.puts("Exporting Xls file")
+      Efl.Xls.Dadi.create_xls
 
-    IO.puts("Sending Emails")
-    Efl.Mailer.send_email_with_xls 
+      IO.puts("Sending Emails")
+      Mailer.send_email_with_xls 
+    rescue
+      _ -> Mailer.send_alert
+    end
   end
 
   def changeset(struct, params \\ %{}) do
