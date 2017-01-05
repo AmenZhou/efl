@@ -17,6 +17,7 @@ defmodule Efl.Router do
     pipe_through :browser # Use the default browser stack
 
     get "/", DadiController, :index
+    get "/dadi/scratch", DadiController, :scratch
   end
 
   # Other scopes may use custom stacks.
