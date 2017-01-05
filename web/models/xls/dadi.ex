@@ -9,6 +9,7 @@ defmodule Efl.Xls.Dadi do
   alias Efl.TimeUtil
   import Ecto.Query
   use Timex
+  require IEx
 
   def create_xls do
     %Workbook{sheets: sheets}
@@ -20,7 +21,7 @@ defmodule Efl.Xls.Dadi do
 
   def file_name do
     date = TimeUtil.target_date
-                |> Timex.format("%m-%d-%Y", :strftime)
+           |> Timex.format("%m-%d-%Y", :strftime)
 
     case date do
       { :ok, date } ->
@@ -51,10 +52,10 @@ defmodule Efl.Xls.Dadi do
 
   defp one_row(dadi) do
     [
-      dadi |> post_date,
-      dadi.phone,
-      dadi.title,
-      dadi.content
+      dadi |> post_date || "",
+      dadi.phone || "",
+      dadi.title || "",
+      dadi.content || ""
     ]
   end
 
