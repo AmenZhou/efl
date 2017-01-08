@@ -4,7 +4,7 @@ defmodule Efl.Mixfile do
   def project do
     [app: :efl,
      version: "0.0.1",
-     elixir: "~> 1.2",
+     elixir: "~> 1.4",
      elixirc_paths: elixirc_paths(Mix.env),
      compilers: [:phoenix, :gettext] ++ Mix.compilers,
      build_embedded: Mix.env == :prod,
@@ -19,7 +19,8 @@ defmodule Efl.Mixfile do
   def application do
     [mod: {Efl, []},
      applications: [:phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger, :gettext,
-                    :phoenix_ecto, :mariaex, :httpotion, :timex_ecto]]
+                    :phoenix_ecto, :mariaex, :httpotion, :timex_ecto, :timex, :elixlsx,
+                    :mailgun, :exrm]]
   end
 
   # Specifies which paths to compile per environment.
@@ -44,7 +45,11 @@ defmodule Efl.Mixfile do
       {:timex, "~> 3.0"},
       {:timex_ecto, "~> 3.0"},
       {:elixlsx, "~> 0.1.0"},
-      {:mailgun, github: "chrismccord/mailgun"}
+      {:mailgun, github: "chrismccord/mailgun"},
+      {:exrm, "~> 0.19.9"},
+      {:erlware_commons, github: "erlware/erlware_commons", override: true},
+      {:relx, github: "erlware/relx", override: true},
+      {:cf, "~> 0.2.1", override: true}
     ]
   end
 
