@@ -6,7 +6,7 @@ defmodule Efl.Dadi.Post do
   alias Efl.HtmlParsers.Dadi.Post, as: PostParser
   import Ecto.Query, only: [from: 2] 
 
-  @max_posts 500
+  @max_posts 2_000
 
   def update_contents do
     get_all_blank_records

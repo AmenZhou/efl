@@ -9,9 +9,10 @@ defmodule Efl.HtmlParsers.Dadi.Category do
   #Don't add / at the tail of the url
   @base_url "http://c.dadi360.com"
   @http_config [
-    ibrowse: [proxy_host: '165.138.65.233', proxy_port: 3128],
+    ibrowse: [proxy_host: '70.248.28.23', proxy_port: 800],
     timeout: 50_000
   ]
+  @http_interval 20_000
 
   #The returned value should be [{ :ok, %Dadi{} }, ...]
   def parse(ref_category) do
@@ -21,7 +22,7 @@ defmodule Efl.HtmlParsers.Dadi.Category do
   end
 
   def parse_one_page(html_items) do
-    :timer.sleep(2000)
+    :timer.sleep(@http_interval)
     case html_items do
       { :ok, items } ->
         IO.puts("Category has parsed one page")
