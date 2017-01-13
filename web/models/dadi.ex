@@ -64,7 +64,9 @@ defmodule Efl.Dadi do
       IO.puts("Sending Emails")
       Mailer.send_email_with_xls 
     rescue
-      _ -> Mailer.send_alert
+      ex ->
+        IO.inspect(ex)
+        Mailer.send_alert
     end
   end
 
