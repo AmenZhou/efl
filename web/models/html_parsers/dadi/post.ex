@@ -6,10 +6,10 @@ defmodule Efl.HtmlParsers.Dadi.Post do
   defstruct [:url, :phone, :content]
 
   @http_config [
-    ibrowse: [proxy_host: '70.248.28.23', proxy_port: 800],
+    ibrowse: [proxy_host: '91.73.131.254', proxy_port: 8080],
     timeout: 50_000
   ]
-  @http_interval 20_000
+  @http_interval 10_000
 
   def parse_posts(urls) do
     urls

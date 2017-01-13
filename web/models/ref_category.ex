@@ -67,12 +67,12 @@ defmodule Efl.RefCategory do
       url: "/57.page",
       page_size: 2
     },
-    %{
-      name: "MASSAGE_HIRING",
-      display_name: "按摩请人",
-      url: "/52.page",
-      page_size: 2
-    },
+    #%{
+      #name: "MASSAGE_HIRING",
+      #display_name: "按摩请人",
+      #url: "/52.page",
+      #page_size: 2
+    #},
     %{
       name: "GENERAL_HIRING",
       display_name: "招聘",

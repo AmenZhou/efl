@@ -1,0 +1,4 @@
+use Mix.Config
+
+config :mailgun, mailgun_domain: "https://api.mailgun.net/v3/xxxx.mailgun.org", mailgun_key: "key-xxxx",
+recipient: "xxx@gmail.com, xxx@epochtimes.com"
