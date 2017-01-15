@@ -6,6 +6,7 @@ defmodule Efl.Mailer do
           httpc_opts: [connect_timeout: 2000, timeout: 3000]
   @recipient Application.get_env(:mailgun, :recipient)
   @from "haimeng.zhou@sandboxad2a0aa5c6cc4d52a6029ac88d0bb74f.mailgun.org"
+  @alert_recipient Application.get_env(:mailgun, :recipient)
 
   use Mailgun.Client, @config
   require IEx
@@ -33,7 +34,7 @@ defmodule Efl.Mailer do
 
   def send_alert do
     send_email(
-               to: @recipient,
+               to: @alert_recipient,
                from: @from,
                subject: "Alert! The excel file #{Xls.file_name} wasn't sent out successfully",
                text: "Please contact admin, email: chou.amen@gmail.com"
@@ -42,7 +43,7 @@ defmodule Efl.Mailer do
 
   def send_alert(message) do
     send_email(
-               to: @recipient,
+               to: @alert_recipient,
                from: @from,
                subject: "Alert! A system exception occurred.",
                text: "Please contact admin, email: chou.amen@gmail.com.\n\rDetail: #{message}."
