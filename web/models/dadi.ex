@@ -70,7 +70,7 @@ defmodule Efl.Dadi do
     rescue
       ex ->
         IO.inspect(ex)
-        Mailer.send_alert
+        Mailer.send_alert(ex)
     end
   end
 

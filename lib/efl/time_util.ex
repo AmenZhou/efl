@@ -8,13 +8,17 @@ defmodule Efl.TimeUtil do
   end
 
   def yesterday do
-    Timex.local
+    timezone = Timex.Timezone.get("America/New_York", Timex.now)
+
+    Timex.Timezone.convert(Timex.now, timezone)
     |> Timex.shift(days: -1)
     |> Timex.to_date
   end
 
   def today do
-    Timex.local
+    timezone = Timex.Timezone.get("America/New_York", Timex.now)
+
+    Timex.Timezone.convert(Timex.now, timezone)
     |> Timex.to_date
   end
 end
