@@ -20,7 +20,7 @@ defmodule Efl.Mixfile do
     [mod: {Efl, []},
      applications: [:phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger, :gettext,
                     :phoenix_ecto, :mariaex, :httpotion, :timex_ecto, :timex, :elixlsx,
-                    :mailgun, :exrm, :relx, :floki]]
+                    :mailgun, :exrm, :relx, :floki, :logger_file_backend, :conform]]
   end
 
   # Specifies which paths to compile per environment.
@@ -48,7 +48,8 @@ defmodule Efl.Mixfile do
       {:mailgun, github: "chrismccord/mailgun"},
       {:exrm, "~> 1.0.8"},
       {:relx, "~> 3.22.2"},
-      {:logger_file_backend, "0.0.9"}
+      {:logger_file_backend, "0.0.9"},
+      {:conform, "2.1.2"}
     ]
   end
 
