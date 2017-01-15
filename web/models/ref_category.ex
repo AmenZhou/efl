@@ -16,7 +16,7 @@ defmodule Efl.RefCategory do
   alias Efl.RefCategory
   alias Efl.Repo
 
-  @base_url "http://c.dadi360.com/c/forums/show/"
+  @base_url "https://proxy-us.hideproxy.me/go.php?u=http://c.dadi360.com/c/forums/show/"
   @number_of_single_page_rows 60
   @ref_data [
     %{

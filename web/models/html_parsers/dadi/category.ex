@@ -7,12 +7,11 @@ defmodule Efl.HtmlParsers.Dadi.Category do
   defstruct [:title, :url, :post_date, :phone, :ref_category_id]
 
   #Don't add / at the tail of the url
-  @base_url "http://googleweblight.com/?lite_url=http://c.dadi360.com"
+  @base_url "https://proxy-us.hideproxy.me"
   @http_config [
-    ibrowse: [proxy_host: '91.73.131.254', proxy_port: 8080],
     timeout: 50_000
   ]
-  @http_interval 10_000
+  @http_interval 5_000
 
   #The returned value should be [{ :ok, %Dadi{} }, ...]
   def parse(ref_category) do

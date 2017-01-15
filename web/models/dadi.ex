@@ -47,6 +47,10 @@ defmodule Efl.Dadi do
     try do
       IO.puts("Deleting all records")
       Repo.delete_all(Dadi)
+      Repo.delete_all(RefCategory)
+
+      IO.puts("RefCategory seeds")
+      RefCategory.seeds
 
       IO.puts("Start fetching categories")
       RefCategory
