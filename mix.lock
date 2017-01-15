@@ -2,7 +2,7 @@
   "certifi": {:hex, :certifi, "0.7.0", "861a57f3808f7eb0c2d1802afeaae0fa5de813b0df0979153cbafcd853ababaf", [:rebar3], []},
   "cf": {:hex, :cf, "0.2.2", "7f2913fff90abcabd0f489896cfeb0b0674f6c8df6c10b17a83175448029896c", [:rebar3], []},
   "combine": {:hex, :combine, "0.9.5", "7e594bcaed404c5cd073753ed42f0858dfe333f1845fb624f352428f97287b3a", [:mix], []},
-  "conform": {:hex, :conform, "0.17.0", "e3610a337b7c44beb829f176cbb0795f78fe53a0183a524a04e0ebe0f76f9113", [:mix], [{:neotoma, "~> 1.7.3", [hex: :neotoma, optional: false]}]},
+  "conform": {:hex, :conform, "2.1.2", "52ab052a92837406917661ed79211163456ddf653a2701709e232778bde8b49a", [:mix], [{:neotoma, "~> 1.7.3", [hex: :neotoma, optional: false]}]},
   "connection": {:hex, :connection, "1.0.4", "a1cae72211f0eef17705aaededacac3eb30e6625b04a6117c1b2db6ace7d5976", [:mix], []},
   "cowboy": {:hex, :cowboy, "1.0.4", "a324a8df9f2316c833a470d918aaf73ae894278b8aa6226ce7a9bf699388f878", [:make, :rebar], [{:cowlib, "~> 1.0.0", [hex: :cowlib, optional: false]}, {:ranch, "~> 1.0", [hex: :ranch, optional: false]}]},
   "cowlib": {:hex, :cowlib, "1.0.2", "9d769a1d062c9c3ac753096f868ca121e2730b9a377de23dec0f7e08b1df84ee", [:make], []},

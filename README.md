@@ -11,7 +11,5 @@ To kick off the main task through iex console:
   * `iex -S mix`
   * `Efl.Dadi.start`
 
-Todo List
-
-  * Send alerts when the exceptions are generated
-
+To kick off the task through url:
+  * localhost:4000/dadi/scratch
