@@ -39,4 +39,13 @@ defmodule Efl.Mailer do
                text: "Please contact admin, email: chou.amen@gmail.com"
               )
   end
+
+  def send_alert(message) do
+    send_email(
+               to: @recipient,
+               from: @from,
+               subject: "Alert! A system exception occurred.",
+               text: "Please contact admin, email: chou.amen@gmail.com.\n\rDetail: #{message}."
+              )
+  end
 end
