@@ -47,7 +47,8 @@ defmodule Efl.Mixfile do
       {:elixlsx, "~> 0.1.0"},
       {:mailgun, github: "chrismccord/mailgun"},
       {:exrm, "~> 1.0.8"},
-      {:relx, "~> 3.22.2"}
+      {:relx, "~> 3.22.2"},
+      {:logger_file_backend, "0.0.9"}
     ]
   end
 

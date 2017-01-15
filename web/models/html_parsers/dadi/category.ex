@@ -3,6 +3,7 @@ defmodule Efl.HtmlParsers.Dadi.Category do
   alias Efl.PhoneUtil
   alias Efl.HtmlParsers.Dadi.Category, as: CategoryParser
   require IEx
+  require Logger
 
   defstruct [:title, :url, :post_date, :phone, :ref_category_id]
 
@@ -23,16 +24,28 @@ defmodule Efl.HtmlParsers.Dadi.Category do
 
   def parse_one_page(html_items) do
     :timer.sleep(@http_interval)
-    case html_items do
-      { :ok, items } ->
-        IO.puts("Category has parsed one page")
-        categories = Enum.map(items, fn(item) ->
-          item
-          |> dadi_params
-        end)
-        categories
-      { :error, message } ->
-        IO.puts("Error HtmlParsers.Dadi.Category HTML parse error: #{message}")
+    try do
+      case html_items do
+        { :ok, items } ->
+          IO.puts("Category has parsed one page")
+          categories = Enum.map(items, fn(item) ->
+            item
+            |> dadi_params
+          end)
+          categories
+        { :error, message } ->
+          log_info = "Error HtmlParsers.Dadi.Category HTML parse error: #{message}"
+          IO.puts(log_info)
+          Logger.error(log_info)
+          Efl.Mailer.send_alert(log_info)
+          []
+      end
+    rescue
+      ex ->
+        IO.inspect(ex)
+        Logger.error("Error HtmlParser.Dadi.Category, #{inspect(ex)}")
+        ex |> inspect |> Efl.Mailer.send_alert()
+        []
     end
   end
 
