@@ -2,6 +2,7 @@ defmodule Efl.HtmlParsers.Dadi.Post do
   alias Efl.HtmlParsers.Dadi.Post, as: PostParser
   alias Efl.PhoneUtil
   require IEx
+  require Logger
 
   defstruct [:url, :phone, :content]
 
@@ -44,7 +45,11 @@ defmodule Efl.HtmlParsers.Dadi.Post do
           phone: phone
         }
       { :error, message } ->
-        IO.puts("Error PostParser.Dadi.Post HTML parse error, #{message}")
+        log_info = "Error PostParser.Dadi.Post HTML parse error, #{message}"
+        IO.puts(log_info)
+        Logger.error(log_info)
+        Efl.Mailer.send_alert(log_info)
+        %PostParser{}
     end
   end
     
