@@ -53,30 +53,7 @@ defmodule Efl.Dadi do
         IO.puts("The app is running")
       else
         ets_insert(true)
-
-        IO.puts("Deleting all records")
-        Repo.delete_all(Dadi)
-        Repo.delete_all(RefCategory)
-
-        IO.puts("RefCategory seeds")
-        RefCategory.seeds
-
-        IO.puts("Start fetching categories")
-        RefCategory
-        |> Repo.all
-        |> Enum.each(fn(cat) ->
-          Category.create_items(cat)
-          end)
-
-        IO.puts("Start fetching posts")
-        Post.update_contents 
-
-        IO.puts("Exporting Xls file")
-        Efl.Xls.Dadi.create_xls
-
-        IO.puts("Sending Emails")
-        Mailer.send_email_with_xls 
-
+        main()
         ets_insert(false)
       end
     rescue
@@ -130,6 +107,7 @@ defmodule Efl.Dadi do
     end 
   end
 
+  #Todo move ets functions to an independent file
   defp ets_create_table do
     try do
       :ets.new(@ets_table, [:set, :protected, :named_table])
@@ -153,5 +131,30 @@ defmodule Efl.Dadi do
     rescue
       _ -> false
     end
+  end
+
+  defp main do
+    IO.puts("Deleting all records")
+    Repo.delete_all(Dadi)
+    Repo.delete_all(RefCategory)
+
+    IO.puts("RefCategory seeds")
+    RefCategory.seeds
+
+    IO.puts("Start fetching categories")
+    RefCategory
+    |> Repo.all
+    |> Enum.each(fn(cat) ->
+      Category.create_items(cat)
+    end)
+
+    IO.puts("Start fetching posts")
+    Post.update_contents 
+
+    IO.puts("Exporting Xls file")
+    Efl.Xls.Dadi.create_xls
+
+    IO.puts("Sending Emails")
+    Mailer.send_email_with_xls 
   end
 end
