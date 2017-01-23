@@ -21,6 +21,9 @@ defmodule Efl.Dadi do
     timestamps()
   end
 
+  @ets_table :dadi
+  @ets_key :is_running
+
   def start(ref_category) do
     try do
       IO.puts("Deleting all records")
@@ -45,28 +48,37 @@ defmodule Efl.Dadi do
 
   def start do
     try do
-      IO.puts("Deleting all records")
-      Repo.delete_all(Dadi)
-      Repo.delete_all(RefCategory)
-      
-      IO.puts("RefCategory seeds")
-      RefCategory.seeds
+      ets_create_table
+      if ets_lookup do
+        IO.puts("The app is running")
+      else
+        ets_insert(true)
 
-      IO.puts("Start fetching categories")
-      RefCategory
-      |> Repo.all
-      |> Enum.each(fn(cat) ->
-        Category.create_items(cat)
-      end)
-      
-      IO.puts("Start fetching posts")
-      Post.update_contents 
+        IO.puts("Deleting all records")
+        Repo.delete_all(Dadi)
+        Repo.delete_all(RefCategory)
 
-      IO.puts("Exporting Xls file")
-      Efl.Xls.Dadi.create_xls
+        IO.puts("RefCategory seeds")
+        RefCategory.seeds
 
-      IO.puts("Sending Emails")
-      Mailer.send_email_with_xls 
+        IO.puts("Start fetching categories")
+        RefCategory
+        |> Repo.all
+        |> Enum.each(fn(cat) ->
+          Category.create_items(cat)
+          end)
+
+        IO.puts("Start fetching posts")
+        Post.update_contents 
+
+        IO.puts("Exporting Xls file")
+        Efl.Xls.Dadi.create_xls
+
+        IO.puts("Sending Emails")
+        Mailer.send_email_with_xls 
+
+        ets_insert(false)
+      end
     rescue
       ex ->
         IO.inspect(ex)
@@ -116,5 +128,30 @@ defmodule Efl.Dadi do
     else
       changeset
     end 
+  end
+
+  defp ets_create_table do
+    try do
+      :ets.new(@ets_table, [:set, :protected, :named_table])
+    rescue
+      _ -> IO.puts("The ets table exists!")
+    end
+  end
+
+  def ets_insert(is_running) do
+    try do
+      :ets.insert(@ets_table, { @ets_key, is_running })
+    rescue
+      _ -> IO.puts("Ets insert fail")
+    end
+  end
+
+  defp ets_lookup do
+    try do
+      { @ets_key, value } = :ets.lookup(@ets_table, @ets_key) |> List.first
+      value
+    rescue
+      _ -> false
+    end
   end
 end
