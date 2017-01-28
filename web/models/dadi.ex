@@ -9,6 +9,7 @@ defmodule Efl.Dadi do
   alias Efl.Dadi
   alias Efl.TimeUtil
   alias Efl.Mailer
+  alias Efl.EtsManager
   require IEx
 
   schema "dadi" do
@@ -21,52 +22,38 @@ defmodule Efl.Dadi do
     timestamps()
   end
 
-  def start(ref_category) do
-    try do
-      IO.puts("Deleting all records")
-      Repo.delete_all(Dadi)
+  #def start(ref_category) do
+    #try do
+      #IO.puts("Deleting all records")
+      #Repo.delete_all(Dadi)
 
-      IO.puts("Start fetching categories")
-      ref_category
-      |> Category.create_items
+      #IO.puts("Start fetching categories")
+      #ref_category
+      #|> Category.create_items
 
-      IO.puts("Start fetching posts")
-      Post.update_contents 
+      #IO.puts("Start fetching posts")
+      #Post.update_contents 
 
-      IO.puts("Exporting Xls file")
-      Efl.Xls.Dadi.create_xls
+      #IO.puts("Exporting Xls file")
+      #Efl.Xls.Dadi.create_xls
 
-      IO.puts("Sending Emails")
-      Mailer.send_email_with_xls 
-    rescue
-      _ -> Mailer.send_alert
-    end
-  end
+      #IO.puts("Sending Emails")
+      #Mailer.send_email_with_xls 
+    #rescue
+      #_ -> Mailer.send_alert
+    #end
+  #end
 
   def start do
     try do
-      IO.puts("Deleting all records")
-      Repo.delete_all(Dadi)
-      Repo.delete_all(RefCategory)
-      
-      IO.puts("RefCategory seeds")
-      RefCategory.seeds
-
-      IO.puts("Start fetching categories")
-      RefCategory
-      |> Repo.all
-      |> Enum.each(fn(cat) ->
-        Category.create_items(cat)
-      end)
-      
-      IO.puts("Start fetching posts")
-      Post.update_contents 
-
-      IO.puts("Exporting Xls file")
-      Efl.Xls.Dadi.create_xls
-
-      IO.puts("Sending Emails")
-      Mailer.send_email_with_xls 
+      EtsManager.ets_create_table
+      if EtsManager.ets_lookup do
+        IO.puts("The app is running")
+      else
+        EtsManager.ets_insert(true)
+        main()
+        EtsManager.ets_insert(false)
+      end
     rescue
       ex ->
         IO.inspect(ex)
@@ -116,5 +103,30 @@ defmodule Efl.Dadi do
     else
       changeset
     end 
+  end
+
+  defp main do
+    IO.puts("Deleting all records")
+    Repo.delete_all(Dadi)
+    Repo.delete_all(RefCategory)
+
+    IO.puts("RefCategory seeds")
+    RefCategory.seeds
+
+    IO.puts("Start fetching categories")
+    RefCategory
+    |> Repo.all
+    |> Enum.each(fn(cat) ->
+      Category.create_items(cat)
+    end)
+
+    IO.puts("Start fetching posts")
+    Post.update_contents 
+
+    IO.puts("Exporting Xls file")
+    Efl.Xls.Dadi.create_xls
+
+    IO.puts("Sending Emails")
+    Mailer.send_email_with_xls 
   end
 end
