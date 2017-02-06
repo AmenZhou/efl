@@ -13,12 +13,18 @@ defmodule Efl.Dadi.Category do
   end
 
   defp insert(ref_category, dadi) when is_map(dadi) do
-    dadi_params = %{ dadi | ref_category_id: ref_category.id }
-                  |> Map.from_struct
-    set = Dadi.changeset(%Dadi{}, dadi_params)
-    case Repo.insert(set) do
-      {:ok, struct} -> IO.puts("Insert one record successfully #{Map.get(struct, :title)}")
-      {:error, changeset} -> IO.inspect(Map.get(changeset, :errors))
+    try do
+      dadi_params = %{ dadi | ref_category_id: ref_category.id }
+                    |> Map.from_struct
+      set = Dadi.changeset(%Dadi{}, dadi_params)
+      case Repo.insert(set) do
+        {:ok, struct} -> IO.puts("Insert one record successfully #{Map.get(struct, :title)}")
+        {:error, changeset} -> IO.inspect(Map.get(changeset, :errors))
+      end
+    rescue
+      e in RuntimeError ->
+        IO.inspect("Error Efl.Dadi.Category: " <> e.message)
+        Mailer.send_alert("Error Efl.Dadi.Category: " <> e.message)
     end
   end
 
