@@ -10,8 +10,8 @@ defmodule Efl.HtmlParsers.Dadi.Category do
   #Don't add / at the tail of the url
   @base_url "http://googleweblight.com/?lite_url=http://c.dadi360.com"
   @http_config [
-    ibrowse: [proxy_host: '91.73.131.254', proxy_port: 8080],
-    timeout: 50_000
+    #ibrowse: [proxy_host: '79.188.42.46', proxy_port: 8080],
+    timeout: 120_000
   ]
   @http_interval 10_000
 

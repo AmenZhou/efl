@@ -55,9 +55,10 @@ defmodule Efl.Dadi do
         EtsManager.ets_insert(false)
       end
     rescue
-      ex ->
-        IO.inspect(ex)
-        Mailer.send_alert(ex)
+      e in RuntimeError ->
+        IO.inspect("Error Efl.Dadi.start: " <> e.message)
+        Mailer.send_alert("Error Efl.Dadi.start: " <> e.message)
+        EtsManager.ets_insert(false)
     end
   end
 
