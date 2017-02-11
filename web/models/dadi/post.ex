@@ -25,12 +25,16 @@ defmodule Efl.Dadi.Post do
     Repo.all(query)
   end
 
+  defp find_dadi_by_url(url) when is_nil(url), do: nil
+
   defp find_dadi_by_url(url) do
     query = from d in Dadi,
       where: (d.url == ^url),
       limit: 1
     Repo.one(query)
   end
+
+  defp update(dadi, _) when is_nil(dadi), do: nil
 
   defp update(dadi, params) do
     params = Map.from_struct(params)
