@@ -1,5 +1,7 @@
 # Epoch FenLei
 
+Last update Version 0.0.2 - 02/12/2017
+
 To start your Phoenix app:
 
   * Install dependencies with `mix deps.get`
