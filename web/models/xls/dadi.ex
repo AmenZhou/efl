@@ -54,8 +54,8 @@ defmodule Efl.Xls.Dadi do
     [
       dadi |> post_date || "",
       dadi.phone || "",
-      dadi.title || "",
-      dadi.content || ""
+      dadi.title |> clean_up_string,
+      dadi.content |> clean_up_string
     ]
   end
 
@@ -85,5 +85,9 @@ defmodule Efl.Xls.Dadi do
     RefCategory
     |> Repo.all
     |> Repo.preload(dadis: query)
+  end
+
+  defp clean_up_string(str) do
+    (str || "") |> String.replace("\b", "")
   end
 end
