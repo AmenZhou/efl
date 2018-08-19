@@ -5,7 +5,7 @@ defmodule Efl.Mailer do
           key: Application.get_env(:mailgun, :mailgun_key),
           httpc_opts: [connect_timeout: 2000, timeout: 3000]
   @recipient Application.get_env(:mailgun, :recipient)
-  @from "haimeng.zhou@sandboxad2a0aa5c6cc4d52a6029ac88d0bb74f.mailgun.org"
+  @from "haimeng.zhou@zhouhaimeng.com"
   @alert_recipient Application.get_env(:mailgun, :recipient)
 
   use Mailgun.Client, @config
@@ -27,8 +27,8 @@ defmodule Efl.Mailer do
     ])
 
     case response do
-      {:error, _} -> send_alert
-      {:ok, sucess} -> sucess 
+      {:error, _, msg} -> send_alert
+      {:ok, _, sucess} -> sucess
     end
   end
 

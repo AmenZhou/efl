@@ -1,5 +1,6 @@
 defmodule Efl.Xls.Dadi do
   require Elixlsx
+  require Logger
 
   alias Elixlsx.Sheet
   alias Elixlsx.Workbook
@@ -51,12 +52,18 @@ defmodule Efl.Xls.Dadi do
   end
 
   defp one_row(dadi) do
-    [
-      dadi |> post_date || "",
-      dadi.phone || "",
-      dadi.title |> clean_up_string,
-      dadi.content |> clean_up_string
-    ]
+    try do
+      [
+        dadi |> post_date || "",
+        dadi.phone || "",
+        dadi.title |> clean_up_string,
+        dadi.content |> clean_up_string
+      ]
+    rescue
+      e in RuntimeError ->
+        IO.inspect("Error in Efl.Xls.Dadi when it tries to generate an Xls row: " <> e.message)
+        Logger.error("Error in Efl.Xls.Dadi when it tries to generate an Xls row: " <> e.message)
+    end
   end
 
   defp post_date(dadi) do
