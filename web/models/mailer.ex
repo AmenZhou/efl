@@ -1,5 +1,6 @@
 defmodule Efl.Mailer do
   alias Efl.Xls.Dadi, as: Xls
+  require Logger
 
   @config domain: Application.get_env(:mailgun, :mailgun_domain),
           key: Application.get_env(:mailgun, :mailgun_key),
@@ -48,5 +49,9 @@ defmodule Efl.Mailer do
                subject: "Alert! A system exception occurred.",
                text: "Please contact admin, email: chou.amen@gmail.com.\n\rDetail: #{message}."
               )
+  end
+
+  def log_message do
+    Logger.info("The email has been successfully sent out! " <> Timex.now)
   end
 end
