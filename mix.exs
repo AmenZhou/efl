@@ -32,7 +32,7 @@ defmodule Efl.Mixfile do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:phoenix, "~> 1.2.1"},
+      {:phoenix, "~> 1.4"},
       {:phoenix_pubsub, "~> 1.0"},
       {:phoenix_ecto, "~> 3.0"},
       {:mariaex, ">= 0.0.0"},
@@ -44,12 +44,13 @@ defmodule Efl.Mixfile do
       {:httpotion, "~> 3.0.2"},
       {:timex, "~> 3.0"},
       {:timex_ecto, "~> 3.0"},
-      {:elixlsx, "~> 0.1.0"},
+      {:elixlsx, "~> 0.4.2"},
       {:mailgun, github: "chrismccord/mailgun"},
       {:exrm, "~> 1.0.8"},
-      {:relx, "~> 3.22.2"},
+      {:relx, "~> 3.23"},
       {:logger_file_backend, "0.0.9"},
-      {:conform, "2.1.2"}
+      {:conform, "2.1.2"},
+      {:erlware_commons, "~> 1.0"}
     ]
   end
 
