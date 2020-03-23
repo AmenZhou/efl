@@ -36,7 +36,7 @@ config :phoenix, :stacktrace_depth, 20
 # Configure your database
 config :efl, Efl.Repo,
   adapter: Ecto.Adapters.MySQL,
-  username: "root",
+  username: "hzhou",
   password: "",
   database: "classification_utility_dev",
   hostname: "localhost",

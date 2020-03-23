@@ -3,6 +3,7 @@ defmodule Efl.Dadi.Category do
 
   alias Efl.Repo
   alias Efl.Dadi
+  alias Efl.Mailer
   alias Efl.HtmlParsers.Dadi.Category, as: CategoryParser
 
   #[{ :ok, %Dadi{}}, { :ok, %Dadi{} }, ...]
