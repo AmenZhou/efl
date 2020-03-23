@@ -2,10 +2,6 @@ defmodule Efl.MyHttp do
   require IEx
   @api_rotator_url "http://falcon.proxyrotator.com:51337/?apiKey=U8CJ7jTmVtfry4dPWYFKXRsbqSnGo93c"
 
-# HTTPotion.get('google.com', [
-#     ibrowse: [proxy_host: '45.231.28.142', proxy_port: 8080],
-#     timeout: 120_000
-#   ])
   def request(url) do
     case call_proxy do
       { :ok, body } ->
@@ -48,6 +44,6 @@ defmodule Efl.MyHttp do
   end
 
   def proxy_config(body) do
-    [ ibrowse: [ proxy_host: current_proxy_ip(body), proxy_port: current_proxy_port(body) ] ]
+    [ ibrowse: [ proxy_host: current_proxy_ip(body), proxy_port: current_proxy_port(body), timeout: 50_000 ] ]
   end
 end
