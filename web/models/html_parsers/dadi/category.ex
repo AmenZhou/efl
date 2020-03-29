@@ -13,7 +13,7 @@ defmodule Efl.HtmlParsers.Dadi.Category do
     #ibrowse: [proxy_host: '79.188.42.46', proxy_port: 8080],
     timeout: 120_000
   ]
-  @http_interval 10_000
+  @http_interval 1_000
 
   #The returned value should be [{ :ok, %Dadi{} }, ...]
   def parse(ref_category) do
@@ -72,12 +72,8 @@ defmodule Efl.HtmlParsers.Dadi.Category do
   end
 
   defp html(url) do
-    case HTTPotion.get(url, @http_config) do
-      %{ body: body } ->
-        { :ok, body }
-      %{ message: message } ->
-        { :error, message }
-    end
+    body = Efl.MyHttp.request(url)
+    { :ok, body }
   end
 
   defp find_raw_items(html) do

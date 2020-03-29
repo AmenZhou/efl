@@ -1,49 +1,44 @@
 defmodule Efl.MyHttp do
   require IEx
-  @api_rotator_url "http://falcon.proxyrotator.com:51337/?apiKey=U8CJ7jTmVtfry4dPWYFKXRsbqSnGo93c"
+  alias Efl.Proxy
 
   def request(url) do
-    case call_proxy do
-      { :ok, body } ->
-        HTTPotion.get(url, proxy_config(body))
-      { :error, message } ->
-        { :error, message }
+    try do
+      proxy = Proxy.fetch_proxy()
+      IO.inspect(proxy_config(proxy))
+      case HTTPotion.get(url, proxy_config(proxy)) do
+        %{ body: body } ->
+          IO.puts("Fetch a page successfully")
+          IO.puts(url)
+          body
+        %{ message: message } ->
+          IO.puts("Fetch category fail, #{url}, #{message}")
+          handle_failure(url)
+      end
+    rescue
+      ex ->
+        IO.puts("Fetch category Exception!!, #{url}")
+        IO.inspect(ex)
+        handle_failure(url)
     end
   end
 
-  def proxy_response(body) do
-    body |> Poison.Parser.parse!
+  def proxy_config(proxy) do
+    %{ ip: ip, port: port } = proxy
+    [ ibrowse: [ proxy_host: ip, proxy_port: port ], timeout: 150_000 ]
   end
 
-  def call_proxy() do
-    case HTTPotion.get(@api_rotator_url) do
+  def handle_failure(url) do
+    IO.puts("Refetch proxy and try again...")
+    proxy = Proxy.fetch_proxy(true)
+    case HTTPotion.get(url, proxy_config(proxy)) do
       %{ body: body } ->
-        { :ok, body }
+        IO.puts("Refetch a page successfully")
+        IO.puts(url)
+        body
       %{ message: message } ->
-        { :error, message }
+        IO.puts("Refetch category fail, #{url}, #{message}")
+        raise("Fetch category fail, #{url}, #{message}")
     end
-  end
-
-  def current_proxy_ip(body) do
-    case body |> proxy_response do
-      %{ "ip" => ip_str } ->
-        String.to_charlist(ip_str)
-      _ ->
-        raise("Can not get proxy ip address")
-    end
-  end
-
-  def current_proxy_port(body) do
-    case body |> proxy_response do
-      %{ "port" => port_str } ->
-        { port_int, _ } = Integer.parse(port_str)
-        port_int
-      _ ->
-        raise("Can not get proxy port")
-    end
-  end
-
-  def proxy_config(body) do
-    [ ibrowse: [ proxy_host: current_proxy_ip(body), proxy_port: current_proxy_port(body), timeout: 50_000 ] ]
   end
 end
