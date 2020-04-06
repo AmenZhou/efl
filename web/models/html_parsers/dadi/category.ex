@@ -8,11 +8,7 @@ defmodule Efl.HtmlParsers.Dadi.Category do
   defstruct [:title, :url, :post_date, :phone, :ref_category_id]
 
   #Don't add / at the tail of the url
-  @base_url "http://googleweblight.com/?lite_url=http://c.dadi360.com"
-  @http_config [
-    #ibrowse: [proxy_host: '79.188.42.46', proxy_port: 8080],
-    timeout: 120_000
-  ]
+  @base_url "http://c.dadi360.com"
   @http_interval 1_000
 
   #The returned value should be [{ :ok, %Dadi{} }, ...]
@@ -55,9 +51,15 @@ defmodule Efl.HtmlParsers.Dadi.Category do
     ref_category
     |> RefCategory.get_urls
     |> Enum.map(fn(url) ->
-      url
-      |> html
-      |> find_raw_items
+      try do
+        url
+        |> html
+        |> find_raw_items
+      rescue
+        ex ->
+          IO.put("Fail at Category#raw_items url: #{url}, message: #{inspect(ex)}")
+          { :error, inspect(ex)  }
+      end
     end)
   end
 
@@ -85,7 +87,7 @@ defmodule Efl.HtmlParsers.Dadi.Category do
           |> Floki.find(".bg_small_yellow")
         }
       _ ->
-        html
+        raise("Cateogry#find_raw_items Fail")
     end
   end
 

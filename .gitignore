@@ -29,4 +29,5 @@ erl_crash.dump
 # variables.
 /config/prod.secret.exs
 /config/mailgun.exs
+/config/proxy_rotator.exs
 tags

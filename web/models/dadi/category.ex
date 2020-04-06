@@ -23,7 +23,7 @@ defmodule Efl.Dadi.Category do
         {:error, changeset} -> IO.inspect(Map.get(changeset, :errors))
       end
     rescue
-      e in RuntimeError ->
+      e ->
         IO.inspect("Error Efl.Dadi.Category: " <> e.message)
         Mailer.send_alert("Error Efl.Dadi.Category: " <> e.message)
     end

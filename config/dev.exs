@@ -42,4 +42,5 @@ config :efl, Efl.Repo,
   hostname: "localhost",
   pool_size: 10
 
+import_config "proxy_rotator.exs"
 import_config "mailgun.exs"
