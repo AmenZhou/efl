@@ -66,7 +66,7 @@ defmodule Efl.Dadi do
     struct
     |> changeset_cast(params)
     |> validate_required([:title, :url, :post_date, :ref_category_id])
-    |> unique_constraint(:url, name: :dadi_url_index)
+    |> unique_constraint(:url, name: "dadi.dadi_url_index")
     |> validate_post_date
   end
 

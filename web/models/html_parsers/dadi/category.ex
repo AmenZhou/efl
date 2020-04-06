@@ -57,7 +57,7 @@ defmodule Efl.HtmlParsers.Dadi.Category do
         |> find_raw_items
       rescue
         ex ->
-          IO.put("Fail at Category#raw_items url: #{url}, message: #{inspect(ex)}")
+          IO.puts("Fail at Category#raw_items url: #{url}, message: #{inspect(ex)}")
           { :error, inspect(ex)  }
       end
     end)
