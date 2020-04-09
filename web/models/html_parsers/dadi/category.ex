@@ -52,9 +52,15 @@ defmodule Efl.HtmlParsers.Dadi.Category do
     |> RefCategory.get_urls
     |> Enum.map(fn(url) ->
       try do
-        url
-        |> html
-        |> find_raw_items
+        case url |> html |> find_raw_items do
+          { :ok, items } ->
+            if Enum.empty?(items) do
+              raise("raw_items - Get empty items")
+            end
+            { :ok, items }
+          _ ->
+            raise("raw_items - Fail to get items")
+        end
       rescue
         ex ->
           IO.puts("Fail at Category#raw_items url: #{url}, message: #{inspect(ex)}")
