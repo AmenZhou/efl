@@ -24,8 +24,8 @@ defmodule Efl.Dadi.Category do
       end
     rescue
       e ->
-        IO.inspect("Error Efl.Dadi.Category: " <> e.message)
-        Mailer.send_alert("Error Efl.Dadi.Category: " <> e.message)
+        IO.puts("Error Efl.Dadi.Category: #{inspect(e)}")
+        Mailer.send_alert("Error Efl.Dadi.Category: #{inspect(e)}")
     end
   end
 
