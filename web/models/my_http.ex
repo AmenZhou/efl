@@ -20,16 +20,16 @@ defmodule Efl.MyHttp do
     case HTTPotion.get(url, proxy_config(proxy)) do
       %{ body: body } ->
         if !String.match?(body, ~r/www.dadi360.com\/img\/dadiicon.ico/) do
-          Log.info("Fetch fail, #{url}, NO ACCESS")
-          Log.info("Retry... #{attempts+1} attempts")
+          Logger.info("Fetch fail, #{url}, NO ACCESS")
+          Logger.info("Retry... #{attempts+1} attempts")
           request(url, attempts + 1)
         else
-          Log.info("Fetch a cateogry page successfully, #{url}")
+          Logger.info("Fetch a cateogry page successfully, #{url}")
           body
         end
       %{ message: message } ->
-        Log.info("Fetch fail, #{url}, #{message}")
-        Log.info("Retry... #{attempts+1} attempts")
+        Logger.info("Fetch fail, #{url}, #{message}")
+        Logger.info("Retry... #{attempts+1} attempts")
         request(url, attempts + 1)
     end
   end

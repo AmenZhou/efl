@@ -20,7 +20,7 @@ defmodule Efl.Proxy do
     initialize_ets_table()
     case :ets.lookup(@ets_table, @ets_key) do
       [{ @ets_key, proxy }] ->
-        Log.info("Fetch proxy successfully from ets")
+        Logger.info("Fetch proxy successfully from ets")
         IO.inspect(proxy)
         proxy
       _ ->
@@ -36,7 +36,7 @@ defmodule Efl.Proxy do
         initialize_ets_table()
         :ets.insert(@ets_table, { @ets_key, proxy })
 
-        Log.info("Fetch proxy successfully from api")
+        Logger.info("Fetch proxy successfully from api")
         IO.inspect(proxy)
         proxy
       %{ message: message } ->
@@ -47,10 +47,10 @@ defmodule Efl.Proxy do
   def initialize_ets_table do
     case :ets.whereis(@ets_table) do
       :undefined ->
-        Log.info("Create a new ets table")
+        Logger.info("Create a new ets table")
         :ets.new(@ets_table, [:set, :protected, :named_table])
       _ ->
-        Log.info("The ets table exists already")
+        Logger.info("The ets table exists already")
     end
   end
 
