@@ -20,7 +20,9 @@ config :efl, Efl.Endpoint,
 # Configures Elixir's Logger
 # tell logger to load a LoggerFileBackend processes
 config :logger,
-  backends: [{LoggerFileBackend, :info_log}]
+  backends: [:console, {LoggerFileBackend, :info_log}],
+  format: "$time $metadata[$level] $message\n",
+  metadata: [:request_id]
 
 # configuration for the {LoggerFileBackend, :error_log} backend
 config :logger, :info_log,
