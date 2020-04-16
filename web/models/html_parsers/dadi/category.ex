@@ -23,7 +23,7 @@ defmodule Efl.HtmlParsers.Dadi.Category do
     try do
       case html_items do
         { :ok, items } ->
-          IO.puts("Category has parsed one page")
+          Logger.info("Category has parsed one page")
           Enum.map(items, fn(item) ->
             item
             |> dadi_params
@@ -54,7 +54,7 @@ defmodule Efl.HtmlParsers.Dadi.Category do
           { :ok, items } ->
             if Enum.empty?(items) do
               IO.inspect(body)
-              IO.puts("raw_items - Get empty items")
+              Logger.info("raw_items - Get empty items")
             end
             { :ok, items }
           _ ->
@@ -62,7 +62,7 @@ defmodule Efl.HtmlParsers.Dadi.Category do
         end
       rescue
         ex ->
-          IO.puts("Fail at Category#raw_items url: #{url}, message: #{inspect(ex)}")
+          Logger.error("Fail at Category#raw_items url: #{url}, message: #{inspect(ex)}")
           { :error, "Fail at Category#raw_items url: #{url}, message: #{inspect(ex)}" }
       end
     end)

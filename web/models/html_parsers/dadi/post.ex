@@ -29,7 +29,7 @@ defmodule Efl.HtmlParsers.Dadi.Post do
     try do
       case html(url) do
         { :ok, body } ->
-          IO.puts("Post parsed one url: #{url}")
+          Logger.info("Post parsed one url: #{url}")
           content = body
                     |> Floki.find(".postbody")
                     |> Floki.text
@@ -51,7 +51,7 @@ defmodule Efl.HtmlParsers.Dadi.Post do
       end
     rescue
       ex ->
-        IO.puts("Post#parse_post url: #{url}, message: #{inspect(ex)}")
+        Logger.error("Post#parse_post url: #{url}, message: #{inspect(ex)}")
         %PostParser{}
     end
   end
