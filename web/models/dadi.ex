@@ -24,20 +24,20 @@ defmodule Efl.Dadi do
 
   #def start(ref_category) do
     #try do
-      #IO.puts("Deleting all records")
+      #Logger.info("Deleting all records")
       #Repo.delete_all(Dadi)
 
-      #IO.puts("Start fetching categories")
+      #Logger.info("Start fetching categories")
       #ref_category
       #|> Category.create_items
 
-      #IO.puts("Start fetching posts")
+      #Logger.info("Start fetching posts")
       #Post.update_contents 
 
-      #IO.puts("Exporting Xls file")
+      #Logger.info("Exporting Xls file")
       #Efl.Xls.Dadi.create_xls
 
-      #IO.puts("Sending Emails")
+      #Logger.info("Sending Emails")
       #Mailer.send_email_with_xls 
     #rescue
       #_ -> Mailer.send_alert
@@ -48,7 +48,7 @@ defmodule Efl.Dadi do
     try do
       EtsManager.ets_create_table
       if EtsManager.ets_lookup do
-        IO.puts("The app is running")
+        Logger.info("The app is running")
       else
         EtsManager.ets_insert(true)
         main()
@@ -107,27 +107,27 @@ defmodule Efl.Dadi do
   end
 
   defp main do
-    IO.puts("Deleting all records")
+    Logger.info("Deleting all records")
     Repo.delete_all(Dadi)
     Repo.delete_all(RefCategory)
 
-    IO.puts("RefCategory seeds")
+    Logger.info("RefCategory seeds")
     RefCategory.seeds
 
-    IO.puts("Start fetching categories")
+    Logger.info("Start fetching categories")
     RefCategory
     |> Repo.all
     |> Enum.each(fn(cat) ->
       Category.create_items(cat)
     end)
 
-    IO.puts("Start fetching posts")
+    Logger.info("Start fetching posts")
     Post.update_contents 
 
-    IO.puts("Exporting Xls file")
+    Logger.info("Exporting Xls file")
     Efl.Xls.Dadi.create_xls
 
-    IO.puts("Sending Emails")
+    Logger.info("Sending Emails")
     Mailer.send_email_with_xls 
   end
 end

@@ -40,7 +40,7 @@ defmodule Efl.Dadi.Post do
     params = Map.from_struct(params)
     set = Dadi.update_changeset(dadi, params)
     case Repo.update(set) do
-      {:ok, struct} -> IO.puts("Insert one record successfully #{Map.get(struct, :content)}")
+      {:ok, struct} -> Logger.info("Insert one record successfully #{Map.get(struct, :content)}")
       {:error, changeset} -> IO.inspect(Map.get(changeset, :errors))
     end
   end

@@ -19,12 +19,12 @@ defmodule Efl.Dadi.Category do
                     |> Map.from_struct
       set = Dadi.changeset(%Dadi{}, dadi_params)
       case Repo.insert(set) do
-        {:ok, struct} -> IO.puts("Insert one record successfully #{Map.get(struct, :title)}")
+        {:ok, struct} -> Logger.info("Insert one record successfully #{Map.get(struct, :title)}")
         {:error, changeset} -> IO.inspect(Map.get(changeset, :errors))
       end
     rescue
       e ->
-        IO.puts("Error Efl.Dadi.Category: #{inspect(e)}")
+        Logger.error("Error Efl.Dadi.Category: #{inspect(e)}")
         Mailer.send_alert("Error Efl.Dadi.Category: #{inspect(e)}")
     end
   end

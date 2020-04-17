@@ -44,7 +44,6 @@ defmodule Efl.HtmlParsers.Dadi.Post do
           }
         { :error, message } ->
           log_info = "Error PostParser.Dadi.Post HTML parse error, #{message}"
-          IO.puts(log_info)
           Logger.error(log_info)
           Efl.Mailer.send_alert(log_info)
           %PostParser{}
