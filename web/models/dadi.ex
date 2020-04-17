@@ -11,6 +11,7 @@ defmodule Efl.Dadi do
   alias Efl.Mailer
   alias Efl.EtsManager
   require IEx
+  require Logger
 
   schema "dadi" do
     field :title

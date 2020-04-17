@@ -1,5 +1,6 @@
 defmodule Efl.Dadi.Post do
   require IEx
+  require Logger
 
   alias Efl.Repo
   alias Efl.Dadi

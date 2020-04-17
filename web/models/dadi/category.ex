@@ -1,5 +1,6 @@
 defmodule Efl.Dadi.Category do
   require IEx
+  require Logger
 
   alias Efl.Repo
   alias Efl.Dadi
