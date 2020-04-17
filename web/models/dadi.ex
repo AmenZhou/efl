@@ -51,9 +51,7 @@ defmodule Efl.Dadi do
       if EtsManager.ets_lookup do
         Logger.info("The app is running")
       else
-        EtsManager.ets_insert(true)
-        main()
-        EtsManager.ets_insert(false)
+        Task.start_link(fn -> main() end)
       end
     rescue
       e in RuntimeError ->
@@ -108,6 +106,7 @@ defmodule Efl.Dadi do
   end
 
   defp main do
+    EtsManager.ets_insert(true)
     Logger.info("Deleting all records")
     Repo.delete_all(Dadi)
     Repo.delete_all(RefCategory)
@@ -130,5 +129,6 @@ defmodule Efl.Dadi do
 
     Logger.info("Sending Emails")
     Mailer.send_email_with_xls 
+    EtsManager.ets_insert(false)
   end
 end

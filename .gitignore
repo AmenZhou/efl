@@ -31,3 +31,4 @@ erl_crash.dump
 /config/mailgun.exs
 /config/proxy_rotator.exs
 tags
+*.log

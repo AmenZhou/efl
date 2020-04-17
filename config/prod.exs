@@ -20,15 +20,19 @@ config :efl, Efl.Endpoint,
 
 # Do not print debug messages in production
 config :logger,
-  backends: [{LoggerFileBackend, :info},
+  backends: [:console, {LoggerFileBackend, :info},
              {LoggerFileBackend, :error}]
 
 config :logger, :info,
+  format: "$time $metadata[$level] $message\n",
   path: "/home/hzhou/app/efl/info.log",
+  metadata: [:request_id],
   level: :info
 
 config :logger, :error,
+  format: "$time $metadata[$level] $message\n",
   path: "/home/hzhou/app/efl/error.log",
+  metadata: [:request_id],
   level: :error
 
 config :logger, :console,
