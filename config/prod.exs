@@ -24,12 +24,16 @@ config :logger,
              {LoggerFileBackend, :error}]
 
 config :logger, :info,
-  path: "/var/log/efl/info.log",
+  path: "/home/hzhou/app/efl/info.log",
   level: :info
 
 config :logger, :error,
-  path: "/var/log/efl/error.log",
+  path: "/home/hzhou/app/efl/error.log",
   level: :error
+
+config :logger, :console,
+  format: "$time $metadata[$level] $message\n",
+  metadata: [:request_id]
 # ## SSL Support
 #
 # To get SSL working, you will need to add the `https` key
