@@ -24,19 +24,19 @@ config :logger,
              {LoggerFileBackend, :error}]
 
 config :logger, :info,
-  format: "$time $metadata[$level] $message\n",
+  format: "$time $date $metadata[$level] $message\n",
   path: "./info.log",
   metadata: [:request_id],
   level: :info
 
 config :logger, :error,
-  format: "$time $metadata[$level] $message\n",
+  format: "$time $date $metadata[$level] $message\n",
   path: "./error.log",
   metadata: [:request_id],
   level: :error
 
 config :logger, :console,
-  format: "$time $metadata[$level] $message\n",
+  format: "$time $date $metadata[$level] $message\n",
   metadata: [:request_id]
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
