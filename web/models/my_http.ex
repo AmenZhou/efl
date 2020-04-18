@@ -2,6 +2,7 @@ defmodule Efl.MyHttp do
   require IEx
   require Logger
   alias Efl.Proxy
+  @timeout = 120_000
 
   def request(url, attempts \\ 1) do
     if attempts >= 12 do
@@ -36,6 +37,6 @@ defmodule Efl.MyHttp do
 
   def proxy_config(proxy) do
     %{ ip: ip, port: port } = proxy
-    [ ibrowse: [ proxy_host: ip, proxy_port: port ], timeout: 60_000 ]
+    [ ibrowse: [ proxy_host: ip, proxy_port: port ], timeout: @timeout ]
   end
 end

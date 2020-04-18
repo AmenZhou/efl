@@ -55,8 +55,8 @@ defmodule Efl.Dadi do
       end
     rescue
       e in RuntimeError ->
-        IO.inspect("Error Efl.Dadi.start: " <> e.message)
-        Mailer.send_alert("Error Efl.Dadi.start: " <> e.message)
+        Logger.error("Error Efl.Dadi.start: #{e.message}")
+        Mailer.send_alert("Error Efl.Dadi.start: #{e.message}")
         EtsManager.ets_insert(false)
     end
   end
@@ -65,7 +65,7 @@ defmodule Efl.Dadi do
     struct
     |> changeset_cast(params)
     |> validate_required([:title, :url, :post_date, :ref_category_id])
-    |> unique_constraint(:url, name: "dadi.dadi_url_index")
+    # |> unique_constraint(:url, name: "dadi.dadi_url_index")
     |> validate_post_date
   end
 

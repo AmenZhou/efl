@@ -6,6 +6,7 @@ defmodule Efl.Proxy do
   @ets_table :cached_proxy
 
   def fetch_proxy(refresh \\ false) do
+    # %{ ip: '216.228.69.202', port: 47278 }
     case refresh do
       true ->
         fetch_from_api()
@@ -14,14 +15,12 @@ defmodule Efl.Proxy do
     end
   end
 
-# private
-
   def fetch_from_ets do
     initialize_ets_table()
     case :ets.lookup(@ets_table, @ets_key) do
       [{ @ets_key, proxy }] ->
         Logger.info("Fetch proxy successfully from ets")
-        IO.inspect(proxy)
+        Logger.info("#{inspect(proxy)}")
         proxy
       _ ->
         fetch_from_api()
@@ -37,7 +36,7 @@ defmodule Efl.Proxy do
         :ets.insert(@ets_table, { @ets_key, proxy })
 
         Logger.info("Fetch proxy successfully from api")
-        IO.inspect(proxy)
+        Logger.info("#{inspect(proxy)}")
         proxy
       %{ message: message } ->
         raise("Unable to get a proxy through api call, #{message}")
