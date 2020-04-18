@@ -61,7 +61,6 @@ defmodule Efl.Xls.Dadi do
       ]
     rescue
       e in RuntimeError ->
-        IO.inspect("Error in Efl.Xls.Dadi when it tries to generate an Xls row: " <> e.message)
         Logger.error("Error in Efl.Xls.Dadi when it tries to generate an Xls row: " <> e.message)
     end
   end

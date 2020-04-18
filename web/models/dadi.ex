@@ -65,7 +65,7 @@ defmodule Efl.Dadi do
     struct
     |> changeset_cast(params)
     |> validate_required([:title, :url, :post_date, :ref_category_id])
-    # |> unique_constraint(:url, name: "dadi.dadi_url_index")
+    |> unique_constraint(:url, name: "dadi.dadi_url_index")
     |> validate_post_date
   end
 
@@ -98,7 +98,6 @@ defmodule Efl.Dadi do
 
   defp validate_post_date(changeset, ideal_date, post_date) do
     if Timex.compare(ideal_date, post_date) != 0 do
-      IO.inspect(post_date)
       add_error(changeset, :post_date, "The post date is not ideal")
     else
       changeset

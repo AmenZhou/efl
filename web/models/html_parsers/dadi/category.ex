@@ -35,7 +35,6 @@ defmodule Efl.HtmlParsers.Dadi.Category do
       end
     rescue
       ex ->
-        IO.inspect(ex)
         Logger.error("Error HtmlParser.Dadi.Category, #{inspect(ex)}")
         ex |> inspect |> Efl.Mailer.send_alert()
         []
