@@ -23,41 +23,14 @@ defmodule Efl.Dadi do
     timestamps()
   end
 
-  #def start(ref_category) do
-    #try do
-      #Logger.info("Deleting all records")
-      #Repo.delete_all(Dadi)
-
-      #Logger.info("Start fetching categories")
-      #ref_category
-      #|> Category.create_items
-
-      #Logger.info("Start fetching posts")
-      #Post.update_contents 
-
-      #Logger.info("Exporting Xls file")
-      #Efl.Xls.Dadi.create_xls
-
-      #Logger.info("Sending Emails")
-      #Mailer.send_email_with_xls 
-    #rescue
-      #_ -> Mailer.send_alert
-    #end
-  #end
-
   def start do
     try do
-      EtsManager.ets_create_table
-      if EtsManager.ets_lookup do
-        Logger.info("The app is running")
-      else
-        Task.start_link(fn -> main() end)
-      end
+      Task.start_link(fn -> main() end)
     rescue
       e in RuntimeError ->
         Logger.error("Error Efl.Dadi.start: #{e.message}")
         Mailer.send_alert("Error Efl.Dadi.start: #{e.message}")
-        EtsManager.ets_insert(false)
+        :ets.insert(@ets_table, { @ets_key, false })
     end
   end
 
@@ -65,8 +38,7 @@ defmodule Efl.Dadi do
     struct
     |> changeset_cast(params)
     |> validate_required([:title, :url, :post_date, :ref_category_id])
-    |> unique_constraint(:url, name: "dadi.dadi_url_index")
-    |> unique_constraint(:url, name: :dadi_url_index)
+    |> unique_constraint(:url)
     |> validate_post_date
   end
 
@@ -106,7 +78,6 @@ defmodule Efl.Dadi do
   end
 
   defp main do
-    EtsManager.ets_insert(true)
     Logger.info("Deleting all records")
     Repo.delete_all(Dadi)
     Repo.delete_all(RefCategory)
@@ -129,6 +100,5 @@ defmodule Efl.Dadi do
 
     Logger.info("Sending Emails")
     Mailer.send_email_with_xls 
-    EtsManager.ets_insert(false)
   end
 end
