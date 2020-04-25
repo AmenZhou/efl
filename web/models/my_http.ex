@@ -3,7 +3,7 @@ defmodule Efl.MyHttp do
   require Logger
   alias Efl.Proxy
   @timeout 120_000
-  @max_attempt 12
+  @max_attempt 24
 
   def request(url, attempts \\ 1)
   def request(url, attempts) when attempts < @max_attempt do
