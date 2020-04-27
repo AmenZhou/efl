@@ -3,6 +3,7 @@ defmodule Efl.DadiController do
   alias Efl.Repo
   alias Efl.Dadi
   alias Efl.Mailer
+  require IEx
 
   def index(conn, _params) do
     posts = Dadi |> Repo.all
@@ -10,9 +11,11 @@ defmodule Efl.DadiController do
   end
 
   def scratch(conn, _params) do
-    Efl.Dadi.start
     ip_addr = to_string(:inet_parse.ntoa(conn.remote_ip))
-    Mailer.send_alert("IP address: #{ip_addr}")
-    text conn, "Start scratching DD360..."
+    if ip_addr == "127.0.0.1" do
+      Efl.Dadi.start
+      text conn, "Start scratching DD360..."
+    end
+    text conn, "No permission"
   end
 end
