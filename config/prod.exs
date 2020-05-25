@@ -27,7 +27,8 @@ config :logger, :info,
   format: "$time $date $metadata[$level] $message\n",
   path: "/home/hzhou/app/efl/info.log",
   metadata: [:request_id],
-  level: :info
+  level: :info,
+  rotate: %{ max_bytes: 4096, size: 4 }
 
 config :logger, :error,
   format: "$time $date $metadata[$level] $message\n",
