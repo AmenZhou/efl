@@ -32,3 +32,4 @@ erl_crash.dump
 /config/proxy_rotator.exs
 tags
 *.log
+/web/static/
