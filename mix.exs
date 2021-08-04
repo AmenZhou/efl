@@ -19,7 +19,7 @@ defmodule Efl.Mixfile do
   def application do
     [mod: {Efl, []},
      applications: [:phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger, :gettext,
-                    :phoenix_ecto, :mariaex, :httpotion, :timex_ecto, :timex, :elixlsx,
+                    :phoenix_ecto, :httpotion, :myxql, :timex, :elixlsx,
                     :mailgun, :exrm, :relx, :floki, :logger_file_backend, :conform]]
   end
 
@@ -34,8 +34,9 @@ defmodule Efl.Mixfile do
     [
       {:phoenix, "~> 1.4"},
       {:phoenix_pubsub, "~> 1.0"},
-      {:phoenix_ecto, "~> 3.0"},
-      {:mariaex, "~> 0.8.4", override: true},
+      {:phoenix_ecto, "~> 4.3"},
+      {:ecto_sql, "~> 3.6.2"},
+      {:myxql, "~> 0.5.1"},
       {:phoenix_html, "~> 2.6"},
       {:phoenix_live_reload, "~> 1.0", only: :dev},
       {:gettext, "~> 0.11"},
@@ -43,7 +44,7 @@ defmodule Efl.Mixfile do
       {:floki, "~> 0.11.0"},
       {:httpotion, "~> 3.1.2"},
       {:timex, "~> 3.0"},
-      {:timex_ecto, "~> 3.0"},
+      # {:timex_ecto, "~> 3.0"},
       {:elixlsx, "~> 0.4.2"},
       {:mailgun, github: "chrismccord/mailgun"},
       {:exrm, "~> 1.0.8"},
