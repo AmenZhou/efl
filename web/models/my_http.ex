@@ -2,13 +2,13 @@ defmodule Efl.MyHttp do
   require IEx
   require Logger
   alias Efl.Proxy
-  @timeout 30_000
+  @timeout 60_000
   @max_attempt 24
 
   def request(url, attempts \\ 1)
   def request(url, attempts) when attempts < @max_attempt do
     # Fetch proxy after 3 retries
-    proxy = case Integer.mod(attempts, 3) do 
+    proxy = case Integer.mod(attempts, 10) do
       0 ->
         Proxy.fetch_proxy(true)
       _ ->
