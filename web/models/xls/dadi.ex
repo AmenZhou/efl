@@ -86,7 +86,7 @@ defmodule Efl.Xls.Dadi do
 
   defp available_dadis do
     query = from d in Dadi,
-      where: (d.post_date == ^TimeUtil.target_date)
+      where: (d.post_date >= ^TimeUtil.target_date)
 
     RefCategory
     |> Repo.all
