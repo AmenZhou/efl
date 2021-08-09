@@ -5,7 +5,7 @@ defmodule Efl.Repo.Migrations.CreateScratch do
     create table(:dadi) do
       add :title, :string
       add :url, :string
-      add :post_date, :utc_datetime
+      add :post_date, :date
       add :content, :text
       #add :category, :integer
       timestamps

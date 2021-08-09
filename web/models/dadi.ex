@@ -17,7 +17,7 @@ defmodule Efl.Dadi do
     field :url
     field :content
     field :phone
-    field :post_date, :utc_datetime
+    field :post_date, :date
     belongs_to :ref_category, RefCategory, foreign_key: :ref_category_id
     timestamps()
   end
