@@ -73,7 +73,7 @@ defmodule Efl.Dadi do
       add_error(changeset, :post_date, "The post date is not ideal")
     else
       changeset
-    end 
+    end
   end
 
   defp main do

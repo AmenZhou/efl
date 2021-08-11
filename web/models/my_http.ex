@@ -8,7 +8,7 @@ defmodule Efl.MyHttp do
   def request(url, attempts \\ 1)
   def request(url, attempts) when attempts < @max_attempt do
     # Fetch proxy after 3 retries
-    proxy = case Integer.mod(attempts, 10) do
+    proxy = case Integer.mod(attempts, 3) do
       0 ->
         Proxy.fetch_proxy(true)
       _ ->
