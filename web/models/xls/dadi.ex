@@ -33,7 +33,7 @@ defmodule Efl.Xls.Dadi do
   end
 
   defp sheets do
-    available_dadis 
+    available_dadis
     |> Enum.map(&one_sheet(&1))
   end
 
@@ -85,8 +85,7 @@ defmodule Efl.Xls.Dadi do
   end
 
   defp available_dadis do
-    query = from d in Dadi,
-      where: (d.post_date >= ^TimeUtil.target_date)
+    query = from(Dadi)
 
     RefCategory
     |> Repo.all
