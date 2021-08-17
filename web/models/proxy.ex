@@ -5,13 +5,30 @@ defmodule Efl.Proxy do
   @ets_key "proxy1"
   @ets_table :cached_proxy
 
+  alias Efl.CacheProxy
+  alias Efl.Repo
+  alias Efl.Proxy.DB
+
   def fetch_proxy(refresh \\ false) do
-    # %{ ip: '216.228.69.202', port: 47278 }
     case refresh do
       true ->
         fetch_from_api()
       _ ->
-        fetch_from_ets()
+        fetch_from_db()
+    end
+  end
+
+  def fetch_from_db do
+    case CacheProxy.last_record do
+      %CacheProxy{ ip: ip, port: port } ->
+        { port, _ } = Integer.parse(port)
+        ip = String.to_charlist(ip)
+        proxy = %{ ip: ip, port: port }
+        Logger.info("Fetch proxy successfully from DB")
+        Logger.info("#{inspect(proxy)}")
+        proxy
+      _ ->
+        fetch_from_api()
     end
   end
 
@@ -34,6 +51,8 @@ defmodule Efl.Proxy do
 
         initialize_ets_table()
         :ets.insert(@ets_table, { @ets_key, proxy })
+
+        DB.insert_proxy(body)
 
         Logger.info("Fetch proxy successfully from api")
         Logger.info("#{inspect(proxy)}")
