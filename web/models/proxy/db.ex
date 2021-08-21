@@ -3,12 +3,14 @@ defmodule Efl.Proxy.DB do
   alias Efl.Repo
   require Logger
   import Ecto.Query
+  require IEx
 
   def insert_proxy(body) do
-    proxy = %{ip: body |> ip, port: body |> port}
+    proxy = %{ip: body |> ip, port: body |> port, score: 10}
 
-    result = CacheProxy.changeset(%CacheProxy{}, proxy)
+    { :ok, result } = CacheProxy.changeset(%CacheProxy{}, proxy)
     |> Repo.insert
+
     Logger.info(inspect(result))
     result
   end

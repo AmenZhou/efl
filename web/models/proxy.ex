@@ -33,43 +33,19 @@ defmodule Efl.Proxy do
     end
   end
 
-  # Deprecated
-  def fetch_from_ets do
-    initialize_ets_table()
-    case :ets.lookup(@ets_table, @ets_key) do
-      [{ @ets_key, proxy }] ->
-        Logger.info("Fetch proxy successfully from ets")
-        Logger.info("#{inspect(proxy)}")
-        proxy
-      _ ->
-        fetch_from_api()
-    end
-  end
-
   def fetch_from_api do
     case HTTPotion.get(@api_rotator_url) do
       %{ body: body } ->
         proxy = %{ ip: current_proxy_ip(body), port: current_proxy_port(body) }
 
-        proxy_record = DB.insert_proxy(body)
+        DB.insert_proxy(body)
 
         Logger.info("Fetch proxy successfully from api")
         Logger.info("#{inspect(proxy)}")
-        %{ proxy: proxy, record: proxy_record }
+        fetch_from_db()
       %{ message: message } ->
         Logger.info("Unable to get a proxy through api call, #{message}")
         fetch_from_db()
-    end
-  end
-
-  # Deprecated
-  def initialize_ets_table do
-    case :ets.whereis(@ets_table) do
-      :undefined ->
-        Logger.info("Create a new ets table")
-        :ets.new(@ets_table, [:set, :protected, :named_table])
-      _ ->
-        Logger.info("The ets table exists already")
     end
   end
 
