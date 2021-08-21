@@ -2,13 +2,14 @@ defmodule Efl.MyHttp do
   require IEx
   require Logger
   alias Efl.Proxy
-  @timeout 120_000
+  alias Efl.Proxy.DB
+  @timeout 10_000
   @max_attempt 24
 
   def request(url, attempts \\ 1)
   def request(url, attempts) when attempts < @max_attempt do
     # Fetch proxy after 3 retries
-    proxy = case Integer.mod(attempts, 3) do
+    %{ proxy: proxy, record: record } = case Integer.mod(attempts, 9) do
       0 ->
         Proxy.fetch_proxy(true)
       _ ->
@@ -20,14 +21,17 @@ defmodule Efl.MyHttp do
         if !String.match?(body, ~r/www.dadi360.com\/img\/dadiicon.ico/) do
           Logger.info("Fetch fail, #{url}, NO ACCESS")
           Logger.info("Retry... #{attempts+1} attempts")
+          DB.decrease_score(record)
           request(url, attempts + 1)
         else
-          Logger.info("Fetch a cateogry page successfully, #{url}")
+          Logger.info("Fetch a page successfully, #{url}")
+          DB.increase_score(record)
           body
         end
       %{ message: message } ->
         Logger.info("Fetch fail, #{url}, #{message}")
         Logger.info("Retry... #{attempts+1} attempts")
+        DB.decrease_score(record)
         request(url, attempts + 1)
     end
   end

@@ -8,16 +8,13 @@ defmodule Efl.CacheProxy do
   schema "proxies" do
     field :ip
     field :port
+    field :score, :integer
     timestamps()
   end
 
   def changeset(struct, params \\ %{}) do
     struct
     |> cast(params, [:ip, :port])
-  end
-
-  def last_record do
-    CacheProxy |> last |> Repo.one
   end
 end
 

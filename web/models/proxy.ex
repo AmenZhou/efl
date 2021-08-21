@@ -19,19 +19,21 @@ defmodule Efl.Proxy do
   end
 
   def fetch_from_db do
-    case CacheProxy.last_record do
+    proxy_record = DB.random_record
+    case proxy_record do
       %CacheProxy{ ip: ip, port: port } ->
         { port, _ } = Integer.parse(port)
         ip = String.to_charlist(ip)
         proxy = %{ ip: ip, port: port }
         Logger.info("Fetch proxy successfully from DB")
         Logger.info("#{inspect(proxy)}")
-        proxy
+        %{ proxy: proxy, record: proxy_record }
       _ ->
-        fetch_from_api()
+        raise("Fetch proxy NOT successfully from DB")
     end
   end
 
+  # Deprecated
   def fetch_from_ets do
     initialize_ets_table()
     case :ets.lookup(@ets_table, @ets_key) do
@@ -49,19 +51,18 @@ defmodule Efl.Proxy do
       %{ body: body } ->
         proxy = %{ ip: current_proxy_ip(body), port: current_proxy_port(body) }
 
-        initialize_ets_table()
-        :ets.insert(@ets_table, { @ets_key, proxy })
-
-        DB.insert_proxy(body)
+        proxy_record = DB.insert_proxy(body)
 
         Logger.info("Fetch proxy successfully from api")
         Logger.info("#{inspect(proxy)}")
-        proxy
+        %{ proxy: proxy, record: proxy_record }
       %{ message: message } ->
-        raise("Unable to get a proxy through api call, #{message}")
+        Logger.info("Unable to get a proxy through api call, #{message}")
+        fetch_from_db()
     end
   end
 
+  # Deprecated
   def initialize_ets_table do
     case :ets.whereis(@ets_table) do
       :undefined ->
