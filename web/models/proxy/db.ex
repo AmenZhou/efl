@@ -10,6 +10,7 @@ defmodule Efl.Proxy.DB do
     result = CacheProxy.changeset(%CacheProxy{}, proxy)
     |> Repo.insert
     Logger.info(inspect(result))
+    result
   end
 
   defp ip(body) do
