@@ -4,7 +4,7 @@ defmodule Efl.MyHttp do
   alias Efl.Proxy
   alias Efl.Proxy.DB
   @timeout 30_000
-  @fetch_api 30
+  @fetch_api 10
   @max_attempt 100
 
   def request(url, attempts \\ 1)
