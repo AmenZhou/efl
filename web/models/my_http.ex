@@ -3,7 +3,7 @@ defmodule Efl.MyHttp do
   require Logger
   alias Efl.Proxy
   alias Efl.Proxy.DB
-  @timeout 90_000
+  @timeout 120_000
   @fetch_api 10
   @max_attempt 100
 
