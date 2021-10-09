@@ -8,21 +8,20 @@ defmodule Efl.HtmlParsers.Dadi.Post do
 
   @http_interval 1_000
 
-  def parse_posts(urls) do
-    urls
-    |> Enum.map(&parse_post(&1))
-  end
+  # def parse_posts(urls) do
+  #   urls
+  #   |> Enum.map(&parse_post(&1))
+  # end
 
-  def async_parse_posts(urls) do
-    urls
-    |> Enum.map(fn(url) ->
-      :timer.sleep(10_000)
-      Task.async(PostParser, :parse_post, [url])
-    end)
-    |> Enum.map(fn(task) ->
-      Task.await(task)
-    end)
-  end
+  # def async_parse_posts(urls) do
+  #   urls
+  #   |> Enum.map(fn(url) ->
+  #     Task.async(PostParser, :parse_post, [url])
+  #   end)
+  #   |> Enum.map(fn(task) ->
+  #     Task.await(task, @task_timeout)
+  #   end)
+  # end
 
   def parse_post(url) do
     :timer.sleep(@http_interval)

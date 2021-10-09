@@ -8,14 +8,28 @@ defmodule Efl.Dadi.Post do
   import Ecto.Query, only: [from: 2] 
 
   @max_posts 2_000
+  @task_timeout 12_000_000
 
   def update_contents do
     get_all_blank_records
-    |> Enum.map(fn(d) ->
-      d.url
-      |> PostParser.parse_post
-      |> update_by_parsed_result
+      |> Enum.map(fn(d) -> d.url end)
+      |> async_process_posts
+  end
+
+  defp async_process_posts(urls) do
+    urls
+    |> Enum.map(fn(url) ->
+      Task.async(Efl.Dadi.Post, :parse_and_update_post, [url])
     end)
+    |> Enum.map(fn(task) ->
+      Task.await(task, @task_timeout)
+    end)
+  end
+
+  def parse_and_update_post(url) do
+    url
+     |> PostParser.parse_post
+     |> update_by_parsed_result
   end
 
   defp get_all_blank_records do
