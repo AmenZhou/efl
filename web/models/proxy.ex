@@ -36,12 +36,7 @@ defmodule Efl.Proxy do
   def fetch_from_api do
     case HTTPotion.get(@api_rotator_url) do
       %{ body: body } ->
-        proxy = %{ ip: current_proxy_ip(body), port: current_proxy_port(body) }
-
-        DB.insert_proxy(body)
-
-        Logger.info("Fetch proxy successfully from api")
-        Logger.info("#{inspect(proxy)}")
+        create_proxy(body)
         fetch_from_db()
       %{ message: message } ->
         Logger.info("Unable to get a proxy through api call, #{message}")
@@ -69,6 +64,20 @@ defmodule Efl.Proxy do
         port_int
       _ ->
         raise("Can not get proxy port")
+    end
+  end
+
+  defp create_proxy(body) do
+    try do
+      proxy = %{ ip: current_proxy_ip(body), port: current_proxy_port(body) }
+
+      DB.insert_proxy(body)
+
+      Logger.info("Fetch proxy successfully from api")
+      Logger.info("#{inspect(proxy)}")
+    rescue
+      e in RuntimeError ->
+        Logger.info("Unable to get a proxy through api call, #{e.message}")
     end
   end
 end
