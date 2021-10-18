@@ -92,12 +92,13 @@ defmodule Efl.Dadi do
     end)
 
     Logger.info("Start fetching posts")
-    Post.update_contents 
+    Post.update_contents
+    Post.update_contents
 
     Logger.info("Exporting Xls file")
     Efl.Xls.Dadi.create_xls
 
     Logger.info("Sending Emails")
-    Mailer.send_email_with_xls 
+    Mailer.send_email_with_xls
   end
 end

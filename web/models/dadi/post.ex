@@ -5,11 +5,11 @@ defmodule Efl.Dadi.Post do
   alias Efl.Repo
   alias Efl.Dadi
   alias Efl.HtmlParsers.Dadi.Post, as: PostParser
-  import Ecto.Query, only: [from: 2] 
+  import Ecto.Query, only: [from: 2]
 
   @max_posts 2_000
   @task_timeout 12_000_000
-  @task_interval 1_000
+  @task_interval 2_000
 
   def update_contents do
     get_all_blank_records
