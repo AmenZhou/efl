@@ -12,7 +12,7 @@ defmodule Efl.Proxy do
   def fetch_proxy(refresh \\ false) do
     case refresh do
       true ->
-        fetch_from_api()
+        fetch_from_db()
       _ ->
         fetch_from_db()
     end
