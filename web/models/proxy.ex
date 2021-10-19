@@ -9,13 +9,8 @@ defmodule Efl.Proxy do
   alias Efl.Repo
   alias Efl.Proxy.DB
 
-  def fetch_proxy(refresh \\ false) do
-    case refresh do
-      true ->
-        fetch_from_db()
-      _ ->
-        fetch_from_db()
-    end
+  def fetch_proxy do
+    fetch_from_db()
   end
 
   def fetch_from_db do

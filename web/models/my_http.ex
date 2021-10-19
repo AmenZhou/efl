@@ -5,17 +5,11 @@ defmodule Efl.MyHttp do
   alias Efl.Proxy.DB
   @timeout 120_000
   @fetch_api 10
-  @max_attempt 100
+  @max_attempt 10
 
   def request(url, attempts \\ 1)
   def request(url, attempts) when attempts < @max_attempt do
-    # Fetch proxy after 3 retries
-    %{ proxy: proxy, record: record } = case Integer.mod(attempts, @fetch_api) do
-      0 ->
-        Proxy.fetch_proxy(true)
-      _ ->
-        Proxy.fetch_proxy()
-    end
+    %{ proxy: proxy, record: record } = Proxy.fetch_proxy()
 
     case HTTPotion.get(url, proxy_config(proxy)) do
       %{ body: body } ->
