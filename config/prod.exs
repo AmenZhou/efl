@@ -80,3 +80,4 @@ config :logger, :console,
 # which should be versioned separately.
 import_config "prod.secret.exs"
 import_config "mailgun.exs"
+import_config "proxy_rotator.exs"
