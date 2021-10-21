@@ -1,7 +1,8 @@
 defmodule Efl.Proxy do
   require IEx
   require Logger
-  @api_rotator_url "http://falcon.proxyrotator.com:51337/?apiKey=U8CJ7jTmVtfry4dPWYFKXRsbqSnGo93c&country=US"
+  @api_key Application.get_env(:proxy_rotator, :api_key)
+  @api_rotator_url "http://falcon.proxyrotator.com:51337/?apiKey=#{@api_key}&country=US"
   @ets_key "proxy1"
   @ets_table :cached_proxy
 
