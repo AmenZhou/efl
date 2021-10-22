@@ -9,8 +9,10 @@ defmodule Efl.Dadi do
   alias Efl.TimeUtil
   alias Efl.Mailer
   alias Efl.EtsManager
+  alias Efl.Proxy
   require IEx
   require Logger
+  @number_of_proxy_from_api 5
 
   schema "dadi" do
     field :title
@@ -77,6 +79,11 @@ defmodule Efl.Dadi do
   end
 
   defp main do
+    Logger.info("Fetching Proxy API")
+    Enum.each(0..@number_of_proxy_from_api, fn(_) ->
+      Proxy.fetch_from_api
+    end)
+
     Logger.info("Deleting all records")
     Repo.delete_all(Dadi)
     Repo.delete_all(RefCategory)
