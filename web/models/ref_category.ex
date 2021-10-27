@@ -17,7 +17,7 @@ defmodule Efl.RefCategory do
   alias Efl.Repo
 
   @base_url "http://c.dadi360.com/c/forums/show/"
-  @number_of_single_page_rows 60
+  @number_of_single_page_rows 80
   @ref_data [
     %{
       name: "FLUSHING_HOUSE_RENT",
@@ -88,7 +88,6 @@ defmodule Efl.RefCategory do
     %{
       name: "HOUSE_SALE",
       display_name: "房屋出售",
-      url: "/27.page",
       url: "/36.page",
       page_size: 2
     },
@@ -98,13 +97,12 @@ defmodule Efl.RefCategory do
       url: "/82.page",
       page_size: 2
     },
-    %{
-      name: "STORE_RENT",
-      display_name: "店铺转让",
-      url: "/82.page",
-      url: "/27.page",
-      page_size: 2
-    },
+    # %{
+    #   name: "STORE_RENT",
+    #   display_name: "店铺转让",
+    #   url: "/27.page",
+    #   page_size: 2
+    # },
     %{
       name: "USED_GOODS",
       display_name: "二手物品",

@@ -32,7 +32,6 @@ defmodule Efl.MyHttp do
   end
 
   def request(url, attempts) when attempts >= @max_attempt do
-    Proxy.fetch_proxy(true)
     raise("Has reached the max attempts of fetching category page, #{url}")
   end
 
