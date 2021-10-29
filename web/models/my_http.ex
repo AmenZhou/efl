@@ -6,6 +6,7 @@ defmodule Efl.MyHttp do
   @timeout 120_000
   @fetch_api 10
   @max_attempt 100
+  @max_proxy_from_api 50
 
   def request(url, attempts \\ 1)
   def request(url, attempts) when attempts < @max_attempt do
@@ -38,5 +39,12 @@ defmodule Efl.MyHttp do
   def proxy_config(proxy) do
     %{ ip: ip, port: port } = proxy
     [ ibrowse: [ proxy_host: ip, proxy_port: port ], timeout: @timeout ]
+  end
+
+  def number_of_proxies_needed do
+    case @max_proxy_from_api <= DB.number_of_proxies do
+      true -> 0
+      false -> @max_proxy_from_api - DB.number_of_proxies
+    end
   end
 end

@@ -10,9 +10,9 @@ defmodule Efl.Dadi do
   alias Efl.Mailer
   alias Efl.EtsManager
   alias Efl.Proxy
+  alias Efl.MyHttp
   require IEx
   require Logger
-  @number_of_proxy_from_api 5
 
   schema "dadi" do
     field :title
@@ -80,7 +80,8 @@ defmodule Efl.Dadi do
 
   defp main do
     Logger.info("Fetching Proxy API")
-    Enum.each(0..@number_of_proxy_from_api, fn(_) ->
+    Enum.each(0..MyHttp.number_of_proxies_needed, fn(_) ->
+      Logger.info("fetch new proxy")
       Proxy.fetch_from_api
     end)
 

@@ -67,4 +67,12 @@ defmodule Efl.Proxy.DB do
       |> Repo.update!
     end
   end
+
+  def number_of_proxies do
+    query = from p in CacheProxy,
+      where: p.score > 0,
+      select: count(p.id)
+
+    Repo.one(query)
+  end
 end
