@@ -43,8 +43,8 @@ defmodule Efl.MyHttp do
 
   def number_of_proxies_needed do
     case @max_proxy_from_api <= DB.number_of_proxies do
-      true -> 0
-      false -> @max_proxy_from_api - DB.number_of_proxies
+      true -> []
+      false -> (1..(@max_proxy_from_api - DB.number_of_proxies))
     end
   end
 end
