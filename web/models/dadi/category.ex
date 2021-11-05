@@ -5,7 +5,23 @@ defmodule Efl.Dadi.Category do
   alias Efl.Repo
   alias Efl.Dadi
   alias Efl.Mailer
+  alias Efl.Dadi.Category
+  alias Efl.RefCategory
   alias Efl.HtmlParsers.Dadi.Category, as: CategoryParser
+  @task_interval 2_000
+  @task_timeout 12_000_000
+
+  def create_all_items do
+    RefCategory
+    |> Repo.all
+    |> Enum.map(fn(cat) ->
+      :timer.sleep(@task_interval)
+      Task.async(Category , :create_items, [cat])
+    end)
+    |> Enum.map(fn(task) ->
+      Task.await(task, @task_timeout)
+    end)
+  end
 
   #[{ :ok, %Dadi{}}, { :ok, %Dadi{} }, ...]
   def create_items(ref_category) do

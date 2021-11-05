@@ -11,6 +11,7 @@ defmodule Efl.Dadi do
   alias Efl.EtsManager
   alias Efl.Proxy
   alias Efl.MyHttp
+  alias Efl.Dadi.Category
   require IEx
   require Logger
 
@@ -93,11 +94,7 @@ defmodule Efl.Dadi do
     RefCategory.seeds
 
     Logger.info("Start fetching categories")
-    RefCategory
-    |> Repo.all
-    |> Enum.each(fn(cat) ->
-      Category.create_items(cat)
-    end)
+    Category.create_all_items
 
     Logger.info("Start fetching posts")
     Post.update_contents

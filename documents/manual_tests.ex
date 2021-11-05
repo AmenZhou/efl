@@ -1,7 +1,7 @@
 import Ecto.Query
 
 Efl.Repo.delete_all(Efl.Dadi)
-Efl.RefCategory |> first |> Efl.Repo.one |> Efl.Dadi.Category.create_items
+Efl.Dadi.Category.create_all_items
 
 Efl.Dadi.Post.update_contents
 
