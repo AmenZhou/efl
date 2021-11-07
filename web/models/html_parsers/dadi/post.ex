@@ -6,25 +6,7 @@ defmodule Efl.HtmlParsers.Dadi.Post do
 
   defstruct [:url, :phone, :content]
 
-  @http_interval 1_000
-
-  # def parse_posts(urls) do
-  #   urls
-  #   |> Enum.map(&parse_post(&1))
-  # end
-
-  # def async_parse_posts(urls) do
-  #   urls
-  #   |> Enum.map(fn(url) ->
-  #     Task.async(PostParser, :parse_post, [url])
-  #   end)
-  #   |> Enum.map(fn(task) ->
-  #     Task.await(task, @task_timeout)
-  #   end)
-  # end
-
   def parse_post(url) do
-    :timer.sleep(@http_interval)
     try do
       case html(url) do
         { :ok, body } ->
@@ -49,11 +31,13 @@ defmodule Efl.HtmlParsers.Dadi.Post do
       end
     rescue
       ex ->
-        Logger.error("Post#parse_post url: #{url}, message: #{inspect(ex)}")
+        log_info = "Post#parse_post url: #{url}, message: #{inspect(ex)}"
+        Logger.error(log_info)
+        Efl.Mailer.send_alert(log_info)
         %PostParser{}
     end
   end
-    
+
   defp html(url) do
     body = Efl.MyHttp.request(url)
     { :ok, body }
