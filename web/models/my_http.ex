@@ -6,7 +6,7 @@ defmodule Efl.MyHttp do
   @timeout 120_000
   @fetch_api 10
   @max_attempt 100
-  @max_proxy_from_api 50
+  @max_proxy_from_api 20
   @request_interval 1_000
 
   def request(url, attempts \\ 1)
