@@ -8,6 +8,7 @@ defmodule Efl.Dadi.Post do
   import Ecto.Query, only: [from: 2]
 
   @max_posts 2_000
+  @task_interval 2_000
   @task_timeout 12_000_000
 
   def update_contents do
@@ -19,6 +20,7 @@ defmodule Efl.Dadi.Post do
   defp async_process_posts(urls) do
     urls
     |> Enum.map(fn(url) ->
+      :timer.sleep(@task_interval)
       Task.async(Efl.Dadi.Post, :parse_and_update_post, [url])
     end)
     |> Enum.map(fn(task) ->
