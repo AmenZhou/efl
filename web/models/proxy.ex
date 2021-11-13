@@ -5,7 +5,6 @@ defmodule Efl.Proxy do
   @api_rotator_url "http://falcon.proxyrotator.com:51337/?apiKey=#{@api_key}&country=US"
   @ets_key "proxy1"
   @ets_table :cached_proxy
-  @db_interval 1_000
 
   alias Efl.CacheProxy
   alias Efl.Repo
@@ -16,8 +15,6 @@ defmodule Efl.Proxy do
   end
 
   def fetch_from_db do
-    :timer.sleep(@db_interval)
-
     proxy_record = DB.random_record
     case proxy_record do
       %CacheProxy{ ip: ip, port: port } ->
