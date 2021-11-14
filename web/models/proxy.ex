@@ -15,7 +15,7 @@ defmodule Efl.Proxy do
   end
 
   def fetch_from_db do
-    proxy_record = DB.random_record
+    proxy_record = DB.random_record || DB.last_record
     case proxy_record do
       %CacheProxy{ ip: ip, port: port } ->
         { port, _ } = Integer.parse(port)
