@@ -24,7 +24,8 @@ defmodule Efl.Dadi.Post do
       :timer.sleep(@task_interval)
       Task.async(Efl.Dadi.Post, :parse_and_update_post, [url])
     end,
-    max_concurrency: @max_concurreny)
+    max_concurrency: @max_concurreny,
+    timeout: @task_timeout)
     |> Enum.to_list
   end
 
