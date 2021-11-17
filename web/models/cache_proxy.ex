@@ -1,9 +1,5 @@
 defmodule Efl.CacheProxy do
   use Efl.Web, :model
-  import Ecto.Query
-
-  alias Efl.CacheProxy
-  alias Efl.Repo
 
   schema "proxies" do
     field :ip

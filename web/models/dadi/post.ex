@@ -13,7 +13,7 @@ defmodule Efl.Dadi.Post do
   @max_concurreny 5
 
   def update_contents do
-    get_all_blank_records
+    get_all_blank_records()
       |> Enum.map(fn(d) -> d.url end)
       |> async_process_posts
   end
@@ -22,7 +22,7 @@ defmodule Efl.Dadi.Post do
     urls
     |> Task.async_stream(fn url ->
       :timer.sleep(@task_interval)
-      Task.async(Efl.Dadi.Post, :parse_and_update_post, [url])
+      Efl.Dadi.Post.parse_and_update_post(url)
     end,
     max_concurrency: @max_concurreny,
     timeout: @task_timeout)

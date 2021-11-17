@@ -14,7 +14,7 @@ defmodule Efl.HtmlParsers.Dadi.Post do
           content = body
                     |> Floki.find(".postbody")
                     |> Floki.text
-                    |> String.strip
+                    |> String.trim
 
           phone = PhoneUtil.find_phone_from_content(content)
 

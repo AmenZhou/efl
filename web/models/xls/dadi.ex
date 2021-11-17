@@ -13,8 +13,8 @@ defmodule Efl.Xls.Dadi do
   require IEx
 
   def create_xls do
-    %Workbook{sheets: sheets}
-    |> Elixlsx.write_to(file_name)
+    %Workbook{sheets: sheets()}
+    |> Elixlsx.write_to(file_name())
   end
 
   def file_path do
@@ -33,7 +33,7 @@ defmodule Efl.Xls.Dadi do
   end
 
   defp sheets do
-    available_dadis
+    available_dadis()
     |> Enum.map(&one_sheet(&1))
   end
 
@@ -48,7 +48,7 @@ defmodule Efl.Xls.Dadi do
   defp rows(dadis) do
     dadis
     |> Enum.map(&one_row(&1))
-    |> List.insert_at(0, titles)
+    |> List.insert_at(0, titles())
   end
 
   defp one_row(dadi) do

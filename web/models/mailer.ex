@@ -28,7 +28,7 @@ defmodule Efl.Mailer do
     ])
 
     case response do
-      {:error, msg} -> send_alert
+      {:error, _} -> send_alert()
       {:ok, sucess} -> sucess
     end
   end

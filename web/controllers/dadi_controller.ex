@@ -2,7 +2,6 @@ defmodule Efl.DadiController do
   use Efl.Web, :controller
   alias Efl.Repo
   alias Efl.Dadi
-  alias Efl.Mailer
   require IEx
 
   def index(conn, _params) do

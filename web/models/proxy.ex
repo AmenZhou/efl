@@ -3,11 +3,8 @@ defmodule Efl.Proxy do
   require Logger
   @api_key Application.get_env(:proxy_rotator, :api_key)
   @api_rotator_url "http://falcon.proxyrotator.com:51337/?apiKey=#{@api_key}&country=US"
-  @ets_key "proxy1"
-  @ets_table :cached_proxy
 
   alias Efl.CacheProxy
-  alias Efl.Repo
   alias Efl.Proxy.DB
 
   def fetch_proxy do

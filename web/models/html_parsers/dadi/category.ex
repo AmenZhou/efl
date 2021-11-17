@@ -99,7 +99,7 @@ defmodule Efl.HtmlParsers.Dadi.Category do
     item
     |> Floki.find(".topictitle a")
     |> Floki.text
-    |> String.strip
+    |> String.trim
   end
 
   defp get_link(item) do
@@ -125,7 +125,7 @@ defmodule Efl.HtmlParsers.Dadi.Category do
     |> Floki.find(".postdetails")
     |> List.last
     |> Floki.text
-    |> String.strip
+    |> String.trim
     |> Timex.parse("%Y/%_m/%e", :strftime)
   end
 end

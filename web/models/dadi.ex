@@ -8,7 +8,6 @@ defmodule Efl.Dadi do
   alias Efl.Dadi
   alias Efl.TimeUtil
   alias Efl.Mailer
-  alias Efl.EtsManager
   alias Efl.Proxy
   alias Efl.MyHttp
   alias Efl.Dadi.Category
@@ -32,7 +31,6 @@ defmodule Efl.Dadi do
       e in RuntimeError ->
         Logger.error("Error Efl.Dadi.start: #{e.message}")
         Mailer.send_alert("Error Efl.Dadi.start: #{e.message}")
-        :ets.insert(@ets_table, { @ets_key, false })
     end
   end
 
