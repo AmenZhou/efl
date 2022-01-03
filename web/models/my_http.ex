@@ -4,7 +4,7 @@ defmodule Efl.MyHttp do
   alias Efl.Proxy
   alias Efl.Proxy.DB
   @timeout 120_000
-  @max_attempt 20
+  @max_attempt 50
   @max_proxy_from_api 20
   @request_interval 1_000
   @intermission_time 10_000
@@ -12,12 +12,12 @@ defmodule Efl.MyHttp do
 
   def request(url, attempts \\ 1)
 
-  def request(url, attempts) when attempts == @intermission do
+  def request(url, attempts) when rem(attempts, @intermission) == 0 do
     :timer.sleep(@intermission_time)
     request(url, attempts + 1)
   end
 
-  def request(url, attempts) when attempts < @max_attempt and attempts != @intermission do
+  def request(url, attempts) when attempts < @max_attempt and rem(attempts, @intermission) != 0 do
     :timer.sleep(@request_interval)
     %{ proxy: proxy, record: record } = Proxy.fetch_proxy()
 
