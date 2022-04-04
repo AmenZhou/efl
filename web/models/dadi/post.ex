@@ -10,7 +10,7 @@ defmodule Efl.Dadi.Post do
   @max_posts 2_000
   @task_interval 2_000
   @task_timeout 12_000_000
-  @max_concurreny 20
+  @max_concurreny 30
 
   def update_contents do
     get_all_blank_records()
