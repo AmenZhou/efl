@@ -1,5 +1,8 @@
 # Crawler
 
+This project is for a special usage on my own, more for fun. My first Elixir+Phoenix project.
+
+
 ## Install on Ubuntu
 
 `apt-get install build-essential`
