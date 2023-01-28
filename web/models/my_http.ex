@@ -1,6 +1,7 @@
 defmodule Efl.MyHttp do
   require IEx
   require Logger
+
   alias Efl.Proxy
   alias Efl.Proxy.DB
   @timeout 120_000
@@ -21,8 +22,9 @@ defmodule Efl.MyHttp do
     :timer.sleep(@request_interval)
     %{ proxy: proxy, record: record } = Proxy.fetch_proxy()
 
-    case HTTPotion.get(url, proxy_config(proxy)) do
-      %{ body: body } ->
+    case HttpClient.get(url, opts: [adapter: [proxy: proxy_config(proxy), timeout: @timeout]]) do
+      { :ok, %{ body: body, status: status } } ->
+        Logger.info("#{inspect(body)} #{status}")
         if !String.match?(body, ~r/www.dadi360.com\/img\/dadiicon.ico/) do
           Logger.info("Fetch fail, #{url}, NO ACCESS")
           Logger.info("Retry... #{attempts+1} attempts")
@@ -33,7 +35,7 @@ defmodule Efl.MyHttp do
           DB.increase_score(record)
           body
         end
-      %{ message: message } ->
+      { :error, message } ->
         Logger.info("Fetch fail, #{url}, #{message}")
         Logger.info("Retry... #{attempts+1} attempts")
         DB.decrease_score(record)
@@ -47,7 +49,7 @@ defmodule Efl.MyHttp do
 
   def proxy_config(proxy) do
     %{ ip: ip, port: port } = proxy
-    [ ibrowse: [ proxy_host: ip, proxy_port: port ], timeout: @timeout ]
+    { ip, port }
   end
 
   def number_of_proxies_needed do

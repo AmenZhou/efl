@@ -51,7 +51,10 @@ defmodule Efl.Mixfile do
       {:relx, "~> 3.23"},
       {:logger_file_backend, "0.0.9"},
       {:conform, "2.1.2"},
-      {:erlware_commons, "~> 1.0"}
+      {:erlware_commons, "~> 1.0"},
+      {:tesla, "~> 1.4"},
+      {:hackney, "~> 1.17"},
+      {:jason, ">= 1.0.0"}
     ]
   end
 

@@ -19,3 +19,8 @@ cat = %Efl.RefCategory{
 }
 
 Efl.Dadi.Category.create_items(cat)
+
+# MySQL commands
+select * from proxies order by score desc;
+delete from proxies where score=0;
+update proxies set score=10 where updated_at > '2022-01-20' and score = 0;
