@@ -33,3 +33,4 @@ erl_crash.dump
 tags
 *.log
 /web/static/
+.DS_Store

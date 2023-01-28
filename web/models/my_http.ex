@@ -22,7 +22,7 @@ defmodule Efl.MyHttp do
     :timer.sleep(@request_interval)
     %{ proxy: proxy, record: record } = Proxy.fetch_proxy()
 
-    case HttpClient.get(url) do
+    case HttpClient.get(url, opts: [adapter: [proxy: proxy_config(proxy), timeout: @timeout]]) do
       { :ok, %{ body: body, status: status } } ->
         Logger.info("#{inspect(body)} #{status}")
         if !String.match?(body, ~r/www.dadi360.com\/img\/dadiicon.ico/) do
@@ -49,7 +49,7 @@ defmodule Efl.MyHttp do
 
   def proxy_config(proxy) do
     %{ ip: ip, port: port } = proxy
-    [ ibrowse: [ proxy_host: ip, proxy_port: port ], timeout: @timeout ]
+    { ip, port }
   end
 
   def number_of_proxies_needed do
