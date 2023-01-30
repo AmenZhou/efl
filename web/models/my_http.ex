@@ -4,7 +4,6 @@ defmodule Efl.MyHttp do
 
   alias Efl.Proxy
   alias Efl.Proxy.DB
-  @timeout 120_000
   @max_attempt 50
   @max_proxy_from_api 20
   @request_interval 1_000
@@ -22,7 +21,7 @@ defmodule Efl.MyHttp do
     :timer.sleep(@request_interval)
     %{ proxy: proxy, record: record } = Proxy.fetch_proxy()
 
-    case HttpClient.get(url, opts: [adapter: [proxy: proxy_config(proxy), timeout: @timeout]]) do
+    case HttpClient.get(url, proxy) do
       { :ok, %{ body: body, status: status } } ->
         Logger.info("#{inspect(body)} #{status}")
         if !String.match?(body, ~r/www.dadi360.com\/img\/dadiicon.ico/) do
@@ -45,11 +44,6 @@ defmodule Efl.MyHttp do
 
   def request(url, attempts) when attempts >= @max_attempt do
     raise("Has reached the max attempts of fetching category page, #{url}")
-  end
-
-  def proxy_config(proxy) do
-    %{ ip: ip, port: port } = proxy
-    { ip, port }
   end
 
   def number_of_proxies_needed do
