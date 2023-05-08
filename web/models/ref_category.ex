@@ -67,12 +67,6 @@ defmodule Efl.RefCategory do
       url: "/57.page",
       page_size: 2
     },
-    #%{
-      #name: "MASSAGE_HIRING",
-      #display_name: "按摩请人",
-      #url: "/52.page",
-      #page_size: 2
-    #},
     %{
       name: "GENERAL_HIRING",
       display_name: "招聘",
@@ -97,17 +91,23 @@ defmodule Efl.RefCategory do
       url: "/82.page",
       page_size: 2
     },
-    # %{
-    #   name: "STORE_RENT",
-    #   display_name: "店铺转让",
-    #   url: "/27.page",
-    #   page_size: 2
-    # },
     %{
       name: "USED_GOODS",
       display_name: "二手物品",
       url: "/23.page",
       page_size: 2
+    },
+    %{
+      name: "RENOVATION_SERVICE",
+      display_name: "装修服务",
+      url: "/44.page",
+      page_size: 1
+    },
+    %{
+      name: "AC_HEATER_PLUMBER",
+      display_name: "冷暖水电",
+      url: "/51.page",
+      page_size: 1
     }
   ]
 
