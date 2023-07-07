@@ -24,7 +24,7 @@ defmodule Efl.MyHttp do
     case HttpClient.get(url, proxy) do
       { :ok, %{ body: body, status: status } } ->
         Logger.info("#{inspect(body)} #{status}")
-        if !String.match?(body, ~r/www.dadi360.com\/img\/dadiicon.ico/) do
+        if !String.match?(body, ~r/\/img\/dadiicon.ico/) do
           Logger.info("Fetch fail, #{url}, NO ACCESS")
           Logger.info("Retry... #{attempts+1} attempts")
           DB.decrease_score(record)
