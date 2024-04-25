@@ -31,6 +31,7 @@ This project is for a special usage on my own, more for fun. My first Elixir+Pho
 #### Create DB
 
 `MIX_ENV=prod mix ecto.create`
+`MIX_ENV=prod mix ecto.reset`
 
 #### Seed
 ```

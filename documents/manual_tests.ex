@@ -10,12 +10,14 @@ Efl.Xls.Dadi.create_xls
 Efl.Mailer.send_email_with_xls
 
 # Fetch a single category
+Efl.Proxy.fetch_from_api
 
 cat = %Efl.RefCategory{
   name: "STORE_RENT",
   display_name: "店铺转让",
   url: "/27.page",
-  page_size: 2
+  page_size: 2,
+  id: 1
 }
 
 Efl.Dadi.Category.create_items(cat)
