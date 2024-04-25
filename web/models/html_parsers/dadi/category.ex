@@ -1,4 +1,4 @@
-defmodule Efl.HtmlParsers.Dadi.Category do 
+defmodule Efl.HtmlParsers.Dadi.Category do
   alias Efl.RefCategory
   alias Efl.PhoneUtil
   alias Efl.HtmlParsers.Dadi.Category, as: CategoryParser
@@ -126,6 +126,6 @@ defmodule Efl.HtmlParsers.Dadi.Category do
     |> List.last
     |> Floki.text
     |> String.trim
-    |> Timex.parse("%Y/%_m/%e", :strftime)
+    |> Timex.parse("%_m/%e/%Y", :strftime)
   end
 end
