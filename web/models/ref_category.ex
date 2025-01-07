@@ -108,6 +108,12 @@ defmodule Efl.RefCategory do
       display_name: "冷暖水电",
       url: "/51.page",
       page_size: 1
+    },
+    %{
+      name: "LAWYER",
+      display_name: "律师",
+      url: "/74.page",
+      page_size: 1
     }
   ]
 
