@@ -78,12 +78,6 @@ defmodule Efl.Dadi do
   end
 
   defp main do
-    Logger.info("Fetching Proxy API")
-    Enum.each(MyHttp.number_of_proxies_needed, fn(_) ->
-      Proxy.fetch_from_api
-      Logger.info("fetch new proxy")
-    end)
-
     Logger.info("Deleting all records")
     Repo.delete_all(Dadi)
     Repo.delete_all(RefCategory)
