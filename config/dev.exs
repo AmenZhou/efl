@@ -40,7 +40,9 @@ config :efl, Efl.Repo,
   password: "",
   database: "classification_utility_dev",
   hostname: "localhost",
-  pool_size: 10
+  pool_size: 10,
+  charset: "utf8mb4",
+  collation: "utf8mb4_unicode_ci"
 
 import_config "proxy_rotator.exs"
 import_config "mailgun.exs"

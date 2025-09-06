@@ -2,7 +2,7 @@ use Mix.Config
 
 # We don't run a server during test. If one is required,
 # you can enable the server option below.
-config :classification_utility, Efl.Endpoint,
+config :efl, Efl.Endpoint,
   http: [port: 4001],
   server: false
 
@@ -10,10 +10,12 @@ config :classification_utility, Efl.Endpoint,
 config :logger, level: :warn
 
 # Configure your database
-config :classification_utility, Efl.Repo,
+config :efl, Efl.Repo,
   adapter: Ecto.Adapters.MySQL,
   username: "root",
   password: "",
   database: "classification_utility_test",
   hostname: "localhost",
-  pool: Ecto.Adapters.SQL.Sandbox
+  pool: Ecto.Adapters.SQL.Sandbox,
+  charset: "utf8mb4",
+  collation: "utf8mb4_unicode_ci"
