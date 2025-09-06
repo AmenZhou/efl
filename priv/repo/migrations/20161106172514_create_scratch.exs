@@ -8,7 +8,7 @@ defmodule Efl.Repo.Migrations.CreateScratch do
       add :post_date, :date
       add :content, :text
       #add :category, :integer
-      timestamps
+      timestamps()
     end
   end
 end

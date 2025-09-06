@@ -5,7 +5,7 @@ defmodule Efl.Repo.Migrations.AddProxyCacheTable do
     create table(:proxies) do
       add :ip, :string
       add :port, :string
-      timestamps
+      timestamps()
     end
   end
 

@@ -7,6 +7,10 @@ defmodule HttpClient do
     get(url, opts: [adapter: [proxy: proxy_config(proxy), recv_timeout: @timeout]])
   end
 
+  def post(url, body, opts \\ []) do
+    Tesla.post(url, body, opts)
+  end
+
   defp proxy_config(proxy) do
     %{ ip: ip, port: port } = proxy
     { ip, port }

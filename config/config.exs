@@ -40,6 +40,17 @@ config :logger, :console,
   metadata: [:request_id]
 
 config :tesla, adapter: Tesla.Adapter.Hackney
+
+# Configure JSON library for Phoenix
+config :phoenix, :json_library, Poison
+
+# Configure Swoosh with Mailgun
+config :efl, Efl.Mailer,
+  adapter: Swoosh.Adapters.Mailgun,
+  api_key: System.get_env("MAILGUN_API_KEY") || "your-mailgun-api-key",
+  domain: System.get_env("MAILGUN_DOMAIN") || "your-mailgun-domain"
+
+config :swoosh, :api_client, Swoosh.ApiClient.Hackney
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env}.exs"

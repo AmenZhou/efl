@@ -11,7 +11,7 @@ config :logger, level: :warn
 
 # Configure your database
 config :efl, Efl.Repo,
-  adapter: Ecto.Adapters.MySQL,
+  adapter: Ecto.Adapters.MyXQL,
   username: "root",
   password: "",
   database: "classification_utility_test",
