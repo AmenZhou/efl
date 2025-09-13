@@ -1,0 +1,65 @@
+version: '3.3'
+
+services:
+  # MySQL Database
+  mysql:
+    image: mysql:8.0
+    container_name: efl-mysql-prod
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-password}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-classification_utility_prod}
+      MYSQL_USER: ${MYSQL_USER:-hzhou}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-password123}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --default-authentication-plugin=mysql_native_password
+
+  # Elixir Application
+  efl-app:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    container_name: efl-app-prod
+    restart: unless-stopped
+    ports:
+      - "4000:4000"
+    environment:
+      MIX_ENV: prod
+      DATABASE_URL: mysql://${MYSQL_USER:-hzhou}:${MYSQL_PASSWORD:-password123}@mysql:3306/${MYSQL_DATABASE:-classification_utility_prod}
+      SECRET_KEY_BASE: ${SECRET_KEY_BASE:-your-secret-key-base-here}
+    depends_on:
+      - mysql
+    volumes:
+      - ./logs:/app/logs
+      # Cache volumes for faster builds
+      - elixir_deps:/app/deps
+      - elixir_build:/app/_build
+      - elixir_mix:/app/.mix
+
+  # phpMyAdmin (optional, for database management)
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: efl-phpmyadmin-prod
+    restart: unless-stopped
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD: ${MYSQL_ROOT_PASSWORD:-password}
+    ports:
+      - "8080:80"
+    depends_on:
+      - mysql
+
+volumes:
+  mysql_data:
+    driver: local
+  elixir_deps:
+    driver: local
+  elixir_build:
+    driver: local
+  elixir_mix:
+    driver: local

@@ -10,7 +10,8 @@ defmodule Efl.Mixfile do
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
      aliases: aliases(),
-     deps: deps()]
+     deps: deps(),
+     releases: releases()]
   end
 
   # Configuration for the OTP application.
@@ -32,12 +33,12 @@ defmodule Efl.Mixfile do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:phoenix, "~> 1.6.0"},
+      {:phoenix, "~> 1.5.0"},
       {:phoenix_pubsub, "~> 2.1"},
       {:phoenix_ecto, "~> 4.4"},
       {:ecto_sql, "~> 3.10"},
       {:myxql, "~> 0.6.0"},
-      {:phoenix_html, "~> 3.3"},
+      {:phoenix_html, "~> 2.14"},
       {:phoenix_live_reload, "~> 1.4", only: :dev},
       {:gettext, "~> 0.23"},
       {:plug_cowboy, "~> 2.6"},
@@ -51,11 +52,10 @@ defmodule Efl.Mixfile do
       # {:relx, "~> 3.5"},   # Commented out due to compilation issues
       {:logger_file_backend, "~> 0.0.12"},
       {:conform, "~> 2.5"},
-      {:erlware_commons, "~> 1.5"},
       {:tesla, "~> 1.7"},
       {:hackney, "~> 1.18"},
       {:jason, "~> 1.4"},
-      {:poison, "~> 5.0"},
+      {:poison, "~> 4.0"},
       {:swoosh, "~> 1.17"},
       {:multipart, "~> 0.4"},
       {:plug, "~> 1.18"}
@@ -72,5 +72,14 @@ defmodule Efl.Mixfile do
     ["ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
      "ecto.reset": ["ecto.drop", "ecto.setup"],
      test: ["ecto.create --quiet", "ecto.migrate", "test"]]
+  end
+
+  defp releases do
+    [
+      efl: [
+        include_executables_for: [:unix],
+        applications: [efl: :permanent]
+      ]
+    ]
   end
 end

@@ -1,0 +1,49 @@
+# Development Docker build with caching for EFL Elixir application
+
+FROM elixir:1.17.3-otp-26
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    git \
+    curl \
+    inotify-tools \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set working directory
+WORKDIR /app
+
+# Install Hex and Rebar
+RUN mix local.hex --force && \
+    mix local.rebar --force
+
+# Create cache directories
+RUN mkdir -p /app/_build /app/deps /app/.mix
+
+# Copy mix files first (for better Docker layer caching)
+COPY mix.exs mix.lock ./
+
+# Install dependencies (this will be cached if mix files don't change)
+RUN mix deps.get
+
+# Copy source code
+COPY . .
+
+# Create necessary directories
+RUN mkdir -p /app/logs
+
+# Expose port
+EXPOSE 4000
+
+# Set environment
+ENV MIX_ENV=dev
+ENV PORT=4000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:4000/ || exit 1
+
+# Start the application with live reload
+CMD ["mix", "phx.server"]
+
+
