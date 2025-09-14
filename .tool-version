@@ -1,0 +1,21 @@
+# Tool versions for EFL project
+# This file tracks the current active versions used in the project
+
+# Elixir version (running in container)
+elixir 1.17.3
+
+# Erlang/OTP version (running in container)
+erlang 27
+
+# Docker version (host system)
+docker 27.1.1
+
+# Phoenix version (from mix.exs)
+phoenix 1.7.0
+
+# Node.js version (not available in container - assets handled by Phoenix)
+# node not-installed
+
+# Additional tools
+# brunch 2.7.4 (for asset compilation)
+# mysql 8.0 (database)
