@@ -1,76 +1,55 @@
-# Multi-stage Docker build with caching for EFL Elixir application
+# Single-stage lightweight image - no precompilation
+FROM elixir:1.17-alpine
 
-# Stage 1: Dependencies stage
-FROM elixir:1.17.3-otp-26 AS deps
-
-# Install system dependencies for building
-RUN apt-get update && apt-get install -y \
-    build-essential \
+# Install runtime dependencies
+RUN apk add --no-cache \
+    build-base \
     git \
-    && rm -rf /var/lib/apt/lists/*
+    mysql-client \
+    openssl \
+    ncurses-libs \
+    wget
+
+# Create non-root user
+RUN addgroup -g 1000 -S app && \
+    adduser -u 1000 -S app -G app
 
 # Set working directory
 WORKDIR /app
 
-# Install Hex and Rebar
+# Install hex and rebar
 RUN mix local.hex --force && \
     mix local.rebar --force
 
-# Copy mix files first (for better Docker layer caching)
-COPY mix.exs mix.lock ./
-
-# Install dependencies
-RUN mix deps.get --only prod
-
-# Stage 2: Build stage
-FROM deps AS builder
-
-# Copy source code
+# Copy ALL source code first (better for caching and dependency resolution)
 COPY . .
 
-# Compile the application
-RUN MIX_ENV=prod mix compile
+# Install dependencies as root (ensures proper permissions and access to all files)
+RUN mix deps.get
 
-# Stage 3: Runtime stage
-FROM elixir:1.17.3-otp-26 AS runtime
+# Compile dependencies as root to ensure they're available
+RUN mix deps.compile
 
-# Install only runtime dependencies
-RUN apt-get update && apt-get install -y \
-    curl \
-    && rm -rf /var/lib/apt/lists/*
+# Change ownership of everything to app user
+RUN chown -R app:app /app
 
-# Create app user for security
-RUN groupadd -r app && useradd -r -g app app
+# Ensure the app user has access to mix cache
+RUN mkdir -p /home/app/.mix && chown -R app:app /home/app
 
-# Set working directory
-WORKDIR /app
-
-# Copy compiled application from builder stage
-COPY --from=builder /app/_build ./_build
-COPY --from=builder /app/priv ./priv
-COPY --from=builder /app/config ./config
-COPY --from=builder /app/mix.exs ./mix.exs
-COPY --from=builder /app/mix.lock ./mix.lock
-COPY --from=builder /app/lib ./lib
-COPY --from=builder /app/web ./web
-
-# Create necessary directories
-RUN mkdir -p /app/logs && \
-    chown -R app:app /app
-
-# Switch to app user
+# Switch to non-root user
 USER app
 
 # Expose port
 EXPOSE 4000
 
 # Set environment
-ENV MIX_ENV=prod
+ENV MIX_ENV=dev
 ENV PORT=4000
+ENV MIX_HOME=/home/app/.mix
 
 # Health check
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:4000/ || exit 1
+HEALTHCHECK --interval=30s --timeout=3s --start-period=60s --retries=3 \
+    CMD wget --no-verbose --tries=1 --spider http://localhost:4000/ || exit 1
 
-# Start the application
-CMD ["mix", "phx.server"]
+# Start the application (compiles at runtime)
+CMD ["sh", "-c", "mix deps.get && mix compile && mix phx.server"]

@@ -14,30 +14,25 @@ use Mix.Config
 config :efl, Efl.Endpoint,
   http: [port: {:system, "PORT"}],
   url: [host: "localhost", port: {:system, "PORT"}],
-  cache_static_manifest: "priv/static/manifest.json",
   server: true
+
+# Configure database for Docker
+config :efl, Efl.Repo,
+  adapter: Ecto.Adapters.MyXQL,
+  username: "root",
+  password: "password",
+  database: "classification_utility_dev",
+  hostname: "mysql",
+  pool_size: 10
 
 # Do not print debug messages in production
 config :logger,
-  backends: [:console, {LoggerFileBackend, :info},
-             {LoggerFileBackend, :error}]
-
-config :logger, :info,
-  format: "$time $date $metadata[$level] $message\n",
-  path: "/root/apps/efl/info.log",
-  metadata: [:request_id],
-  level: :info,
-  rotate: %{ max_bytes: 4096, size: 4 }
-
-config :logger, :error,
-  format: "$time $date $metadata[$level] $message\n",
-  path: "/root/apps/efl/error.log",
-  metadata: [:request_id],
-  level: :error
+  backends: [:console]
 
 config :logger, :console,
-  format: "$time $date $metadata[$level] $message\n",
-  metadata: [:request_id]
+  format: "$time $metadata[$level] $message\n",
+  metadata: [:request_id],
+  level: :info
 # ## SSL Support
 #
 # To get SSL working, you will need to add the `https` key
@@ -62,18 +57,6 @@ config :logger, :console,
 #
 # Check `Plug.SSL` for all available options in `force_ssl`.
 
-# ## Using releases
-#
-# If you are doing OTP releases, you need to instruct Phoenix
-# to start the server for all endpoints:
-#
-#     config :phoenix, :serve_endpoints, true
-#
-# Alternatively, you can configure exactly which server to
-# start per endpoint:
-#
-#     config :classification_utility, Efl.Endpoint, server: true
-#
 
 # Finally import the config/prod.secret.exs
 # which should be versioned separately.

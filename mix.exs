@@ -11,7 +11,7 @@ defmodule Efl.Mixfile do
      start_permanent: Mix.env == :prod,
      aliases: aliases(),
      deps: deps(),
-     releases: releases()]
+]
   end
 
   # Configuration for the OTP application.
@@ -74,12 +74,4 @@ defmodule Efl.Mixfile do
      test: ["ecto.create --quiet", "ecto.migrate", "test"]]
   end
 
-  defp releases do
-    [
-      efl: [
-        include_executables_for: [:unix],
-        applications: [efl: :permanent]
-      ]
-    ]
-  end
 end
