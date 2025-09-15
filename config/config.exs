@@ -19,11 +19,14 @@ config :efl, Efl.Endpoint,
 
 # Configures Elixir's Logger
 config :logger,
-  backends: [:console]
+  backends: [:console, {Efl.LoggerBackend, :info_log}]
 
 config :logger, :console,
   format: "$time $date $metadata[$level] $message\n",
   metadata: [:request_id]
+
+config :logger, :info_log,
+  level: :info
 
 config :tesla, adapter: Tesla.Adapter.Hackney
 
@@ -33,8 +36,8 @@ config :phoenix, :json_library, Poison
 # Configure Swoosh with Mailgun
 config :efl, Efl.Mailer,
   adapter: Swoosh.Adapters.Mailgun,
-  api_key: System.get_env("MAILGUN_API_KEY") || "your-mailgun-api-key",
-  domain: System.get_env("MAILGUN_DOMAIN") || "your-mailgun-domain"
+  api_key: System.get_env("MAILGUN_API_KEY") || Application.get_env(:mailgun, :mailgun_key),
+  domain: System.get_env("MAILGUN_DOMAIN") || Application.get_env(:mailgun, :mailgun_domain)
 
 config :swoosh, :api_client, Swoosh.ApiClient.Hackney
 # Import environment specific config. This must remain at the bottom

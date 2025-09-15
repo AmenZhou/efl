@@ -85,26 +85,21 @@ defmodule Efl.HtmlParsers.Dadi.Category do
   defp find_raw_items(html) do
     case html do
       { :ok, html_body } ->
-        { :ok,
-          html_body
-          |> Floki.parse_document
-          |> Floki.find(".bg_small_yellow")
-        }
+        parsed_doc = html_body |> Floki.parse_document
+        { :ok, Floki.find(".bg_small_yellow", parsed_doc) }
       _ ->
         raise("Cateogry#find_raw_items Fail")
     end
   end
 
   defp get_title(item) do
-    item
-    |> Floki.find(".topictitle a")
+    Floki.find(".topictitle a", item)
     |> Floki.text
     |> String.trim
   end
 
   defp get_link(item) do
-    item
-    |> Floki.find(".topictitle a")
+    Floki.find(".topictitle a", item)
     |> Floki.attribute("href")
     |> List.first
     |> String.split(";")
@@ -121,8 +116,7 @@ defmodule Efl.HtmlParsers.Dadi.Category do
   end
 
   defp parse_date(item) do
-    item
-    |> Floki.find(".postdetails")
+    Floki.find(".postdetails", item)
     |> List.last
     |> Floki.text
     |> String.trim
