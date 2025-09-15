@@ -21,7 +21,7 @@ defmodule Efl.Mixfile do
     [mod: {Efl, []},
      applications: [:phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger, :gettext,
                     :phoenix_ecto, :ecto_sql, :httpotion, :myxql, :timex, :elixlsx,
-                    :floki, :logger_file_backend, :conform, :poison, :tesla, :swoosh]]
+                    :floki, :conform, :poison, :tesla, :swoosh]]
   end
 
   # Specifies which paths to compile per environment.
@@ -50,7 +50,6 @@ defmodule Efl.Mixfile do
       # {:mailgun, "~> 0.1.2"},  # Commented out due to dependency conflicts
       # {:exrm, "~> 1.0.8"},  # Commented out due to compilation issues
       # {:relx, "~> 3.5"},   # Commented out due to compilation issues
-      {:logger_file_backend, "~> 0.0.12"},
       {:conform, "~> 2.5"},
       {:tesla, "~> 1.7"},
       {:hackney, "~> 1.18"},

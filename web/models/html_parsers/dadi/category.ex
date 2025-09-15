@@ -87,7 +87,7 @@ defmodule Efl.HtmlParsers.Dadi.Category do
       { :ok, html_body } ->
         { :ok,
           html_body
-          |> Floki.parse
+          |> Floki.parse_document
           |> Floki.find(".bg_small_yellow")
         }
       _ ->

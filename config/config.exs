@@ -3,7 +3,7 @@
 #
 # This configuration file is loaded before any dependency and
 # is restricted to this project.
-use Mix.Config
+import Config
 
 # General application configuration
 config :efl,
@@ -18,22 +18,8 @@ config :efl, Efl.Endpoint,
            adapter: Phoenix.PubSub.PG2]
 
 # Configures Elixir's Logger
-# tell logger to load a LoggerFileBackend processes
 config :logger,
-  backends: [:console, {LoggerFileBackend, :info},
-             {LoggerFileBackend, :error}]
-
-config :logger, :info,
-  format: "$time $date $metadata[$level] $message\n",
-  path: "./info.log",
-  metadata: [:request_id],
-  level: :info
-
-config :logger, :error,
-  format: "$time $date $metadata[$level] $message\n",
-  path: "./error.log",
-  metadata: [:request_id],
-  level: :error
+  backends: [:console]
 
 config :logger, :console,
   format: "$time $date $metadata[$level] $message\n",
@@ -53,4 +39,4 @@ config :efl, Efl.Mailer,
 config :swoosh, :api_client, Swoosh.ApiClient.Hackney
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
-import_config "#{Mix.env}.exs"
+import_config "#{config_env()}.exs"
