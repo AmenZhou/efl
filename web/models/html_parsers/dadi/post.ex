@@ -11,9 +11,15 @@ defmodule Efl.HtmlParsers.Dadi.Post do
       case html(url) do
         { :ok, body } ->
           Logger.info("Post parsed one url: #{url}")
-          content = Floki.find(".postbody", body)
-                    |> Floki.text
-                    |> String.trim
+          content = try do
+            Floki.find(".postbody", body)
+            |> Floki.text
+            |> String.trim
+          rescue
+            ex ->
+              Logger.warning("Failed to extract content from post body: #{inspect(ex)}")
+              ""
+          end
 
           phone = PhoneUtil.find_phone_from_content(content)
 

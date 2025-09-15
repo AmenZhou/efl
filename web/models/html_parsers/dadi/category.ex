@@ -85,25 +85,42 @@ defmodule Efl.HtmlParsers.Dadi.Category do
   defp find_raw_items(html) do
     case html do
       { :ok, html_body } ->
-        parsed_doc = html_body |> Floki.parse_document
-        { :ok, Floki.find(".bg_small_yellow", parsed_doc) }
+        case Floki.parse_document(html_body) do
+          { :ok, parsed_doc } ->
+            { :ok, Floki.find(".bg_small_yellow", parsed_doc) }
+          { :error, reason } ->
+            Logger.error("Floki parse_document failed: #{inspect(reason)}")
+            { :error, "Failed to parse HTML document: #{inspect(reason)}" }
+        end
       _ ->
         raise("Cateogry#find_raw_items Fail")
     end
   end
 
   defp get_title(item) do
-    Floki.find(".topictitle a", item)
-    |> Floki.text
-    |> String.trim
+    try do
+      Floki.find(".topictitle a", item)
+      |> Floki.text
+      |> String.trim
+    rescue
+      ex ->
+        Logger.warning("Failed to extract title from item: #{inspect(ex)}")
+        ""
+    end
   end
 
   defp get_link(item) do
-    Floki.find(".topictitle a", item)
-    |> Floki.attribute("href")
-    |> List.first
-    |> String.split(";")
-    |> List.first
+    try do
+      Floki.find(".topictitle a", item)
+      |> Floki.attribute("href")
+      |> List.first
+      |> String.split(";")
+      |> List.first
+    rescue
+      ex ->
+        Logger.warning("Failed to extract link from item: #{inspect(ex)}")
+        ""
+    end
   end
 
   defp get_date(item) do
@@ -116,10 +133,16 @@ defmodule Efl.HtmlParsers.Dadi.Category do
   end
 
   defp parse_date(item) do
-    Floki.find(".postdetails", item)
-    |> List.last
-    |> Floki.text
-    |> String.trim
-    |> Timex.parse("%_m/%e/%Y", :strftime)
+    try do
+      Floki.find(".postdetails", item)
+      |> List.last
+      |> Floki.text
+      |> String.trim
+      |> Timex.parse("%_m/%e/%Y", :strftime)
+    rescue
+      ex ->
+        Logger.warning("Failed to parse date from item: #{inspect(ex)}")
+        { :error, "Failed to parse date: #{inspect(ex)}" }
+    end
   end
 end
