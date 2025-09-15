@@ -5,7 +5,97 @@ All notable changes to the EFL (Elixir Phoenix) project are documented in this f
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased] - 2024-12-06
+## [Unreleased] - 2025-09-15
+
+### Added
+- **Custom Logger Backend**
+  - Created `Efl.LoggerBackend` module for comprehensive application logging
+  - Implements `:gen_event` behavior for integration with Elixir Logger
+  - Captures all application logs (INFO, DEBUG, ERROR, WARN) to `info.log`
+  - Includes request ID tracking and timestamp formatting
+  - Replaces third-party `LoggerFileBackend` dependency
+
+- **File Logging Infrastructure**
+  - Created `Efl.FileLogger` module for direct file logging
+  - Created `Efl.Plugs.RequestLogger` plug for HTTP request logging
+  - Comprehensive logging solution for production monitoring
+
+- **Mailgun Email Integration**
+  - Re-enabled Mailgun configuration for production email functionality
+  - Updated configuration to use environment variables for security
+  - Maintains backward compatibility with hardcoded fallback values
+  - Supports both Swoosh Mailgun adapter and legacy mailgun configuration
+
+### Changed
+- **Logger Configuration**
+  - Updated `config/config.exs` to use custom `Efl.LoggerBackend`
+  - Updated `config/prod.exs` to use custom `Efl.LoggerBackend`
+  - Removed dependency on incompatible `LoggerFileBackend` package
+  - Enhanced console logging format with timestamps and request IDs
+
+- **Git Configuration**
+  - Fixed `.gitignore` to properly track `lib/` directory
+  - Removed incorrect `/lib` entry that was ignoring source code
+  - All logger backend files now properly version controlled
+
+- **Mailgun Configuration**
+  - Updated `config/mailgun.exs` to use environment variables
+  - Enhanced security with `MAILGUN_API_KEY`, `MAILGUN_DOMAIN` environment variables
+  - Added `MAILGUN_RECIPIENT` and `MAILGUN_ALERT_RECIPIENT` environment variables
+  - Maintained fallback to hardcoded values for development
+
+### Removed
+- **Incompatible Dependencies**
+  - Removed `logger_file_backend` dependency (incompatible with Elixir 1.17.3)
+  - Eliminated dependency conflicts and compilation errors
+
+- **Temporary Files**
+  - Removed `test_mailgun.exs` after successful configuration testing
+  - Cleaned up temporary test files
+
+### Fixed
+- **Logger Backend Issues**
+  - Fixed `LoggerFileBackend` compatibility issues with Elixir 1.17.3
+  - Resolved "function LoggerFileBackend.init/1 is undefined" error
+  - Fixed timestamp formatting issues in custom logger backend
+  - Eliminated arithmetic errors in timestamp calculations
+
+- **File Logging Problems**
+  - Fixed "function :file.init/1 is undefined" error
+  - Resolved missing file logging functionality
+  - Ensured all application logs are captured in `info.log`
+  - Fixed request ID tracking in log messages
+
+- **Mailgun Configuration Errors**
+  - Fixed "application :mailgun is not available" warning
+  - Resolved missing Mailgun dependency issues
+  - Ensured proper Swoosh Mailgun adapter configuration
+
+- **Git Tracking Issues**
+  - Fixed `.gitignore` preventing `lib/` directory from being tracked
+  - Resolved "The following paths are ignored by one of your .gitignore files" error
+  - Ensured all source code files are properly version controlled
+
+### Security
+- **Email Configuration**
+  - Enhanced Mailgun configuration with environment variable support
+  - Improved security by allowing production API keys to be set via environment variables
+  - Maintained secure fallback configuration for development
+
+### Performance
+- **Logging Optimization**
+  - Optimized custom logger backend for better performance
+  - Reduced dependency overhead by removing incompatible packages
+  - Streamlined logging pipeline with direct file writing
+
+### Infrastructure
+- **Production Readiness**
+  - Verified server health with comprehensive test scripts
+  - Ensured all logging functionality works in production environment
+  - Validated Mailgun email functionality for production use
+  - Confirmed static asset generation with `mix phx.digest`
+
+## [Previous Release] - 2024-12-06
 
 ### Added
 - **Docker Configuration (Development Only)**
