@@ -18,13 +18,16 @@ config :efl, Efl.Endpoint,
   cache_static_manifest: "priv/static/manifest.json",
   server: true
 
-# Do not print debug messages in production
+# Configure logging for production
 config :logger,
-  backends: [:console]
+  backends: [:console, {Efl.LoggerBackend, :info_log}]
 
 config :logger, :console,
   format: "$time $date $metadata[$level] $message\n",
   metadata: [:request_id]
+
+config :logger, :info_log,
+  level: :info
 # ## SSL Support
 #
 # To get SSL working, you will need to add the `https` key

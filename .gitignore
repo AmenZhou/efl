@@ -5,7 +5,6 @@
 /*.ez
 /**/*.beam
 /**/*.xlsx
-/lib
 /config/efl.conf
 /config/efl.schema.exs
 /rel

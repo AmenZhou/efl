@@ -11,8 +11,7 @@ defmodule Efl.HtmlParsers.Dadi.Post do
       case html(url) do
         { :ok, body } ->
           Logger.info("Post parsed one url: #{url}")
-          content = body
-                    |> Floki.find(".postbody")
+          content = Floki.find(".postbody", body)
                     |> Floki.text
                     |> String.trim
 
