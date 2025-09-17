@@ -64,3 +64,47 @@ docker-compose exec app iex -S mix
 ```
 Efl.RefCategory.seeds
 ```
+
+## Production Commands
+
+### Server Management
+```bash
+# Start server in background
+./server_manager.sh start
+
+# Stop server
+./server_manager.sh stop
+
+# Restart server
+./server_manager.sh restart
+
+# Check server status
+./server_manager.sh status
+
+# View server logs
+./server_manager.sh logs
+```
+
+### Data Fetching
+```bash
+# Trigger data fetching process (scrapes website and updates database)
+wget http://localhost:4000/dadi/scratch > /dev/null 2>&1
+```
+
+### Email Testing
+```bash
+# Test email functionality
+MIX_ENV=prod mix run test_email_simple.exs
+
+# Test with full Excel generation
+MIX_ENV=prod mix run test_prod_email.exs
+```
+
+### Application Testing
+```bash
+# Run all tests
+./run_tests_fast.sh
+
+# Run specific test
+MIX_ENV=prod mix test test/specific_file.exs
+```
