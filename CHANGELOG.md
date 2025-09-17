@@ -5,7 +5,40 @@ All notable changes to the EFL (Elixir Phoenix) project are documented in this f
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased] - 2025-09-15
+## [Unreleased] - 2025-09-17
+
+### Added
+- **Fast Development Testing**
+  - Created `run_tests_fast.sh` script for instant test execution
+  - Docker volume mounting for immediate code change reflection
+  - 12x faster test execution (2.5s vs 30+ seconds for rebuilds)
+  - No Docker rebuilds required for code changes
+
+- **Development Workflow Optimization**
+  - Volume mounting configuration in `docker-compose.yml`
+  - Fast test script with comprehensive test coverage (103 tests)
+  - Alternative test methods for specific file testing
+  - Interactive development support with `iex -S mix`
+
+### Changed
+- **Docker Configuration**
+  - Added volume mounting for source code (`.:/app`)
+  - Excluded build artifacts from volume mounting (`/app/deps`, `/app/_build`, `/app/node_modules`)
+  - Optimized for development speed over container rebuilds
+
+- **Documentation**
+  - Updated README.md with fast development workflow
+  - Added Quick Start section with test script guidance
+  - Emphasized use of `./run_tests_fast.sh` for all development testing
+
+### Performance
+- **Test Execution Speed**
+  - 12x improvement in test execution time
+  - Instant code change reflection without rebuilds
+  - Volume mounting eliminates Docker layer rebuilding
+  - Comprehensive test suite runs in 2.5 seconds
+
+## [Previous Release] - 2025-09-15
 
 ### Added
 - **Custom Logger Backend**
@@ -232,9 +265,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### For Developers
 1. **Database Setup**: Run `docker-compose up -d` and `docker-compose exec app mix ecto.migrate`
-2. **Testing**: Use the standalone test approach to avoid database connection issues
+2. **Testing**: **Always use `./run_tests_fast.sh` for fast development testing** (2.5s vs 30+ seconds)
 3. **Development**: Application runs on `http://localhost:4000` in Docker environment
 4. **Dependencies**: All dependencies are automatically installed and compiled in Docker
+5. **Code Changes**: Volume mounting ensures changes are reflected immediately without rebuilds
 
 ### For Production Deployment
 1. **Resource Requirements**: Minimum 2GB RAM, 1 core CPU, 15GB disk

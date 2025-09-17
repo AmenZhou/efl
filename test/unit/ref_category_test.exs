@@ -91,7 +91,7 @@ defmodule Efl.RefCategoryUnitTest do
   describe "ref_data constant" do
     test "contains expected categories" do
       # Test that the @ref_data constant contains the expected structure
-      ref_data = Efl.RefCategory.__info__(:constants)[:ref_data]
+      ref_data = Efl.RefCategory.ref_data()
       
       assert is_list(ref_data)
       assert length(ref_data) == 16
@@ -105,7 +105,7 @@ defmodule Efl.RefCategoryUnitTest do
     end
 
     test "all categories have required fields" do
-      ref_data = Efl.RefCategory.__info__(:constants)[:ref_data]
+      ref_data = Efl.RefCategory.ref_data()
       
       for category <- ref_data do
         assert Map.has_key?(category, :name)

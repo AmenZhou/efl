@@ -82,9 +82,9 @@ defmodule Efl.HtmlParsers.Dadi.Category do
     { :ok, body }
   end
 
-  defp find_raw_items(html) do
+  def find_raw_items(html) do
     case html do
-      { :ok, html_body } ->
+      { :ok, html_body } when html_body != nil ->
         case Floki.parse_document(html_body) do
           { :ok, parsed_doc } ->
             { :ok, Floki.find(".bg_small_yellow", parsed_doc) }
@@ -92,12 +92,14 @@ defmodule Efl.HtmlParsers.Dadi.Category do
             Logger.error("Floki parse_document failed: #{inspect(reason)}")
             { :error, "Failed to parse HTML document: #{inspect(reason)}" }
         end
+      { :ok, nil } ->
+        { :ok, [] }
       _ ->
         raise("Cateogry#find_raw_items Fail")
     end
   end
 
-  defp get_title(item) do
+  def get_title(item) do
     try do
       Floki.find(".topictitle a", item)
       |> Floki.text
@@ -109,7 +111,7 @@ defmodule Efl.HtmlParsers.Dadi.Category do
     end
   end
 
-  defp get_link(item) do
+  def get_link(item) do
     try do
       Floki.find(".topictitle a", item)
       |> Floki.attribute("href")
@@ -132,7 +134,7 @@ defmodule Efl.HtmlParsers.Dadi.Category do
     end
   end
 
-  defp parse_date(item) do
+  def parse_date(item) do
     try do
       Floki.find(".postdetails", item)
       |> List.last

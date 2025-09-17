@@ -139,7 +139,7 @@ defmodule Efl.MainFlowTest do
         ref_category_id: category.id
       } |> Repo.insert!()
 
-      # Try to create duplicate URL
+      # Try to create duplicate URL - should fail at database level
       changeset = Dadi.changeset(%Dadi{}, %{
         title: "Second Post",
         url: "https://example.com/unique", # Same URL
@@ -148,6 +148,11 @@ defmodule Efl.MainFlowTest do
         ref_category_id: category.id
       })
 
+      # The changeset is valid, but database insert should fail
+      assert changeset.valid?
+      
+      # Database insert should fail with constraint error
+      assert {:error, changeset} = Repo.insert(changeset)
       refute changeset.valid?
       assert changeset.errors[:url] == {"has already been taken", [constraint: :unique, constraint_name: "dadi_url_index"]}
     end

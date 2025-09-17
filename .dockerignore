@@ -16,8 +16,7 @@ deps/
 _build/
 .elixir_ls/
 
-# Test files
-test/
+# Documentation
 doc/
 
 # Logs

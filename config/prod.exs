@@ -28,6 +28,17 @@ config :logger, :console,
 
 config :logger, :info_log,
   level: :info
+
+# Configure your database
+config :efl, Efl.Repo,
+  adapter: Ecto.Adapters.MyXQL,
+  username: "root",
+  password: "password",
+  database: "classification_utility_dev",
+  hostname: "mysql",
+  pool_size: 20,
+  charset: "utf8mb4",
+  collation: "utf8mb4_unicode_ci"
 # ## SSL Support
 #
 # To get SSL working, you will need to add the `https` key

@@ -14,7 +14,8 @@ defmodule Efl.DadiController do
     if ip_addr == "127.0.0.1" do
       Efl.Dadi.start
       text conn, "Start scratching DD360..."
+    else
+      text conn, "No permission"
     end
-    text conn, "No permission"
   end
 end

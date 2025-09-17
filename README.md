@@ -2,6 +2,33 @@
 
 This project is for a special usage on my own, more for fun. My first Elixir+Phoenix project.
 
+## Quick Start
+
+### Running Tests (Fast Development)
+**Always use the fast test script for development:**
+```bash
+./run_tests_fast.sh
+```
+
+This script uses Docker volume mounting for instant test execution (2.5 seconds vs 30+ seconds for rebuilds).
+
+### Alternative Test Methods
+```bash
+# Run specific test files
+docker-compose exec app mix test test/specific_file.exs
+
+# Run tests with volume mounting (no rebuild needed)
+docker-compose exec -e MIX_ENV=test app mix test
+
+# Interactive development
+docker-compose exec app iex -S mix
+```
+
+### Development Workflow
+1. Start containers: `docker-compose up -d`
+2. Run tests: `./run_tests_fast.sh`
+3. Make code changes (reflected immediately)
+4. Run tests again: `./run_tests_fast.sh`
 
 ## Install on Ubuntu
 

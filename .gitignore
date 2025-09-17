@@ -33,3 +33,7 @@ tags
 *.log
 /web/static/
 .DS_Store
+
+# Backup files
+backups/
+backup_*.sql

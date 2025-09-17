@@ -9,7 +9,7 @@ defmodule Efl.DadiControllerTest do
     ref_category = %RefCategory{
       name: "test_category",
       display_name: "Test Category",
-      page_count: 5
+      page_size: 5
     } |> Repo.insert!()
 
     dadi_post = %Dadi{

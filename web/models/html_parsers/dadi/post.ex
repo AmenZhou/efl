@@ -32,14 +32,14 @@ defmodule Efl.HtmlParsers.Dadi.Post do
           log_info = "Error PostParser.Dadi.Post HTML parse error, #{message}"
           Logger.error(log_info)
           Efl.Mailer.send_alert(log_info)
-          %PostParser{}
+          %PostParser{url: url, content: "", phone: ""}
       end
     rescue
       ex ->
         log_info = "Post#parse_post url: #{url}, message: #{inspect(ex)}"
         Logger.error(log_info)
         Efl.Mailer.send_alert(log_info)
-        %PostParser{}
+        %PostParser{url: url, content: "", phone: ""}
     end
   end
 

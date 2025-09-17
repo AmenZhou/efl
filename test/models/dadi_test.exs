@@ -19,7 +19,7 @@ defmodule Efl.DadiTest do
     ref_category = %RefCategory{
       name: "test_category",
       display_name: "Test Category",
-      page_count: 5
+      page_size: 5
     } |> Repo.insert!()
 
     {:ok, ref_category: ref_category}
@@ -63,8 +63,14 @@ defmodule Efl.DadiTest do
       attrs = Map.put(@valid_attrs, :ref_category_id, ref_category.id)
       %Dadi{} |> Dadi.changeset(attrs) |> Repo.insert!()
       
-      # Try to create duplicate
+      # Try to create duplicate - this should fail at database level
       changeset = Dadi.changeset(%Dadi{}, attrs)
+      
+      # The changeset is valid, but database insert should fail
+      assert changeset.valid?
+      
+      # Database insert should fail with constraint error
+      assert {:error, changeset} = Repo.insert(changeset)
       refute changeset.valid?
       assert changeset.errors[:url] == {"has already been taken", [constraint: :unique, constraint_name: "dadi_url_index"]}
     end
