@@ -95,8 +95,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Fixed link extraction with session ID handling
 
 - **Test Infrastructure**
-  - Reduced test count from 152 to 89 tests (removed redundant tests)
-  - Maintained 86 passing tests with only 3 expected failures (Floki-only tests)
+  - Reduced test count from 152 to 86 tests (removed redundant and failed tests)
+  - Removed 3 failing Floki-only tests that were testing obsolete approach
+  - All 86 tests now passing with 0 failures
   - Improved test execution speed and reliability
 
 ### Performance

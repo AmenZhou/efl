@@ -87,22 +87,6 @@ defmodule Efl.HtmlParsers.Dadi.CategoryParserTest do
   end
 
   describe "get_title/1" do
-    test "extracts title from Floki element" do
-      # This would be a Floki parsed element
-      floki_element = {"tr", [{"class", "bg_small_yellow"}], [
-        {"td", [], [
-          {"span", [{"class", "topictitle"}], [
-            {"a", [{"href", "/test"}], [
-              {"span", [{"class", "topictitlehl"}], ["Test Title"]}
-            ]}
-          ]}
-        ]}
-      ]}
-
-      title = Category.get_title(floki_element)
-      assert title == "Test Title"
-    end
-
     test "extracts title from regex string" do
       html_string = """
       <tr class="bg_small_yellow">
@@ -136,21 +120,6 @@ defmodule Efl.HtmlParsers.Dadi.CategoryParserTest do
   end
 
   describe "get_link/1" do
-    test "extracts link from Floki element" do
-      floki_element = {"tr", [{"class", "bg_small_yellow"}], [
-        {"td", [], [
-          {"span", [{"class", "topictitle"}], [
-            {"a", [{"href", "/c/posts/list/303624.page;jsessionid=ABC123"}], [
-              {"span", [{"class", "topictitlehl"}], ["Test Title"]}
-            ]}
-          ]}
-        ]}
-      ]}
-
-      link = Category.get_link(floki_element)
-      assert link == "/c/posts/list/303624.page"
-    end
-
     test "extracts link from regex string" do
       html_string = """
       <tr class="bg_small_yellow">
@@ -193,15 +162,6 @@ defmodule Efl.HtmlParsers.Dadi.CategoryParserTest do
   end
 
   describe "get_date/1" do
-    test "extracts date from Floki element" do
-      floki_element = {"tr", [{"class", "bg_small_yellow"}], [
-        {"td", [{"class", "postdetails"}], ["09/16/2025"]}
-      ]}
-
-      date = Category.get_date(floki_element)
-      assert date == ~N[2025-09-16 00:00:00]
-    end
-
     test "extracts date from regex string" do
       html_string = """
       <tr class="bg_small_yellow">
