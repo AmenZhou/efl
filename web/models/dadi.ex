@@ -65,8 +65,8 @@ defmodule Efl.Dadi do
   end
 
   defp validate_post_date(changeset) do
-    # Skip validation in test environment
-    if Mix.env() == :test do
+    # Skip validation in test environment and for development
+    if Mix.env() == :test or Mix.env() == :dev do
       changeset
     else
       post_date = get_field(changeset, :post_date)

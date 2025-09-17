@@ -85,12 +85,23 @@ defmodule Efl.HtmlParsers.Dadi.Category do
   def find_raw_items(html) do
     case html do
       { :ok, html_body } when html_body != nil ->
+        #se Try Floki first
         case Floki.parse_document(html_body) do
           { :ok, parsed_doc } ->
-            { :ok, Floki.find(".bg_small_yellow", parsed_doc) }
+            floki_items = Floki.find(".bg_small_yellow", parsed_doc)
+            if length(floki_items) > 0 do
+              { :ok, floki_items }
+            else
+              # Fallback to regex if Floki finds nothing
+              Logger.warning("Floki found 0 items, falling back to regex extraction")
+              regex_items = extract_items_with_regex(html_body)
+              { :ok, regex_items }
+            end
           { :error, reason } ->
             Logger.error("Floki parse_document failed: #{inspect(reason)}")
-            { :error, "Failed to parse HTML document: #{inspect(reason)}" }
+            # Fallback to regex
+            regex_items = extract_items_with_regex(html_body)
+            { :ok, regex_items }
         end
       { :ok, nil } ->
         { :ok, [] }
@@ -99,11 +110,24 @@ defmodule Efl.HtmlParsers.Dadi.Category do
     end
   end
 
+  # Fallback regex extraction method
+  defp extract_items_with_regex(html_body) do
+    # Extract all bg_small_yellow rows using regex
+    Regex.scan(~r/<tr class="bg_small_yellow">.*?<\/tr>/s, html_body)
+    |> Enum.map(fn [match] -> match end)
+  end
+
   def get_title(item) do
     try do
-      Floki.find(".topictitle a", item)
-      |> Floki.text
-      |> String.trim
+      if is_binary(item) do
+        # Handle regex-extracted string
+        extract_title_with_regex(item)
+      else
+        # Handle Floki element
+        Floki.find(".topictitle a", item)
+        |> Floki.text
+        |> String.trim
+      end
     rescue
       ex ->
         Logger.warning("Failed to extract title from item: #{inspect(ex)}")
@@ -113,11 +137,17 @@ defmodule Efl.HtmlParsers.Dadi.Category do
 
   def get_link(item) do
     try do
-      Floki.find(".topictitle a", item)
-      |> Floki.attribute("href")
-      |> List.first
-      |> String.split(";")
-      |> List.first
+      if is_binary(item) do
+        # Handle regex-extracted string
+        extract_link_with_regex(item)
+      else
+        # Handle Floki element
+        Floki.find(".topictitle a", item)
+        |> Floki.attribute("href")
+        |> List.first
+        |> String.split(";")
+        |> List.first
+      end
     rescue
       ex ->
         Logger.warning("Failed to extract link from item: #{inspect(ex)}")
@@ -125,7 +155,7 @@ defmodule Efl.HtmlParsers.Dadi.Category do
     end
   end
 
-  defp get_date(item) do
+  def get_date(item) do
     case item |> parse_date do
       { :ok, date } ->
         date
@@ -136,15 +166,53 @@ defmodule Efl.HtmlParsers.Dadi.Category do
 
   def parse_date(item) do
     try do
-      Floki.find(".postdetails", item)
-      |> List.last
-      |> Floki.text
-      |> String.trim
-      |> Timex.parse("%_m/%e/%Y", :strftime)
+      date_text = if is_binary(item) do
+        # Handle regex-extracted string
+        extract_date_with_regex(item)
+      else
+        # Handle Floki element
+        Floki.find(".postdetails", item)
+        |> List.last
+        |> Floki.text
+        |> String.trim
+      end
+      
+      Timex.parse(date_text, "%_m/%e/%Y", :strftime)
     rescue
       ex ->
         Logger.warning("Failed to parse date from item: #{inspect(ex)}")
         { :error, "Failed to parse date: #{inspect(ex)}" }
+    end
+  end
+
+  # Regex extraction helpers
+  defp extract_title_with_regex(html_string) do
+    case Regex.run(~r/<span class="topictitlehl">(.*?)<\/span>/s, html_string) do
+      [_, title] -> String.trim(title)
+      _ -> ""
+    end
+  end
+
+  defp extract_link_with_regex(html_string) do
+    case Regex.run(~r/<a href="([^"]+)">/s, html_string) do
+      [_, link] -> 
+        link
+        |> String.split(";")
+        |> List.first
+      _ -> ""
+    end
+  end
+
+  defp extract_date_with_regex(html_string) do
+    # Find the last span with class="postdetails" that contains a date pattern
+    case Regex.run(~r/<span class="postdetails">\s*(\d{2}\/\d{2}\/\d{4})\s*<\/span>/s, html_string) do
+      [_, date] -> String.trim(date)
+      _ -> 
+        # Fallback: try to find date in any element with class="postdetails"
+        case Regex.run(~r/class="postdetails"[^>]*>\s*(\d{2}\/\d{2}\/\d{4})\s*</s, html_string) do
+          [_, date] -> String.trim(date)
+          _ -> ""
+        end
     end
   end
 end
