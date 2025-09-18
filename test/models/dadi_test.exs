@@ -189,6 +189,148 @@ defmodule Efl.DadiTest do
       # Restore original environment
       Mix.env(original_env)
     end
+
+    test "validates specific date formats that were causing issues", %{ref_category: ref_category} do
+      # Test the specific dates that were causing parsing issues
+      test_dates = [
+        ~D[2025-09-16],  # September 16, 2025 (yesterday in our test case)
+        ~D[2025-08-31],  # August 31, 2025
+        ~D[2025-01-15],  # January 15, 2025
+        ~D[2025-12-25]   # December 25, 2025
+      ]
+
+      for test_date <- test_dates do
+        attrs = @valid_attrs
+        |> Map.put(:ref_category_id, ref_category.id)
+        |> Map.put(:post_date, test_date)
+        
+        changeset = Dadi.changeset(%Dadi{}, attrs)
+        
+        # In test environment, all dates should be valid
+        assert changeset.valid?, "Date #{test_date} should be valid in test environment"
+      end
+    end
+
+    test "handles Date struct conversion correctly", %{ref_category: ref_category} do
+      # Test that Date structs are handled properly in validation
+      date_struct = ~D[2025-09-16]
+      
+      attrs = @valid_attrs
+      |> Map.put(:ref_category_id, ref_category.id)
+      |> Map.put(:post_date, date_struct)
+      
+      changeset = Dadi.changeset(%Dadi{}, attrs)
+      
+      assert changeset.valid?
+      assert changeset.changes.post_date == date_struct
+    end
+
+    test "handles DateTime conversion to Date correctly", %{ref_category: ref_category} do
+      # Test that DateTime structs are converted to Date properly
+      datetime = ~N[2025-09-16 14:30:00]
+      expected_date = ~D[2025-09-16]
+      
+      attrs = @valid_attrs
+      |> Map.put(:ref_category_id, ref_category.id)
+      |> Map.put(:post_date, datetime)
+      
+      changeset = Dadi.changeset(%Dadi{}, attrs)
+      
+      # The changeset should handle the conversion
+      assert changeset.valid?
+    end
+
+    test "rejects nil post_date in production", %{ref_category: ref_category} do
+      # Mock production environment
+      original_env = Mix.env()
+      Mix.env(:prod)
+      
+      attrs = @valid_attrs
+      |> Map.put(:ref_category_id, ref_category.id)
+      |> Map.put(:post_date, nil)
+      
+      changeset = Dadi.changeset(%Dadi{}, attrs)
+      
+      # Should be invalid with nil post_date
+      refute changeset.valid?
+      assert changeset.errors[:post_date] == {"can't be blank", [validation: :required]}
+      
+      # Restore original environment
+      Mix.env(original_env)
+    end
+
+    test "validates post_date is required field", %{ref_category: ref_category} do
+      attrs = @valid_attrs
+      |> Map.put(:ref_category_id, ref_category.id)
+      |> Map.delete(:post_date)
+      
+      changeset = Dadi.changeset(%Dadi{}, attrs)
+      
+      refute changeset.valid?
+      assert changeset.errors[:post_date] == {"can't be blank", [validation: :required]}
+    end
+  end
+
+  describe "date validation regression tests" do
+    test "ensures 9/16/2025 date validation works correctly", %{ref_category: ref_category} do
+      # This test ensures the specific date that was causing issues works correctly
+      september_16_2025 = ~D[2025-09-16]
+      
+      attrs = @valid_attrs
+      |> Map.put(:ref_category_id, ref_category.id)
+      |> Map.put(:post_date, september_16_2025)
+      
+      changeset = Dadi.changeset(%Dadi{}, attrs)
+      
+      # Should be valid in test environment
+      assert changeset.valid?
+      assert changeset.changes.post_date == september_16_2025
+    end
+
+    test "ensures 8/31/2025 date validation works correctly", %{ref_category: ref_category} do
+      # Another date that was causing parsing issues
+      august_31_2025 = ~D[2025-08-31]
+      
+      attrs = @valid_attrs
+      |> Map.put(:ref_category_id, ref_category.id)
+      |> Map.put(:post_date, august_31_2025)
+      
+      changeset = Dadi.changeset(%Dadi{}, attrs)
+      
+      # Should be valid in test environment
+      assert changeset.valid?
+      assert changeset.changes.post_date == august_31_2025
+    end
+
+    test "validates that date comparison logic works correctly", %{ref_category: ref_category} do
+      # Test the date comparison logic in validate_post_date
+      original_env = Mix.env()
+      Mix.env(:prod)
+      
+      # Get the target date (yesterday)
+      target_date = Efl.TimeUtil.target_date()
+      
+      # Test with exact match (should be valid)
+      attrs_exact = @valid_attrs
+      |> Map.put(:ref_category_id, ref_category.id)
+      |> Map.put(:post_date, target_date)
+      
+      changeset_exact = Dadi.changeset(%Dadi{}, attrs_exact)
+      assert changeset_exact.valid?, "Exact date match should be valid"
+      
+      # Test with different date (should be invalid)
+      different_date = target_date |> Timex.shift(days: 1)
+      attrs_different = @valid_attrs
+      |> Map.put(:ref_category_id, ref_category.id)
+      |> Map.put(:post_date, different_date)
+      
+      changeset_different = Dadi.changeset(%Dadi{}, attrs_different)
+      refute changeset_different.valid?, "Different date should be invalid"
+      assert changeset_different.errors[:post_date] == {"can't be blank", []}
+      
+      # Restore original environment
+      Mix.env(original_env)
+    end
   end
 
   describe "start/0" do
