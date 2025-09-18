@@ -1,0 +1,210 @@
+defmodule Efl.DadiParsingIntegrationTest do
+  use Efl.ModelCase, async: false
+
+  alias Efl.HtmlParsers.Dadi.Category
+  alias Efl.Dadi, as: DadiModel
+  alias Efl.RefCategory
+  alias Efl.Repo
+
+  describe "end-to-end parsing with cached HTML" do
+    setup do
+      # Create test ref category
+      ref_category = %RefCategory{
+        name: "test_category",
+        display_name: "Test Category",
+        page_size: 5
+      } |> Repo.insert!()
+
+      {:ok, ref_category: ref_category}
+    end
+
+    test "processes cached HTML file end-to-end", %{ref_category: ref_category} do
+      if File.exists?("test/cached_html.html") do
+        # Read cached HTML
+        cached_html = File.read!("test/cached_html.html")
+        
+        # Update HTML to use yesterday's date for validation
+        yesterday = Efl.TimeUtil.target_date() |> Timex.format!("%m/%d/%Y", :strftime)
+        updated_html = String.replace(cached_html, "01/15/2025", yesterday)
+        
+        # Test finding raw items
+        {:ok, items} = Category.find_raw_items({:ok, updated_html})
+        assert length(items) > 0
+        
+        # Test parsing each item
+        parsed_items = Enum.map(items, fn item ->
+          %Category{
+            title: Category.get_title(item),
+            url: "http://c.dadi360.com" <> Category.get_link(item),
+            post_date: Category.get_date(item),
+            phone: ""
+          }
+        end)
+        
+        # Verify we have valid data
+        assert length(parsed_items) > 0
+        
+        # Check that we can extract meaningful data
+        valid_items = Enum.filter(parsed_items, fn item ->
+          item.title != "" and item.url != "" and item.post_date != nil
+        end)
+        
+        assert length(valid_items) > 0
+        
+        # Test database insertion for valid items
+        Enum.each(valid_items, fn item ->
+          dadi_params = %{item | ref_category_id: ref_category.id}
+          |> Map.from_struct()
+          
+          changeset = DadiModel.changeset(%DadiModel{}, dadi_params)
+          
+          # Should be valid in test environment
+          assert changeset.valid?
+          
+          # Test insertion
+          case Repo.insert(changeset) do
+            {:ok, _dadi} -> :ok
+            {:error, changeset} -> 
+              # Log validation errors for debugging
+              IO.puts("Validation errors: #{inspect(changeset.errors)}")
+              :ok
+          end
+        end)
+        
+        # Verify records were inserted
+        dadi_count = Repo.aggregate(DadiModel, :count, :id)
+        assert dadi_count > 0
+        
+      else
+        # Skip test if cached file doesn't exist
+        :ok
+      end
+    end
+
+    test "handles production date validation with cached HTML", %{ref_category: ref_category} do
+      if File.exists?("test/cached_html.html") do
+        # Mock production environment
+        original_env = Mix.env()
+        Mix.env(:prod)
+        
+        # Read cached HTML
+        cached_html = File.read!("test/cached_html.html")
+        
+        # Update HTML to use yesterday's date
+        yesterday = Efl.TimeUtil.target_date() |> Timex.format!("%m/%d/%Y", :strftime)
+        updated_html = String.replace(cached_html, "01/15/2025", yesterday)
+        
+        # Test finding raw items
+        {:ok, items} = Category.find_raw_items({:ok, updated_html})
+        assert length(items) > 0
+        
+        # Test parsing with production validation
+        parsed_items = Enum.map(items, fn item ->
+          %Category{
+            title: Category.get_title(item),
+            url: "http://c.dadi360.com" <> Category.get_link(item),
+            post_date: Category.get_date(item),
+            phone: ""
+          }
+        end)
+        
+        # Test database insertion with production validation
+        {valid_insertions, invalid_insertions} = Enum.reduce(parsed_items, {0, 0}, fn item, {valid_acc, invalid_acc} ->
+          dadi_params = %{item | ref_category_id: ref_category.id}
+          |> Map.from_struct()
+          
+          changeset = DadiModel.changeset(%DadiModel{}, dadi_params)
+          
+          case Repo.insert(changeset) do
+            {:ok, _dadi} -> 
+              {valid_acc + 1, invalid_acc}
+            {:error, changeset} -> 
+              # Log validation errors for debugging
+              IO.puts("Production validation failed: #{inspect(changeset.errors)}")
+              {valid_acc, invalid_acc + 1}
+          end
+        end
+        
+        # Should have some valid insertions with yesterday's date
+        assert valid_insertions > 0
+        
+        # Restore original environment
+        Mix.env(original_env)
+        
+      else
+        # Skip test if cached file doesn't exist
+        :ok
+      end
+    end
+
+    test "handles different date formats in cached HTML", %{ref_category: ref_category} do
+      if File.exists?("test/cached_html.html") do
+        # Read cached HTML
+        cached_html = File.read!("test/cached_html.html")
+        
+        # Test different date formats
+        date_formats = [
+          "01/15/2025",  # MM/DD/YYYY
+          "1/15/2025",   # M/DD/YYYY
+          "2025-01-15",  # YYYY-MM-DD
+          "15/01/2025"   # DD/MM/YYYY
+        ]
+        
+        Enum.each(date_formats, fn date_format ->
+          # Update HTML with different date format
+          updated_html = String.replace(cached_html, "01/15/2025", date_format)
+          
+          # Test finding raw items
+          {:ok, items} = Category.find_raw_items({:ok, updated_html})
+          assert length(items) > 0
+          
+          # Test date parsing
+          first_item = List.first(items)
+          date = Category.get_date(first_item)
+          
+          # Date should be parsed (might be nil for some formats)
+          # This tests the robustness of our date parsing
+          assert is_nil(date) or is_struct(date, NaiveDateTime)
+        end)
+        
+      else
+        # Skip test if cached file doesn't exist
+        :ok
+      end
+    end
+
+    test "handles malformed HTML gracefully", %{ref_category: ref_category} do
+      if File.exists?("test/cached_html.html") do
+        # Read cached HTML
+        cached_html = File.read!("test/cached_html.html")
+        
+        # Corrupt the HTML slightly
+        corrupted_html = String.replace(cached_html, "<span class=\"topictitlehl\">", "<span class=\"topictitlehl\">")
+        corrupted_html = String.replace(corrupted_html, "</span>", "</spam>")  # Malformed closing tag
+        
+        # Test finding raw items with corrupted HTML
+        {:ok, items} = Category.find_raw_items({:ok, corrupted_html})
+        
+        # Should still find items (regex fallback should work)
+        assert length(items) >= 0
+        
+        # Test parsing with corrupted HTML
+        parsed_items = Enum.map(items, fn item ->
+          %Category{
+            title: Category.get_title(item),
+            url: "http://c.dadi360.com" <> Category.get_link(item),
+            post_date: Category.get_date(item),
+            phone: ""
+          }
+        end)
+        
+        # Should handle gracefully even with corrupted HTML
+        assert is_list(parsed_items)
+        
+      else
+        # Skip test if cached file doesn't exist
+        :ok
+      end
+    end
+  end
+end

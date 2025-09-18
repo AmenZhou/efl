@@ -123,10 +123,19 @@ defmodule Efl.HtmlParsers.Dadi.Category do
         # Handle regex-extracted string
         extract_title_with_regex(item)
       else
-        # Handle Floki element
-        Floki.find(".topictitle a", item)
+        # Handle Floki element - try multiple selectors
+        title = Floki.find(".topictitle a", item)
         |> Floki.text
         |> String.trim
+        
+        # If no title found, try alternative selectors
+        if title == "" do
+          Floki.find(".topictitle", item)
+          |> Floki.text
+          |> String.trim
+        else
+          title
+        end
       end
     rescue
       ex ->
@@ -177,13 +186,44 @@ defmodule Efl.HtmlParsers.Dadi.Category do
         |> String.trim
       end
       
-      Timex.parse(date_text, "%_m/%e/%Y", :strftime)
+      Logger.info("Extracted date text: '#{date_text}'")
+      
+      # Try multiple date formats
+      result = parse_date_with_formats(date_text)
+      
+      case result do
+        {:ok, date} -> 
+          Logger.info("Successfully parsed date: #{inspect(date)}")
+          result
+        {:error, reason} -> 
+          Logger.warning("Failed to parse date '#{date_text}': #{reason}")
+          result
+      end
     rescue
       ex ->
         Logger.warning("Failed to parse date from item: #{inspect(ex)}")
         { :error, "Failed to parse date: #{inspect(ex)}" }
     end
   end
+
+  defp parse_date_with_formats(date_text) when is_binary(date_text) and date_text != "" do
+    # Try different date formats in order of preference
+    formats = [
+      {"%m/%d/%Y", :strftime},
+      {"%m/%e/%Y", :strftime},
+      {"%Y-%m-%d", :strftime},
+      {"%d/%m/%Y", :strftime}
+    ]
+    
+    Enum.find_value(formats, fn {format, type} ->
+      case Timex.parse(date_text, format, type) do
+        {:ok, date} -> {:ok, date}
+        {:error, _} -> nil
+      end
+    end) || {:error, "No valid date format found for: #{date_text}"}
+  end
+
+  defp parse_date_with_formats(_), do: {:error, "Empty or invalid date text"}
 
   # Regex extraction helpers
   defp extract_title_with_regex(html_string) do

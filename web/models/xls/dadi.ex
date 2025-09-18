@@ -13,7 +13,19 @@ defmodule Efl.Xls.Dadi do
   require IEx
 
   def create_xls do
-    %Workbook{sheets: sheets()}
+    sheets_data = sheets()
+    
+    # Check if we have any data to export
+    total_rows = sheets_data
+    |> Enum.map(fn sheet -> length(sheet.rows) end)
+    |> Enum.sum
+    
+    if total_rows <= 1 do  # Only header rows, no data
+      Logger.warning("No data to export - Excel file will be empty")
+      # Still create the file but log a warning
+    end
+    
+    %Workbook{sheets: sheets_data}
     |> Elixlsx.write_to(file_name())
   end
 

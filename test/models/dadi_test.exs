@@ -114,6 +114,83 @@ defmodule Efl.DadiTest do
     end
   end
 
+  describe "date validation" do
+    test "accepts yesterday's date in production", %{ref_category: ref_category} do
+      # Mock production environment
+      original_env = Mix.env()
+      Mix.env(:prod)
+      
+      yesterday = Efl.TimeUtil.target_date()
+      
+      attrs = @valid_attrs
+      |> Map.put(:ref_category_id, ref_category.id)
+      |> Map.put(:post_date, yesterday)
+      
+      changeset = Dadi.changeset(%Dadi{}, attrs)
+      
+      # Should be valid in production with yesterday's date
+      assert changeset.valid?
+      
+      # Restore original environment
+      Mix.env(original_env)
+    end
+
+    test "rejects non-yesterday dates in production", %{ref_category: ref_category} do
+      # Mock production environment
+      original_env = Mix.env()
+      Mix.env(:prod)
+      
+      # Use a date that's not yesterday
+      wrong_date = Efl.TimeUtil.target_date() |> Timex.shift(days: -2)
+      
+      attrs = @valid_attrs
+      |> Map.put(:ref_category_id, ref_category.id)
+      |> Map.put(:post_date, wrong_date)
+      
+      changeset = Dadi.changeset(%Dadi{}, attrs)
+      
+      # Should be invalid in production with non-yesterday date
+      refute changeset.valid?
+      assert changeset.errors[:post_date] == {"can't be blank", []}
+      
+      # Restore original environment
+      Mix.env(original_env)
+    end
+
+    test "allows any date in test environment", %{ref_category: ref_category} do
+      # Test environment should allow any date
+      future_date = ~D[2025-12-31]
+      
+      attrs = @valid_attrs
+      |> Map.put(:ref_category_id, ref_category.id)
+      |> Map.put(:post_date, future_date)
+      
+      changeset = Dadi.changeset(%Dadi{}, attrs)
+      
+      # Should be valid in test environment regardless of date
+      assert changeset.valid?
+    end
+
+    test "allows any date in dev environment" do
+      # Mock dev environment
+      original_env = Mix.env()
+      Mix.env(:dev)
+      
+      future_date = ~D[2025-12-31]
+      
+      attrs = @valid_attrs
+      |> Map.put(:post_date, future_date)
+      
+      changeset = Dadi.changeset(%Dadi{}, attrs)
+      
+      # Should be valid in dev environment regardless of date
+      assert changeset.valid?
+      
+      # Restore original environment
+      Mix.env(original_env)
+    end
+  end
+
   describe "start/0" do
     test "starts the main scraping process" do
       # This is a more complex test that would require mocking

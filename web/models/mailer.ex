@@ -14,20 +14,33 @@ defmodule Efl.Mailer do
   def send_email_with_xls do
     file_name = Xls.file_name
     
-    email = new()
-    |> to(@recipient)
-    |> from(@from)
-    |> subject("DADI 360 -- #{file_name}")
-    |> text_body("Please see the attachment")
-    |> attachment(%Swoosh.Attachment{
-      path: file_name,
-      filename: file_name,
-      content_type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-    })
-    
-    case deliver(email) do
-      {:error, _} -> send_alert()
-      {:ok, success} -> success
+    # Check if file exists and has content
+    if File.exists?(file_name) do
+      file_size = File.stat!(file_name).size
+      
+      if file_size > 1000 do  # More than just headers
+        email = new()
+        |> to(@recipient)
+        |> from(@from)
+        |> subject("DADI 360 -- #{file_name}")
+        |> text_body("Please see the attachment")
+        |> attachment(%Swoosh.Attachment{
+          path: file_name,
+          filename: file_name,
+          content_type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        })
+        
+        case deliver(email) do
+          {:error, _} -> send_alert()
+          {:ok, success} -> success
+        end
+      else
+        Logger.warning("Excel file is too small (#{file_size} bytes) - skipping email send")
+        send_alert("Excel file is empty or too small (#{file_size} bytes)")
+      end
+    else
+      Logger.error("Excel file does not exist: #{file_name}")
+      send_alert("Excel file does not exist: #{file_name}")
     end
   end
 

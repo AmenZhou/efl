@@ -205,6 +205,24 @@ defmodule Efl.HtmlParsers.Dadi.CategoryParserTest do
       assert date == ~N[2025-09-16 00:00:00]
     end
 
+    test "parses multiple date formats" do
+      # Test MM/DD/YYYY format
+      {:ok, date1} = Category.parse_date("01/15/2025")
+      assert date1 == ~N[2025-01-15 00:00:00]
+
+      # Test M/D/YYYY format
+      {:ok, date2} = Category.parse_date("1/5/2025")
+      assert date2 == ~N[2025-01-05 00:00:00]
+
+      # Test YYYY-MM-DD format
+      {:ok, date3} = Category.parse_date("2025-01-15")
+      assert date3 == ~N[2025-01-15 00:00:00]
+
+      # Test DD/MM/YYYY format
+      {:ok, date4} = Category.parse_date("15/01/2025")
+      assert date4 == ~N[2025-01-15 00:00:00]
+    end
+
     test "handles invalid date format" do
       html_string = """
       <tr class="bg_small_yellow">
@@ -214,13 +232,21 @@ defmodule Efl.HtmlParsers.Dadi.CategoryParserTest do
 
       {:error, _reason} = Category.parse_date(html_string)
     end
+
+    test "handles empty date string" do
+      {:error, _reason} = Category.parse_date("")
+    end
+
+    test "handles nil date string" do
+      {:error, _reason} = Category.parse_date(nil)
+    end
   end
 
   describe "integration with cached HTML" do
     test "processes cached HTML file if available" do
       # This test will only run if the cached HTML file exists
-      if File.exists?("cached_html.html") do
-        cached_html = File.read!("cached_html.html")
+      if File.exists?("test/cached_html.html") do
+        cached_html = File.read!("test/cached_html.html")
         
         {:ok, items} = Category.find_raw_items({:ok, cached_html})
         
@@ -240,6 +266,36 @@ defmodule Efl.HtmlParsers.Dadi.CategoryParserTest do
         end)
       else
         # Skip test if cached file doesn't exist
+        :ok
+      end
+    end
+
+    test "processes cached HTML with yesterday's date" do
+      if File.exists?("test/cached_html.html") do
+        cached_html = File.read!("test/cached_html.html")
+        
+        # Update the cached HTML to use yesterday's date
+        yesterday = Efl.TimeUtil.target_date() |> Timex.format!("%m/%d/%Y", :strftime)
+        updated_html = String.replace(cached_html, "01/15/2025", yesterday)
+        
+        {:ok, items} = Category.find_raw_items({:ok, updated_html})
+        
+        # Should find items
+        assert length(items) > 0
+        
+        # Test that we can extract data from items with yesterday's date
+        first_item = List.first(items)
+        title = Category.get_title(first_item)
+        link = Category.get_link(first_item)
+        date = Category.get_date(first_item)
+        
+        assert is_binary(title)
+        assert is_binary(link)
+        assert date != nil
+        
+        # The date should be parsed correctly
+        assert {:ok, _} = Category.parse_date(first_item)
+      else
         :ok
       end
     end

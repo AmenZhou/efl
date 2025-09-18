@@ -34,14 +34,22 @@ defmodule Efl.Dadi.Category do
     try do
       dadi_params = %{ dadi | ref_category_id: ref_category.id }
                     |> Map.from_struct
+      
+      # Log the data being inserted for debugging
+      target_date = Efl.TimeUtil.target_date()
+      Logger.info("Target date for validation: #{target_date}")
+      Logger.info("Attempting to insert dadi record: title=#{dadi.title}, post_date=#{dadi.post_date}, url=#{dadi.url}")
+      
       set = Dadi.changeset(%Dadi{}, dadi_params)
       case Repo.insert(set) do
         {:ok, struct} ->
-          message = Map.get(struct, :content) |> inspect
-          Logger.info("Insert one record successfully #{message}")
+          Logger.info("Successfully inserted dadi record with ID: #{struct.id}")
         {:error, changeset} ->
-          message = Map.get(changeset, :errors) |> inspect
-          Logger.error(message)
+          error_details = changeset.errors
+          |> Enum.map(fn {field, {message, _}} -> "#{field}: #{message}" end)
+          |> Enum.join(", ")
+          Logger.error("Failed to insert dadi record: #{error_details}")
+          Logger.error("Data was: title=#{dadi.title}, post_date=#{dadi.post_date}, url=#{dadi.url}")
       end
     rescue
       e ->

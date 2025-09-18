@@ -75,6 +75,7 @@ defmodule Efl.Dadi do
         post_date = Timex.to_date(post_date)
         ideal_date = TimeUtil.target_date
         
+        # Only allow posts from yesterday (exact match)
         if Timex.compare(ideal_date, post_date) != 0 do
           add_error(changeset, :post_date, "can't be blank")
         else
