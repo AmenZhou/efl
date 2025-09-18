@@ -38,6 +38,8 @@ defmodule Efl.Dadi.Category do
       # Log the data being inserted for debugging
       target_date = Efl.TimeUtil.target_date()
       Logger.info("Target date for validation: #{target_date}")
+      Logger.info("Original dadi struct: title=#{dadi.title}, post_date=#{inspect(dadi.post_date)}, url=#{dadi.url}")
+      Logger.info("Converted dadi_params: title=#{dadi_params[:title]}, post_date=#{inspect(dadi_params[:post_date])}, url=#{dadi_params[:url]}")
       Logger.info("Attempting to insert dadi record: title=#{dadi.title}, post_date=#{dadi.post_date}, url=#{dadi.url}")
       
       set = Dadi.changeset(%Dadi{}, dadi_params)
