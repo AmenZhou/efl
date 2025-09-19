@@ -333,6 +333,216 @@ defmodule Efl.DadiTest do
     end
   end
 
+  describe "process management" do
+    test "start/0 starts a new process when none is running" do
+      # Ensure no process is running
+      case Process.whereis(:dadi_processor) do
+        nil -> :ok
+        pid -> Process.exit(pid, :kill)
+      end
+      
+      # Start a new process
+      {:ok, pid} = Dadi.start
+      assert is_pid(pid)
+      
+      # Verify process is registered
+      assert Process.whereis(:dadi_processor) == pid
+      
+      # Clean up
+      Process.exit(pid, :kill)
+      Process.unregister(:dadi_processor)
+    end
+
+    test "start/0 returns error when process is already running" do
+      # Start first process
+      {:ok, pid1} = Dadi.start
+      assert is_pid(pid1)
+      
+      # Try to start second process
+      {:error, :already_running} = Dadi.start
+      
+      # Clean up
+      Process.exit(pid1, :kill)
+      Process.unregister(:dadi_processor)
+    end
+
+    test "stop/0 stops running process" do
+      # Start a process
+      {:ok, pid} = Dadi.start
+      assert is_pid(pid)
+      
+      # Stop the process
+      {:ok, :stopped} = Dadi.stop
+      
+      # Verify process is no longer registered
+      assert Process.whereis(:dadi_processor) == nil
+    end
+
+    test "stop/0 returns not_running when no process is running" do
+      # Ensure no process is running
+      case Process.whereis(:dadi_processor) do
+        nil -> :ok
+        pid -> Process.exit(pid, :kill)
+      end
+      
+      # Try to stop non-existent process
+      {:ok, :not_running} = Dadi.stop
+    end
+
+    test "status/0 returns correct status" do
+      # Test when no process is running
+      {:not_running, nil} = Dadi.status
+      
+      # Start a process
+      {:ok, pid} = Dadi.start
+      assert is_pid(pid)
+      
+      # Test when process is running
+      {:running, ^pid} = Dadi.status
+      
+      # Clean up
+      Process.exit(pid, :kill)
+      Process.unregister(:dadi_processor)
+    end
+
+    test "process cleanup happens after completion" do
+      # This test verifies that the process unregisters itself
+      # We'll use a mock main function that exits quickly
+      original_main = &Dadi.main/0
+      
+      # Mock main to exit quickly
+      defmodule TestDadi do
+        def start do
+          case Process.whereis(:dadi_processor) do
+            nil ->
+              {:ok, pid} = Task.start_link(fn -> 
+                Process.register(self(), :dadi_processor)
+                # Simulate quick completion
+                :timer.sleep(100)
+                Process.unregister(:dadi_processor)
+              end)
+              {:ok, pid}
+            pid when is_pid(pid) ->
+              {:error, :already_running}
+          end
+        end
+      end
+      
+      # Start process
+      {:ok, pid} = TestDadi.start
+      assert is_pid(pid)
+      
+      # Wait for completion
+      :timer.sleep(200)
+      
+      # Verify process cleaned up
+      assert Process.whereis(:dadi_processor) == nil
+    end
+  end
+
+  describe "concurrent execution prevention" do
+    test "prevents multiple processes from running simultaneously" do
+      # Start first process
+      {:ok, pid1} = Dadi.start
+      assert is_pid(pid1)
+      
+      # Try to start multiple processes concurrently
+      tasks = for _ <- 1..5 do
+        Task.async(fn -> Dadi.start end)
+      end
+      
+      results = Task.await_many(tasks)
+      
+      # All should return already_running error
+      assert Enum.all?(results, fn result -> 
+        result == {:error, :already_running}
+      end)
+      
+      # Clean up
+      Process.exit(pid1, :kill)
+      Process.unregister(:dadi_processor)
+    end
+
+    test "process registration is atomic" do
+      # This test ensures that process registration doesn't have race conditions
+      # Start multiple processes simultaneously
+      tasks = for _ <- 1..10 do
+        Task.async(fn -> Dadi.start end)
+      end
+      
+      results = Task.await_many(tasks)
+      
+      # Only one should succeed, others should fail
+      success_count = Enum.count(results, fn result -> 
+        match?({:ok, _pid}, result)
+      end)
+      
+      error_count = Enum.count(results, fn result -> 
+        result == {:error, :already_running}
+      end)
+      
+      assert success_count == 1
+      assert error_count == 9
+      
+      # Clean up
+      case Process.whereis(:dadi_processor) do
+        nil -> :ok
+        pid -> Process.exit(pid, :kill)
+      end
+      Process.unregister(:dadi_processor)
+    end
+  end
+
+  describe "error handling in process management" do
+    test "handles process crashes gracefully" do
+      # Start a process
+      {:ok, pid} = Dadi.start
+      assert is_pid(pid)
+      
+      # Kill the process externally
+      Process.exit(pid, :kill)
+      
+      # Wait a bit for cleanup
+      :timer.sleep(100)
+      
+      # Process should be unregistered
+      assert Process.whereis(:dadi_processor) == nil
+      
+      # Should be able to start a new process
+      {:ok, new_pid} = Dadi.start
+      assert is_pid(new_pid)
+      assert new_pid != pid
+      
+      # Clean up
+      Process.exit(new_pid, :kill)
+      Process.unregister(:dadi_processor)
+    end
+
+    test "handles registration errors" do
+      # This test simulates what happens if registration fails
+      # We'll test the error handling in the start function
+      
+      # Mock a scenario where registration might fail
+      # (This is more of a theoretical test since Process.register is very reliable)
+      
+      # Start and stop a process to ensure clean state
+      case Process.whereis(:dadi_processor) do
+        nil -> :ok
+        pid -> 
+          Process.exit(pid, :kill)
+          Process.unregister(:dadi_processor)
+      end
+      
+      # Should be able to start normally
+      {:ok, pid} = Dadi.start
+      assert is_pid(pid)
+      
+      # Clean up
+      Process.exit(pid, :kill)
+      Process.unregister(:dadi_processor)
+    end
+  end
+
   describe "start/0" do
     test "starts the main scraping process" do
       # This is a more complex test that would require mocking

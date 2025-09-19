@@ -25,12 +25,46 @@ defmodule Efl.Dadi do
   end
 
   def start do
-    try do
-      Task.start_link(fn -> main() end)
-    rescue
-      e in RuntimeError ->
-        Logger.error("Error Efl.Dadi.start: #{e.message}")
-        Mailer.send_alert("Error Efl.Dadi.start: #{e.message}")
+    # Check if process is already running
+    case Process.whereis(:dadi_processor) do
+      nil ->
+        # No process running, start a new one
+        Logger.info("Starting DADI processing...")
+        {:ok, pid} = Task.start_link(fn -> 
+          # Register this process
+          Process.register(self(), :dadi_processor)
+          main()
+        end)
+        {:ok, pid}
+      pid when is_pid(pid) ->
+        # Process already running
+        Logger.warning("DADI processing already in progress (PID: #{inspect(pid)})")
+        {:error, :already_running}
+    end
+  rescue
+    e in RuntimeError ->
+      Logger.error("Error Efl.Dadi.start: #{e.message}")
+      Mailer.send_alert("Error Efl.Dadi.start: #{e.message}")
+      {:error, e}
+  end
+
+  def stop do
+    case Process.whereis(:dadi_processor) do
+      nil ->
+        Logger.info("No DADI processing running to stop")
+        {:ok, :not_running}
+      pid when is_pid(pid) ->
+        Logger.info("Stopping DADI processing (PID: #{inspect(pid)})")
+        Process.exit(pid, :kill)
+        Process.unregister(:dadi_processor)
+        {:ok, :stopped}
+    end
+  end
+
+  def status do
+    case Process.whereis(:dadi_processor) do
+      nil -> {:not_running, nil}
+      pid when is_pid(pid) -> {:running, pid}
     end
   end
 
@@ -88,24 +122,45 @@ defmodule Efl.Dadi do
   end
 
   defp main do
-    Logger.info("Deleting all records")
-    Repo.delete_all(Dadi)
-    Repo.delete_all(RefCategory)
+    try do
+      Logger.info("=== DADI Processing Started ===")
+      
+      Logger.info("Deleting all records")
+      Repo.delete_all(Dadi)
+      Repo.delete_all(RefCategory)
 
-    Logger.info("RefCategory seeds")
-    RefCategory.seeds
+      Logger.info("RefCategory seeds")
+      RefCategory.seeds
 
-    Logger.info("Start fetching categories")
-    Category.create_all_items
+      Logger.info("Start fetching categories")
+      Category.create_all_items
 
-    Logger.info("Start fetching posts")
-    Post.update_contents
-    Post.update_contents
+      Logger.info("Start fetching posts")
+      Post.update_contents
+      Post.update_contents
 
-    Logger.info("Exporting Xls file")
-    Efl.Xls.Dadi.create_xls
+      Logger.info("Exporting Xls file")
+      Efl.Xls.Dadi.create_xls
 
-    Logger.info("Sending Emails")
-    Mailer.send_email_with_xls
+      Logger.info("Sending Emails")
+      case Mailer.send_email_with_xls do
+        {:ok, _} -> 
+          Logger.info("Email sent successfully")
+        {:error, reason} -> 
+          Logger.error("Email sending failed: #{inspect(reason)}")
+        other ->
+          Logger.info("Email sending result: #{inspect(other)}")
+      end
+
+      Logger.info("=== DADI Processing Completed Successfully ===")
+    rescue
+      e ->
+        Logger.error("Error in DADI processing: #{inspect(e)}")
+        Mailer.send_alert("Error in DADI processing: #{inspect(e)}")
+    after
+      # Always clean up the process registration
+      Process.unregister(:dadi_processor)
+      Logger.info("DADI processing process cleaned up and exiting")
+    end
   end
 end

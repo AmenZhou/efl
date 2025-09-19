@@ -19,3 +19,6 @@ phoenix 1.7.0
 # Additional tools
 # brunch 2.7.4 (for asset compilation)
 # mysql 8.0 (database)
+
+# Claude Code (AI coding assistant)
+claude-code 1.0.119
