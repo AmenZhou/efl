@@ -8,6 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased] - 2025-09-18
 
 ### Added
+- **Process Management and Duplicate Prevention**
+  - Implemented process management system to prevent duplicate DADI processing runs
+  - Added `start/0`, `stop/0`, and `status/0` functions with process registration
+  - Created controller endpoints for process control (`/dadi/status`, `/dadi/stop`)
+  - Added comprehensive process management tests with concurrency validation
+  - Implemented proper process cleanup with `after` blocks to prevent stuck processes
+  - Added email duplication prevention with process state tracking
+
 - **Critical Date Parsing Bug Fix**
   - Fixed critical bug where `9/16/2025` was incorrectly parsed as January 16, 2025 instead of September 16, 2025
   - Implemented manual regex-based date parsing for MM/DD/YYYY format to replace faulty Timex parsing
@@ -57,6 +65,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Added tests for cached HTML content processing
 
 ### Changed
+- **Date Validation Logic**
+  - Updated `validate_post_date/1` to accept posts from the last 30 days instead of exact "yesterday" match
+  - Improved date validation flexibility to handle posts from recent days
+  - Enhanced production environment date validation with more reasonable time windows
+  - Maintained strict validation for test and development environments
+
 - **Date Parsing Implementation**
   - Replaced Timex-based date parsing with manual regex parsing for MM/DD/YYYY format
   - Updated `parse_date_with_formats/1` function to use manual parsing for MM/DD/YYYY
@@ -79,6 +93,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Updated README.md with fast development workflow
   - Added Quick Start section with test script guidance
   - Emphasized use of `./run_tests_fast.sh` for all development testing
+
+### Fixed
+- **Email Duplication and Process Management Issues**
+  - Fixed duplicate email sending by implementing process management system
+  - Resolved stuck processes that didn't terminate after email completion
+  - Fixed race conditions in concurrent DADI processing requests
+  - Added proper process cleanup with `after` blocks to prevent resource leaks
+  - Implemented process state tracking to prevent multiple simultaneous runs
+
+- **Date Parsing and Validation Issues**
+  - Fixed critical date parsing bug where MM/DD/YYYY format was incorrectly interpreted
+  - Resolved "post_date: can't be blank" validation errors with flexible date validation
+  - Fixed Timex parsing issues with single-digit months and days
+  - Corrected date validation to accept posts from recent days instead of exact "yesterday" match
+  - Fixed foreign key constraint debugging with enhanced logging for ref_category_id tracking
+
+- **HTML Parsing and Data Extraction Issues**
+  - Fixed missing title extraction with improved regex patterns and Floki selectors
+  - Resolved empty items extraction with robust regex fallback system
+  - Fixed nested span element parsing in title extraction
+  - Corrected date extraction from various HTML structures
+  - Enhanced error handling for malformed HTML content
 
 ### Removed
 - **Unused Test Files and Scripts**
