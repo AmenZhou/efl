@@ -35,7 +35,7 @@ config :efl, Efl.Repo,
   username: "root",
   password: "password",
   database: "classification_utility_dev",
-  hostname: "mysql",
+  hostname: "localhost",
   pool_size: 20,
   charset: "utf8mb4",
   collation: "utf8mb4_unicode_ci"
