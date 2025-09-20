@@ -46,6 +46,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Flexible date extraction supporting both `<span>` and `<td>` elements
   - Comprehensive error handling and graceful degradation
 
+- **Critical Content Extraction Fix**
+  - Fixed complete failure of content extraction from individual post pages
+  - Identified that Floki HTML parser was failing to parse the target website's HTML structure
+  - Implemented primary regex-based content extraction with multiple fallback patterns
+  - Added `extract_content_with_regex/1` function with 4 different regex patterns
+  - Enhanced post parser to use regex extraction first, then Floki as fallback
+  - Added comprehensive content validation and cleaning (HTML tag removal, whitespace normalization)
+  - Implemented detailed logging for content extraction debugging
+  - Successfully extracts Chinese classified ad content (e.g., apartment rentals, job postings)
+
 - **Fast Development Testing**
   - Created `run_tests_fast.sh` script for instant test execution
   - Docker volume mounting for immediate code change reflection
@@ -115,6 +125,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Fixed nested span element parsing in title extraction
   - Corrected date extraction from various HTML structures
   - Enhanced error handling for malformed HTML content
+
+- **Content Extraction from Individual Post Pages**
+  - Fixed complete failure of content extraction causing all DADI records to have empty content
+  - Resolved Floki HTML parser incompatibility with target website's HTML structure
+  - Fixed "content: can't be blank" validation errors by implementing regex-based extraction
+  - Corrected content extraction to successfully retrieve Chinese classified ad text
+  - Fixed database storage issues where 186 records had empty content fields
+  - Resolved HTML parsing failures that prevented proper DOM element selection
 
 ### Removed
 - **Unused Test Files and Scripts**
