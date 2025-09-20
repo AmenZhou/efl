@@ -80,7 +80,10 @@ defmodule Efl.HtmlParsers.Dadi.Category do
   end
 
   defp html(url) do
-    body = Efl.MyHttp.request(url)
+    body = case Mix.env() do
+      :dev -> Efl.DevMyHttp.request(url)
+      _ -> Efl.MyHttp.request(url)
+    end
     { :ok, body }
   end
 

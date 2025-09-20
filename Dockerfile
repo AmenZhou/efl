@@ -8,7 +8,10 @@ RUN apk add --no-cache \
     mysql-client \
     openssl \
     ncurses-libs \
-    wget
+    wget \
+    curl \
+    ca-certificates \
+    libssl1.1
 
 # Create non-root user
 RUN addgroup -g 1000 -S app && \

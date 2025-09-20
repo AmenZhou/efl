@@ -1,5 +1,8 @@
 import Config
 
+# Import development HTTP configuration
+import_config "dev_http.exs"
+
 # For development, we disable any cache and enable
 # debugging and code reloading.
 #
