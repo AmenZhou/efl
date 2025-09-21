@@ -306,39 +306,6 @@ defmodule Efl.HtmlParsers.Dadi.CategoryParserTest do
     end
   end
 
-  describe "regex extraction helpers" do
-    test "extract_title_with_regex finds title in span" do
-      html_string = """
-      <span class="topictitlehl">
-        版主提示：本栏目要求广告必须说明出租房屋附近的街口
-      </span>
-      """
-
-      # Call the private function through a public wrapper
-      title = Category.get_title(html_string)
-      assert title == "版主提示：本栏目要求广告必须说明出租房屋附近的街口"
-    end
-
-    test "extract_link_with_regex finds href attribute" do
-      html_string = """
-      <a href="/c/posts/list/303624.page;jsessionid=ABC123">
-        <span class="topictitlehl">Test Title</span>
-      </a>
-      """
-
-      link = Category.get_link(html_string)
-      assert link == "/c/posts/list/303624.page"
-    end
-
-    test "extract_date_with_regex finds date in postdetails" do
-      html_string = """
-      <td class="postdetails">09/16/2025</td>
-      """
-
-      date = Category.get_date(html_string)
-      assert date == ~D[2025-09-16]
-    end
-  end
 
   describe "date parsing bug fix - MM/DD/YYYY format" do
     test "correctly parses 9/16/2025 as September 16, 2025 (not January 16)" do

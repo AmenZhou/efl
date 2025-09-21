@@ -78,12 +78,16 @@ defmodule Efl.Xls.Dadi do
   end
 
   defp post_date(dadi) do
-    date = dadi.post_date
-           |> Timex.format("%m/%d/%Y", :strftime)
+    if dadi.post_date do
+      date = dadi.post_date
+             |> Timex.format("%m/%d/%Y", :strftime)
 
-    case date do
-      { :ok, f_date } -> f_date
-      _ -> raise "Efl.Xls.Dadi post_date/1, parse date failly"
+      case date do
+        { :ok, f_date } -> f_date
+        _ -> ""
+      end
+    else
+      ""
     end
   end
 
@@ -104,7 +108,9 @@ defmodule Efl.Xls.Dadi do
     |> Repo.preload(dadis: query)
   end
 
-  defp clean_up_string(str) do
-    (str || "") |> String.replace("\b", "")
+  defp clean_up_string(str) when is_binary(str) do
+    str |> String.replace("\b", "")
   end
+  
+  defp clean_up_string(_), do: ""
 end

@@ -180,7 +180,8 @@ defmodule Efl.HtmlParsers.Dadi.ContentExtractionTest do
       phone = Efl.PhoneUtil.find_phone_from_content(content)
       
       assert content == "Test content for integration"
-      assert is_binary(phone) # PhoneUtil should return a string
+      # PhoneUtil returns nil when no phone is found
+      assert phone == nil
     end
   end
 
