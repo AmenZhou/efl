@@ -116,10 +116,10 @@ defmodule Efl.Dadi do
         post_date = Timex.to_date(post_date)
         ideal_date = TimeUtil.target_date
         
-        # Allow posts from the last 30 days to be more flexible
+        # Only allow posts from yesterday
         days_diff = Timex.diff(ideal_date, post_date, :days)
         
-        if days_diff < 0 or days_diff > 30 do
+        if days_diff != 0 do
           # Log the rejection for debugging but don't send alerts for old posts
           Logger.info("Rejecting post from #{post_date} (target: #{ideal_date}, diff: #{days_diff} days)")
           add_error(changeset, :post_date, "can't be blank")
