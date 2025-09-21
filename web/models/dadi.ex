@@ -31,9 +31,16 @@ defmodule Efl.Dadi do
         # No process running, start a new one
         Logger.info("Starting DADI processing...")
         {:ok, pid} = Task.start_link(fn -> 
-          # Register this process
-          Process.register(self(), :dadi_processor)
-          main()
+          # Register this process with error handling
+          try do
+            Process.register(self(), :dadi_processor)
+            main()
+          rescue
+            ArgumentError ->
+              # Registration failed, process already exists
+              Logger.warning("DADI process registration failed - another process already running")
+              exit(:already_running)
+          end
         end)
         {:ok, pid}
       pid when is_pid(pid) ->
@@ -125,7 +132,7 @@ defmodule Efl.Dadi do
     end
   end
 
-  defp main do
+  def main do
     try do
       Logger.info("=== DADI Processing Started ===")
       
@@ -167,4 +174,5 @@ defmodule Efl.Dadi do
       Logger.info("DADI processing process cleaned up and exiting")
     end
   end
+
 end

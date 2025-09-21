@@ -68,3 +68,4 @@ case Efl.Mailer.deliver(email) do
 end
 
 IO.puts "\n✅ Test Complete!"
+

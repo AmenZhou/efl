@@ -172,7 +172,7 @@ defmodule Efl.HtmlParsers.Dadi.CategoryParserTest do
       """
 
       date = Category.get_date(html_string)
-      assert date == ~N[2025-09-16 00:00:00]
+      assert date == ~D[2025-09-16]
     end
 
     test "handles invalid date format" do
@@ -201,26 +201,31 @@ defmodule Efl.HtmlParsers.Dadi.CategoryParserTest do
       </tr>
       """
 
-      {:ok, date} = Category.parse_date(html_string)
-      assert date == ~N[2025-09-16 00:00:00]
+      date = Category.get_date(html_string)
+      assert date == ~D[2025-09-16]
     end
 
     test "parses multiple date formats" do
-      # Test MM/DD/YYYY format
-      {:ok, date1} = Category.parse_date("01/15/2025")
-      assert date1 == ~N[2025-01-15 00:00:00]
+      # Test MM/DD/YYYY format in proper HTML
+      html1 = """
+      <td class="postdetails">01/15/2025</td>
+      """
+      {:ok, date1} = Category.parse_date(html1)
+      assert date1 == ~D[2025-01-15]
 
-      # Test M/D/YYYY format
-      {:ok, date2} = Category.parse_date("1/5/2025")
-      assert date2 == ~N[2025-01-05 00:00:00]
+      # Test M/D/YYYY format in proper HTML
+      html2 = """
+      <span class="postdetails">1/5/2025</span>
+      """
+      {:ok, date2} = Category.parse_date(html2)
+      assert date2 == ~D[2025-01-05]
 
-      # Test YYYY-MM-DD format
-      {:ok, date3} = Category.parse_date("2025-01-15")
-      assert date3 == ~N[2025-01-15 00:00:00]
-
-      # Test DD/MM/YYYY format
-      {:ok, date4} = Category.parse_date("15/01/2025")
-      assert date4 == ~N[2025-01-15 00:00:00]
+      # Test MM/DD/YYYY format with different structure
+      html3 = """
+      <td class="postdetails">9/16/2025</td>
+      """
+      {:ok, date3} = Category.parse_date(html3)
+      assert date3 == ~D[2025-09-16]
     end
 
     test "handles invalid date format" do
@@ -331,7 +336,7 @@ defmodule Efl.HtmlParsers.Dadi.CategoryParserTest do
       """
 
       date = Category.get_date(html_string)
-      assert date == ~N[2025-09-16 00:00:00]
+      assert date == ~D[2025-09-16]
     end
   end
 
@@ -497,28 +502,9 @@ defmodule Efl.HtmlParsers.Dadi.CategoryParserTest do
     end
   end
 
+  # NOTE: Removed fantasy date format tests (DD/MM/YYYY and YYYY-MM-DD)
+  # that don't exist in real dadi360.com data. Production only uses MM/DD/YYYY format.
   describe "Timex fallback for other date formats" do
-    test "falls back to Timex for YYYY-MM-DD format" do
-      html_string = """
-      <tr class="bg_small_yellow">
-        <td class="postdetails">2025-12-25</td>
-      </tr>
-      """
-
-      date = Category.get_date(html_string)
-      assert date == ~D[2025-12-25]
-    end
-
-    test "falls back to Timex for DD/MM/YYYY format" do
-      html_string = """
-      <tr class="bg_small_yellow">
-        <td class="postdetails">25/12/2025</td>
-      </tr>
-      """
-
-      date = Category.get_date(html_string)
-      assert date == ~D[2025-12-25]
-    end
 
     test "handles Timex parsing errors gracefully" do
       html_string = """

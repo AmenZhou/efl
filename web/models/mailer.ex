@@ -10,6 +10,7 @@ defmodule Efl.Mailer do
   @alert_recipient Application.get_env(:mailgun, :alert_recipient)
 
   require IEx
+  require Logger
 
   def send_email_with_xls do
     file_name = Xls.file_name

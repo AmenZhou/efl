@@ -227,7 +227,7 @@ defmodule Efl.HtmlParsers.Dadi.ContentExtractionTest do
   end
 
   # Helper function to test the private extract_content_with_regex function
-  defp extract_content_with_regex(html_string) do
+  defp extract_content_with_regex(html_string) when is_binary(html_string) do
     # Test the main pattern
     case Regex.run(~r/class\s*=\s*["\']postbody["\'][^>]*>(.*?)<\/div>/s, html_string) do
       [_, content] ->
@@ -267,4 +267,7 @@ defmodule Efl.HtmlParsers.Dadi.ContentExtractionTest do
         end) || ""
     end
   end
+
+  # Handle nil and non-binary inputs
+  defp extract_content_with_regex(_), do: ""
 end

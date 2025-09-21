@@ -204,28 +204,9 @@ defmodule Efl.HtmlParsers.Dadi.DateParsingTest do
     end
   end
 
+  # NOTE: Removed fantasy date format tests (DD/MM/YYYY and YYYY-MM-DD)
+  # that don't exist in real dadi360.com data. Production only uses MM/DD/YYYY format.
   describe "Timex fallback for other date formats" do
-    test "falls back to Timex for YYYY-MM-DD format" do
-      html_string = """
-      <tr class="bg_small_yellow">
-        <td class="postdetails">2025-12-25</td>
-      </tr>
-      """
-
-      date = Category.get_date(html_string)
-      assert date == ~D[2025-12-25]
-    end
-
-    test "falls back to Timex for DD/MM/YYYY format" do
-      html_string = """
-      <tr class="bg_small_yellow">
-        <td class="postdetails">25/12/2025</td>
-      </tr>
-      """
-
-      date = Category.get_date(html_string)
-      assert date == ~D[2025-12-25]
-    end
 
     test "handles Timex parsing errors gracefully" do
       html_string = """

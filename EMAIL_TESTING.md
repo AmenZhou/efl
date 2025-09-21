@@ -184,3 +184,4 @@ Before deploying to production:
 3. Set up proper environment variables
 4. Test with real email addresses
 5. Monitor email delivery rates and errors
+

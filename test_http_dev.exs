@@ -50,11 +50,14 @@ defmodule TestHttpDev do
   
   defp make_request(url) do
     try do
-      case System.cmd("curl", ["-s", "-L", "--max-time", "30", url]) do
-        {body, 0} when body != "" ->
-          {:ok, body}
-        {error, _} ->
-          {:error, "Curl failed: #{error}"}
+      # Use the actual application HTTP client (DevHttp for development)
+      case Efl.DevHttp.get(url) do
+        {:ok, body} ->
+          # Convert Tesla.Env to string if needed
+          body_str = if is_binary(body), do: body, else: inspect(body)
+          {:ok, body_str}
+        {:error, reason} ->
+          {:error, "DevHttp failed: #{inspect(reason)}"}
       end
     rescue
       e ->

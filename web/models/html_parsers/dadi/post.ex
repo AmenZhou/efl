@@ -73,7 +73,7 @@ defmodule Efl.HtmlParsers.Dadi.Post do
     end
   end
 
-  defp extract_content_with_regex(html_string) do
+  defp extract_content_with_regex(html_string) when is_binary(html_string) do
     # Extract content from postbody div using regex since Floki fails on this HTML
     case Regex.run(~r/class\s*=\s*["\']postbody["\'][^>]*>(.*?)<\/div>/s, html_string) do
       [_, content] ->
@@ -117,6 +117,9 @@ defmodule Efl.HtmlParsers.Dadi.Post do
         end) || ""
     end
   end
+
+  # Handle nil and non-binary inputs
+  defp extract_content_with_regex(_), do: ""
 
   defp try_alternative_selectors(parsed_doc) do
     # Try different selectors that might contain the post content

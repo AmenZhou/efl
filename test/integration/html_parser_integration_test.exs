@@ -91,7 +91,7 @@ defmodule Efl.HtmlParserIntegrationTest do
       
       assert String.contains?(title, "版主提示")
       assert link == "/c/posts/list/303624.page"
-      assert date == ~N[2025-09-16 00:00:00]
+      assert date == ~D[2025-09-16]
       
       # Test second item
       second_item = Enum.at(items, 1)
@@ -101,7 +101,7 @@ defmodule Efl.HtmlParserIntegrationTest do
       
       assert String.contains?(title2, "法拉盛主街附近")
       assert link2 == "/c/posts/list/3938643.page"
-      assert date2 == ~N[2025-09-15 00:00:00]
+      assert date2 == ~D[2025-09-15]
     end
 
     test "parser handles empty HTML gracefully" do
@@ -224,7 +224,8 @@ defmodule Efl.HtmlParserIntegrationTest do
       
       assert title == "Test Post Title"
       assert link == "/c/posts/list/123456.page"
-      assert date == ~N[2025-09-17 00:00:00]
+      assert date == ~D[2025-09-17]
     end
   end
 end
+

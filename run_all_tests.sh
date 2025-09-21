@@ -28,7 +28,7 @@ docker-compose exec -T mysql mysql -u root -ppassword -e "CREATE DATABASE IF NOT
 
 # Run database migrations for test
 echo "🔄 Running test database migrations..."
-docker-compose exec -T app mix ecto.migrate -e test
+docker-compose exec -T -e MIX_ENV=test app mix ecto.migrate
 
 # Rebuild container to ensure test files are included
 echo "🔨 Rebuilding container to include test files..."
@@ -43,31 +43,31 @@ echo "========================="
 # Test 1: Run Mix Tests (All Test Files)
 echo "📋 Test 1: Running All Mix Tests"
 echo "------------------------------------"
-docker-compose exec -T app mix test --exclude integration
+docker-compose exec -T -e MIX_ENV=test app mix test --exclude integration
 
 # Test 2: Run Integration Tests
 echo ""
 echo "📋 Test 2: Running Integration Tests"
 echo "------------------------------------"
-docker-compose exec -T app mix test --only integration
+docker-compose exec -T -e MIX_ENV=test app mix test --only integration
 
 # Test 3: Run Database Tests
 echo ""
 echo "📋 Test 3: Running Database Tests"
 echo "-------------------------------------"
-docker-compose exec -T app mix test test/models/
+docker-compose exec -T -e MIX_ENV=test app mix test test/models/
 
 # Test 4: Run Controller Tests
 echo ""
 echo "📋 Test 4: Running Controller Tests"
 echo "------------------------------------"
-docker-compose exec -T app mix test test/controllers/
+docker-compose exec -T -e MIX_ENV=test app mix test test/controllers/
 
 # Test 5: Run Unit Tests
 echo ""
 echo "📋 Test 5: Running Unit Tests"
 echo "--------------------------------------"
-docker-compose exec -T app mix test test/unit/
+docker-compose exec -T -e MIX_ENV=test app mix test test/unit/
 
 echo ""
 echo "=============================================="

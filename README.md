@@ -5,12 +5,13 @@ This project is for a special usage on my own, more for fun. My first Elixir+Pho
 ## Quick Start
 
 ### Running Tests (Fast Development)
-**Always use the fast test script for development:**
+**Use optimized test scripts for development:**
 ```bash
-./run_tests_fast.sh
+./run_tests.sh                    # New optimized script with flexible options
+./run_tests_fast.sh              # Fast script for basic test runs
 ```
 
-This script uses Docker volume mounting for instant test execution (2.5 seconds vs 30+ seconds for rebuilds).
+These scripts use Docker volume mounting for instant test execution (2.5 seconds vs 30+ seconds for rebuilds) and ensure proper `MIX_ENV=test` environment.
 
 ### Alternative Test Methods
 ```bash
@@ -26,9 +27,9 @@ docker-compose exec app iex -S mix
 
 ### Development Workflow
 1. Start containers: `docker-compose up -d`
-2. Run tests: `./run_tests_fast.sh`
+2. Run tests: `./run_tests.sh` or `./run_tests_fast.sh`
 3. Make code changes (reflected immediately)
-4. Run tests again: `./run_tests_fast.sh`
+4. Run tests again: `./run_tests.sh [specific_test_file]`
 
 ## Install on Ubuntu
 

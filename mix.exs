@@ -20,7 +20,7 @@ defmodule Efl.Mixfile do
   def application do
     [mod: {Efl, []},
      applications: [:phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger, :gettext,
-                    :phoenix_ecto, :ecto_sql, :httpotion, :myxql, :timex, :elixlsx,
+                    :phoenix_ecto, :ecto_sql, :httpotion, :httpoison, :myxql, :timex, :elixlsx,
                     :floki, :conform, :poison, :tesla, :swoosh]]
   end
 
@@ -53,11 +53,13 @@ defmodule Efl.Mixfile do
       {:conform, "~> 2.5"},
       {:tesla, "~> 1.7"},
       {:hackney, "~> 1.18"},
+      {:httpoison, "~> 2.0"},
       {:jason, "~> 1.4"},
       {:poison, "~> 4.0"},
       {:swoosh, "~> 1.17"},
       {:multipart, "~> 0.4"},
-      {:plug, "~> 1.18"}
+      {:plug, "~> 1.18"},
+      {:mock, "~> 0.3.0", only: :test}
     ]
   end
 

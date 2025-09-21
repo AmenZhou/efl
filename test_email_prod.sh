@@ -54,3 +54,4 @@ echo "- Check your email configuration in config/mailgun.exs"
 echo "- Verify MAILGUN_API_KEY and MAILGUN_DOMAIN environment variables"
 echo "- Check application logs for detailed error information"
 echo "- The test uses 'test@example.com' as recipient - update if needed"
+

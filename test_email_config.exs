@@ -38,3 +38,4 @@
 IO.puts "Email test configuration loaded."
 IO.puts "To use this configuration, run:"
 IO.puts "  docker-compose exec app mix run -c test_email_config.exs test_prod_email.exs"
+
