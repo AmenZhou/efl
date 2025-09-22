@@ -1,4 +1,4 @@
-use Mix.Config
+import Config
 
 # For production, we configure the host to read the PORT
 # from the system environment. Therefore, you will need
@@ -18,27 +18,27 @@ config :efl, Efl.Endpoint,
   cache_static_manifest: "priv/static/manifest.json",
   server: true
 
-# Do not print debug messages in production
+# Configure logging for production
 config :logger,
-  backends: [:console, {LoggerFileBackend, :info},
-             {LoggerFileBackend, :error}]
-
-config :logger, :info,
-  format: "$time $date $metadata[$level] $message\n",
-  path: "/root/apps/efl/info.log",
-  metadata: [:request_id],
-  level: :info,
-  rotate: %{ max_bytes: 4096, size: 4 }
-
-config :logger, :error,
-  format: "$time $date $metadata[$level] $message\n",
-  path: "/root/apps/efl/error.log",
-  metadata: [:request_id],
-  level: :error
+  backends: [:console, {Efl.LoggerBackend, :info_log}]
 
 config :logger, :console,
   format: "$time $date $metadata[$level] $message\n",
   metadata: [:request_id]
+
+config :logger, :info_log,
+  level: :info
+
+# Configure your database
+config :efl, Efl.Repo,
+  adapter: Ecto.Adapters.MyXQL,
+  username: "root",
+  password: "password",
+  database: "classification_utility_prod",
+  hostname: "localhost",
+  pool_size: 20,
+  charset: "utf8mb4",
+  collation: "utf8mb4_unicode_ci"
 # ## SSL Support
 #
 # To get SSL working, you will need to add the `https` key

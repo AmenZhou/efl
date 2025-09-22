@@ -13,7 +13,19 @@ defmodule Efl.Xls.Dadi do
   require IEx
 
   def create_xls do
-    %Workbook{sheets: sheets()}
+    sheets_data = sheets()
+    
+    # Check if we have any data to export
+    total_rows = sheets_data
+    |> Enum.map(fn sheet -> length(sheet.rows) end)
+    |> Enum.sum
+    
+    if total_rows <= 1 do  # Only header rows, no data
+      Logger.warning("No data to export - Excel file will be empty")
+      # Still create the file but log a warning
+    end
+    
+    %Workbook{sheets: sheets_data}
     |> Elixlsx.write_to(file_name())
   end
 
@@ -39,7 +51,7 @@ defmodule Efl.Xls.Dadi do
 
   defp one_sheet(ref_category) do
     %Sheet{
-      name: ref_category.display_name,
+      name: ref_category.display_name || ref_category.name || "Unknown",
       rows: ref_category.dadis |> rows
     }
     |> Sheet.set_row_height(3, 40)
@@ -66,12 +78,16 @@ defmodule Efl.Xls.Dadi do
   end
 
   defp post_date(dadi) do
-    date = dadi.post_date
-           |> Timex.format("%m/%d/%Y", :strftime)
+    if dadi.post_date do
+      date = dadi.post_date
+             |> Timex.format("%m/%d/%Y", :strftime)
 
-    case date do
-      { :ok, f_date } -> f_date
-      _ -> raise "Efl.Xls.Dadi post_date/1, parse date failly"
+      case date do
+        { :ok, f_date } -> f_date
+        _ -> ""
+      end
+    else
+      ""
     end
   end
 
@@ -92,7 +108,9 @@ defmodule Efl.Xls.Dadi do
     |> Repo.preload(dadis: query)
   end
 
-  defp clean_up_string(str) do
-    (str || "") |> String.replace("\b", "")
+  defp clean_up_string(str) when is_binary(str) do
+    str |> String.replace("\b", "")
   end
+  
+  defp clean_up_string(_), do: ""
 end

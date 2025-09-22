@@ -3,6 +3,7 @@ defmodule Efl.PageControllerTest do
 
   test "GET /", %{conn: conn} do
     conn = get conn, "/"
-    assert html_response(conn, 200) =~ "Welcome to Phoenix!"
+    # The root path goes to DadiController, not PageController
+    assert html_response(conn, 200) =~ "List"
   end
 end

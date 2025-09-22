@@ -34,7 +34,7 @@ defmodule Efl.Proxy.DB do
   end
 
   defp proxy_response(body) do
-    body |> Poison.Parser.parse!
+    body |> Poison.Parser.parse!()
   end
 
   def last_record do

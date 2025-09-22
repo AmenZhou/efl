@@ -1,0 +1,60 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: efl-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: classification_utility_dev
+      MYSQL_USER: hzhou
+      MYSQL_PASSWORD: ""
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    command: >
+      --character-set-server=utf8mb4 
+      --collation-server=utf8mb4_unicode_ci 
+      --default-authentication-plugin=mysql_native_password 
+      --innodb-buffer-pool-size=32M 
+      --max-connections=50
+      --innodb-flush-log-at-trx-commit=2
+      --skip-log-bin
+      --skip-name-resolve
+      --performance-schema=OFF
+      --innodb-use-native-aio=OFF
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-ppassword"]
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  app:
+    build: .
+    container_name: efl-app
+    restart: unless-stopped
+    ports:
+      - "4000:4000"
+    volumes:
+      - .:/app
+      - /app/deps
+      - /app/_build
+      - /app/node_modules
+    environment:
+      - MIX_ENV=dev
+      - DATABASE_URL=ecto://root:password@mysql:3306/classification_utility_dev
+      - PORT=4000
+      - HTTP_PROXY=
+      - HTTPS_PROXY=
+      - NO_PROXY=localhost,127.0.0.1,mysql
+    depends_on:
+      mysql:
+        condition: service_healthy
+    network_mode: "bridge"
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+
+volumes:
+  mysql_data:
+    driver: local

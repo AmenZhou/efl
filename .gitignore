@@ -5,7 +5,6 @@
 /*.ez
 /**/*.beam
 /**/*.xlsx
-/lib
 /config/efl.conf
 /config/efl.schema.exs
 /rel
@@ -34,3 +33,7 @@ tags
 *.log
 /web/static/
 .DS_Store
+
+# Backup files
+backups/
+backup_*.sql

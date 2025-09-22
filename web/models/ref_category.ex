@@ -119,8 +119,15 @@ defmodule Efl.RefCategory do
 
   def seeds do
     for rc <- @ref_data do
-      set = changeset(%RefCategory{}, rc)
-      Repo.insert(set)
+      # Check if category already exists by name
+      existing = Repo.get_by(RefCategory, name: rc.name)
+      if existing do
+        # Update existing record
+        changeset(existing, rc) |> Repo.update()
+      else
+        # Insert new record
+        changeset(%RefCategory{}, rc) |> Repo.insert()
+      end
     end
   end
 
@@ -130,9 +137,13 @@ defmodule Efl.RefCategory do
   end
 
   def get_urls(ref_category) do
-    page_size = Map.get(ref_category, :page_size, 1)
+    page_size = Map.get(ref_category, :page_size, 1) || 1
 
     for n <- 0..(page_size - 1),
       do: "#{@base_url}#{n * @number_of_single_page_rows}#{ref_category.url}"
+  end
+
+  def ref_data do
+    @ref_data
   end
 end

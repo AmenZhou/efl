@@ -38,7 +38,7 @@ defmodule Efl.Proxy do
   end
 
   def proxy_response(body) do
-    body |> Poison.Parser.parse!
+    body |> Poison.Parser.parse!()
   end
 
   def current_proxy_ip(body) do

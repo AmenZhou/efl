@@ -1,0 +1,51 @@
+# Git
+.git
+.gitignore
+
+# Documentation
+README.md
+*.md
+
+# Development files
+.env
+.env.local
+.env.*.local
+
+# Dependencies
+deps/
+_build/
+.elixir_ls/
+
+# Documentation
+doc/
+
+# Logs
+logs/
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temporary files
+tmp/
+temp/
+
+# Docker files
+Dockerfile*
+docker-compose*.yml
+.dockerignore
+
+# Node modules (if any)
+node_modules/
+
+# Brunch files
+brunch-config.js
+package.json
+package-lock.json

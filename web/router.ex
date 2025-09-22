@@ -18,6 +18,8 @@ defmodule Efl.Router do
 
     get "/", DadiController, :index
     get "/dadi/scratch", DadiController, :scratch
+    get "/dadi/status", DadiController, :status
+    get "/dadi/stop", DadiController, :stop
   end
 
   # Other scopes may use custom stacks.

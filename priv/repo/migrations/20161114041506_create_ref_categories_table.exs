@@ -5,7 +5,7 @@ defmodule Efl.Repo.Migrations.CreateRefCategoriesTable do
     create table(:ref_categories) do
       add :name, :string
       add :url, :string
-      timestamps
+      timestamps()
     end
 
     alter table(:dadi) do

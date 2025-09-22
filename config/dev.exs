@@ -1,4 +1,7 @@
-use Mix.Config
+import Config
+
+# Import development HTTP configuration
+import_config "dev_http.exs"
 
 # For development, we disable any cache and enable
 # debugging and code reloading.
@@ -35,12 +38,14 @@ config :phoenix, :stacktrace_depth, 20
 
 # Configure your database
 config :efl, Efl.Repo,
-  adapter: Ecto.Adapters.MySQL,
-  username: "hzhou",
-  password: "",
+  adapter: Ecto.Adapters.MyXQL,
+  username: "root",
+  password: "password",
   database: "classification_utility_dev",
-  hostname: "localhost",
-  pool_size: 10
+  hostname: "mysql",
+  pool_size: 20,
+  charset: "utf8mb4",
+  collation: "utf8mb4_unicode_ci"
 
 import_config "proxy_rotator.exs"
 import_config "mailgun.exs"
