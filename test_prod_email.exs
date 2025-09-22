@@ -190,3 +190,4 @@ IO.puts "- Generated CSV file with #{length(excel_data)} rows"
 IO.puts "- Attempted to send email with attachment"
 IO.puts "\nCheck your email configuration and logs for delivery status."
 
+

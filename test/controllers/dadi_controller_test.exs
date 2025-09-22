@@ -22,30 +22,23 @@ defmodule Efl.DadiControllerTest do
     test "returns already running message when process is active", %{conn: conn} do
       # Mock remote_ip to simulate localhost
       conn = %{conn | remote_ip: {127, 0, 0, 1}}
-      
-      # Start a process first
-      case Process.whereis(:dadi_processor) do
-        nil -> 
-          {:ok, pid} = Task.start_link(fn -> 
-            Process.register(self(), :dadi_processor)
-            :timer.sleep(1000) # Keep process alive for test
-          end)
-          :ok
-        _pid -> :ok
+
+      # Start a process first using the real Dadi.start function
+      case Efl.Dadi.start do
+        {:ok, _pid} -> :ok
+        {:error, :already_running} -> :ok  # Already running is fine for this test
       end
-      
-      # Try to start again
+
+      # Give it a moment to register
+      :timer.sleep(100)
+
+      # Try to start again - should get already running message
       conn = get(conn, "/dadi/scratch")
       response = text_response(conn, 200)
-      assert response =~ "already in progress"
-      
+      assert response =~ "DADI processing already in progress"
+
       # Clean up
-      case Process.whereis(:dadi_processor) do
-        nil -> :ok
-        pid -> 
-          Process.exit(pid, :kill)
-          Process.unregister(:dadi_processor)
-      end
+      Efl.Dadi.stop
     end
   end
 
@@ -53,20 +46,22 @@ defmodule Efl.DadiControllerTest do
     test "returns running status when process is active", %{conn: conn} do
       # Mock remote_ip to simulate localhost
       conn = %{conn | remote_ip: {127, 0, 0, 1}}
-      
-      # Start a process
-      {:ok, pid} = Task.start_link(fn -> 
-        Process.register(self(), :dadi_processor)
-        :timer.sleep(1000) # Keep process alive for test
-      end)
-      
+
+      # Start a process using the real Dadi.start function
+      case Efl.Dadi.start do
+        {:ok, _pid} -> :ok
+        {:error, :already_running} -> :ok  # Already running is fine for this test
+      end
+
+      # Give it a moment to register
+      :timer.sleep(100)
+
       conn = get(conn, "/dadi/status")
       response = text_response(conn, 200)
       assert response =~ "Running"
-      
+
       # Clean up
-      Process.exit(pid, :kill)
-      Process.unregister(:dadi_processor)
+      Efl.Dadi.stop
     end
 
     test "returns not running when no process is active", %{conn: conn} do
@@ -91,17 +86,20 @@ defmodule Efl.DadiControllerTest do
     test "stops running process", %{conn: conn} do
       # Mock remote_ip to simulate localhost
       conn = %{conn | remote_ip: {127, 0, 0, 1}}
-      
-      # Start a process
-      {:ok, pid} = Task.start_link(fn -> 
-        Process.register(self(), :dadi_processor)
-        :timer.sleep(1000) # Keep process alive for test
-      end)
-      
+
+      # Start a process using the real Dadi.start function
+      case Efl.Dadi.start do
+        {:ok, _pid} -> :ok
+        {:error, :already_running} -> :ok  # Already running is fine for this test
+      end
+
+      # Give it a moment to register
+      :timer.sleep(100)
+
       conn = get(conn, "/dadi/stop")
       response = text_response(conn, 200)
-      assert response =~ "stopped successfully"
-      
+      assert response =~ "DADI processing stopped successfully"
+
       # Verify process is no longer registered
       assert Process.whereis(:dadi_processor) == nil
     end

@@ -37,7 +37,9 @@ defmodule Efl.MainFlowTest do
       assert html_response(conn, 200)
       assert conn.resp_body =~ "Test Apartment for Rent"
       assert conn.resp_body =~ "Beautiful 2BR apartment in Flushing"
-      assert conn.resp_body =~ "555-123-4567"
+      # Check that the phone number is NOT displayed in dadi/index template
+      # The template only shows title, url, post_date, and content
+      refute conn.resp_body =~ "555-123-4567"
     end
 
     test "homepage shows empty state when no data exists" do
@@ -60,7 +62,7 @@ defmodule Efl.MainFlowTest do
       conn = %{build_conn() | remote_ip: {127, 0, 0, 1}}
       conn = get(conn, "/dadi/scratch")
       
-      assert text_response(conn, 200) =~ "Start scratching DD360..."
+      assert text_response(conn, 200) =~ "DADI processing started successfully"
     end
   end
 

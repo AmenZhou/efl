@@ -51,7 +51,7 @@ defmodule Efl.Xls.Dadi do
 
   defp one_sheet(ref_category) do
     %Sheet{
-      name: ref_category.display_name,
+      name: ref_category.display_name || ref_category.name || "Unknown",
       rows: ref_category.dadis |> rows
     }
     |> Sheet.set_row_height(3, 40)
