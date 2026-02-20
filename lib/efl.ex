@@ -10,6 +10,8 @@ defmodule Efl do
     children = [
       # Start the Ecto repository
       supervisor(Efl.Repo, []),
+      # In-memory proxy cache (loads from DB at startup)
+      worker(Efl.Proxy.Cache, []),
       # Start the endpoint when the application starts
       supervisor(Efl.Endpoint, []),
       # Start your own worker by calling: Efl.Worker.start_link(arg1, arg2, arg3)
