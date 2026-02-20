@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased] - 2025-09-21
 
+### Added
+- **Proxy list import and scripts**
+  - `priv/update_proxies.sql` — SQL script to bulk-insert proxies (from [proxifly/free-proxy-list](https://github.com/proxifly/free-proxy-list)) into the `proxies` table (ip, port, score=10).
+  - `scripts/run_proxy_sql.exs` — runs the SQL file via Ecto Repo using the app's DB config; includes inline documentation.
+  - `scripts/verify_proxies.exs` — verifies import by printing proxy count and latest 5 rows.
+  - Run: `mix run scripts/run_proxy_sql.exs` (or `mysql ... < priv/update_proxies.sql` when using mysql client). Verify: `mix run scripts/verify_proxies.exs`.
+
 ### Fixed
 - **Comprehensive Test Suite Optimization**
   - Fixed process management race conditions preventing multiple concurrent DADI runs
@@ -132,9 +139,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - **Date Validation Logic**
-  - Updated `validate_post_date/1` to accept posts from the last 30 days instead of exact "yesterday" match
-  - Improved date validation flexibility to handle posts from recent days
-  - Enhanced production environment date validation with more reasonable time windows
+  - **FIXED**: Reverted `validate_post_date/1` to only accept posts from yesterday (exact match)
+  - **FIXED**: Removed 30-day flexible date range that was allowing posts from more than a week ago
+  - **FIXED**: Restored strict yesterday-only validation for targeted posts in production
   - Maintained strict validation for test and development environments
 
 - **Date Parsing Implementation**

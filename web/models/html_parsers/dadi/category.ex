@@ -41,30 +41,45 @@ defmodule Efl.HtmlParsers.Dadi.Category do
     end
   end
 
-  #Return a List of raw items
-  #The returned value should be [{ :ok, [item1, item2, ...]}, { :ok, [item3, ...]}]
+  # Return a List of raw items
+  # The returned value should be [{ :ok, [item1, item2, ...]}, { :ok, [item3, ...]}]
+  # Retries on DBConnection.ConnectionError (e.g. pool timeout) with backoff.
+  @raw_items_max_retries 3
+  @raw_items_retry_sleep_ms 2_000
+
   def raw_items(ref_category) do
     ref_category
     |> RefCategory.get_urls
-    |> Enum.map(fn(url) ->
-      try do
-        body = url |> html
-        case body |> find_raw_items do
-          { :ok, items } ->
-            if Enum.empty?(items) do
-              IO.inspect(body)
-              Logger.info("raw_items - Get empty items")
-            end
-            { :ok, items }
-          _ ->
-            raise("raw_items - Fail to get items")
-        end
-      rescue
-        ex ->
-          Logger.error("Fail at Category#raw_items url: #{url}, message: #{inspect(ex)}")
-          { :error, "Fail at Category#raw_items url: #{url}, message: #{inspect(ex)}" }
+    |> Enum.map(fn url -> fetch_raw_items_with_retry(url, @raw_items_max_retries) end)
+  end
+
+  defp fetch_raw_items_with_retry(_url, 0) do
+    # All retries exhausted; last attempt already logged the error
+    { :error, "Fail at Category#raw_items after retries (DB connection/pool error)" }
+  end
+
+  defp fetch_raw_items_with_retry(url, attempts_left) do
+    try do
+      body = url |> html
+      case body |> find_raw_items do
+        { :ok, items } ->
+          if Enum.empty?(items) do
+            IO.inspect(body)
+            Logger.info("raw_items - Get empty items")
+          end
+          { :ok, items }
+        _ ->
+          raise("raw_items - Fail to get items")
       end
-    end)
+    rescue
+      ex in [DBConnection.ConnectionError] ->
+        Logger.warning("Category#raw_items DB connection error url: #{url}, attempt #{@raw_items_max_retries - attempts_left + 1}, message: #{inspect(ex)}. Retrying in #{@raw_items_retry_sleep_ms}ms.")
+        :timer.sleep(@raw_items_retry_sleep_ms)
+        fetch_raw_items_with_retry(url, attempts_left - 1)
+      ex ->
+        Logger.error("Fail at Category#raw_items url: #{url}, message: #{inspect(ex)}")
+        { :error, "Fail at Category#raw_items url: #{url}, message: #{inspect(ex)}" }
+    end
   end
 
   defp dadi_params(item) do

@@ -14,7 +14,7 @@ import Config
 config :efl, Efl.Endpoint,
   #http: [port: {:system, "PORT"}],
   #url: [host: "example.com", port: 80],
-  http: [port: 4000],
+  http: [port: String.to_integer(System.get_env("PORT") || "4000")],
   cache_static_manifest: "priv/static/manifest.json",
   server: true
 

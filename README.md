@@ -66,6 +66,16 @@ docker-compose exec app iex -S mix
 Efl.RefCategory.seeds
 ```
 
+#### Proxy list import
+To bulk-load proxies into the `proxies` table (source: [proxifly/free-proxy-list](https://github.com/proxifly/free-proxy-list?tab=readme-ov-file) — free HTTP/HTTPS/SOCKS list, updated every 5 min):
+
+- **SQL file:** `priv/update_proxies.sql` (pre-generated; regenerate from the proxy list URL if needed).
+- **Run via app (uses Repo DB config):** `mix run scripts/run_proxy_sql.exs`
+- **Run via mysql client:** `mysql -u USER -p DATABASE < priv/update_proxies.sql` (or `sudo mysql DATABASE < priv/update_proxies.sql` where socket auth is used).
+- **Verify:** `mix run scripts/verify_proxies.exs` — prints row count and latest 5 rows.
+
+See `scripts/run_proxy_sql.exs` for inline documentation.
+
 ## Production Commands
 
 ### Server Management

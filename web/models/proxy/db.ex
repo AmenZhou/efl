@@ -51,6 +51,18 @@ defmodule Efl.Proxy.DB do
     Repo.one(query)
   end
 
+  @list_usable_max 500
+
+  def list_usable do
+    query =
+      from p in CacheProxy,
+      where: p.score > 0,
+      order_by: [desc: :score],
+      limit: @list_usable_max
+
+    Repo.all(query)
+  end
+
   def increase_score(struct) do
     %CacheProxy{ score: score } = struct
 
