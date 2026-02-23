@@ -1,5 +1,5 @@
 defmodule Efl.MailerTest do
-  use Efl.ModelCase, async: true
+  use Efl.ModelCase
 
   alias Efl.Mailer
   alias Efl.Xls.Dadi

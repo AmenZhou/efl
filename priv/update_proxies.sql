@@ -5,4 +5,4 @@
 -- Run: mysql -u USER -p DATABASE < priv/update_proxies.sql
 -- 674 rows
 
-INSERT INTO `proxies` (`ip`, `port`, `inserted_at`, `updated_at`, `score`) VALUES;
+INSERT INTO proxies (ip, port, inserted_at, updated_at, score) VALUES

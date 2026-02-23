@@ -13,6 +13,9 @@ if ! docker-compose ps | grep -q "efl-app.*Up"; then
     sleep 10
 fi
 
+echo "📦 Ensuring test dependencies..."
+docker-compose exec -T -e MIX_ENV=test app mix deps.get >/dev/null 2>&1
+
 echo "📋 Running Tests..."
 echo "-------------------"
 

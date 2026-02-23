@@ -60,23 +60,23 @@ defmodule Efl.FlokiErrorHandlingTest do
 
   describe "Post parser error handling" do
     test "handles missing post body content gracefully" do
-      # Test with HTML that doesn't have .postbody class
+      # Test with HTML that doesn't have .postbody class (no HTTP/DB)
       html_without_postbody = "<html><body><div class='other-content'>Some content</div></body></html>"
-      
-      # Mock the html function
-      result = Post.parse_post("http://test.com")
-      
+
+      result = Post.parse_post_from_html("http://test.com", html_without_postbody)
+
       # Should return a PostParser struct with empty content instead of crashing
       assert %Post{} = result
       assert result.content == ""
     end
 
     test "handles malformed HTML in post parsing gracefully" do
-      # Test with malformed HTML
+      # Test with malformed HTML (no HTTP/DB)
       malformed_html = "<html><body><div class='postbody'>Unclosed div"
-      
+
+      result = Post.parse_post_from_html("http://test.com", malformed_html)
+
       # Should handle malformed HTML without crashing
-      result = Post.parse_post("http://test.com")
       assert %Post{} = result
     end
   end

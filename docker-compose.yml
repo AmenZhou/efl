@@ -50,10 +50,7 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
-    network_mode: "bridge"
-    dns:
-      - 8.8.8.8
-      - 8.8.4.4
+    # Use Compose default network so "mysql" hostname resolves (bridge mode breaks DNS)
 
 volumes:
   mysql_data:

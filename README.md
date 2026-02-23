@@ -16,9 +16,13 @@ These scripts use Docker volume mounting for instant test execution (2.5 seconds
 ### Alternative Test Methods
 ```bash
 # Run specific test files
-docker-compose exec app mix test test/specific_file.exs
+docker-compose exec -e MIX_ENV=test app mix test test/specific_file.exs
 
 # Run tests with volume mounting (no rebuild needed)
+docker-compose exec -e MIX_ENV=test app mix test
+
+# If you see "dependency is not available, run mix deps.get": fetch test deps first
+docker-compose exec -T -e MIX_ENV=test app mix deps.get
 docker-compose exec -e MIX_ENV=test app mix test
 
 # Interactive development
