@@ -36,13 +36,13 @@ config :logger, :console, format: "[$level] $message\n"
 # in production as building large stacktraces may be expensive.
 config :phoenix, :stacktrace_depth, 20
 
-# Configure your database
+# Configure your database (DB_HOST from env when "mysql" doesn't resolve, e.g. custom network)
 config :efl, Efl.Repo,
   adapter: Ecto.Adapters.MyXQL,
   username: "root",
   password: "password",
   database: "classification_utility_dev",
-  hostname: "mysql",
+  hostname: System.get_env("DB_HOST") || "mysql",
   pool_size: 20,
   charset: "utf8mb4",
   collation: "utf8mb4_unicode_ci"

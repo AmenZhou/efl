@@ -28,42 +28,39 @@ defmodule Efl.DadiTest do
     end
 
     test "accepts yesterday's date in production" do
-      # Temporarily set environment to production
-      original_env = Mix.env()
-      Mix.env(:prod)
-      
-      # Get yesterday's date
-      target_date = Efl.TimeUtil.target_date()
-      
-      attrs = @valid_attrs
-      |> Map.put(:ref_category_id, 1)
-      |> Map.put(:post_date, target_date)
-      
-      changeset = Dadi.changeset(%Dadi{}, attrs)
-      assert changeset.valid?, "Yesterday's date should be valid in production"
-      
-      # Restore original environment
-      Mix.env(original_env)
+      # Simulate production strict date validation via config
+      Application.put_env(:efl, :strict_post_date_validation, true)
+      try do
+        target_date = Efl.TimeUtil.target_date()
+
+        attrs =
+          @valid_attrs
+          |> Map.put(:ref_category_id, 1)
+          |> Map.put(:post_date, target_date)
+
+        changeset = Dadi.changeset(%Dadi{}, attrs)
+        assert changeset.valid?, "Yesterday's date should be valid in production"
+      after
+        Application.put_env(:efl, :strict_post_date_validation, false)
+      end
     end
 
     test "rejects non-yesterday dates in production" do
-      # Temporarily set environment to production
-      original_env = Mix.env()
-      Mix.env(:prod)
-      
-      # Use a different date (not yesterday)
-      different_date = ~D[2024-01-01]
-      
-      attrs = @valid_attrs
-      |> Map.put(:ref_category_id, 1)
-      |> Map.put(:post_date, different_date)
-      
-      changeset = Dadi.changeset(%Dadi{}, attrs)
-      refute changeset.valid?, "Non-yesterday date should be invalid in production"
-      assert changeset.errors[:post_date] == {"can't be blank", []}
-      
-      # Restore original environment
-      Mix.env(original_env)
+      Application.put_env(:efl, :strict_post_date_validation, true)
+      try do
+        different_date = ~D[2024-01-01]
+
+        attrs =
+          @valid_attrs
+          |> Map.put(:ref_category_id, 1)
+          |> Map.put(:post_date, different_date)
+
+        changeset = Dadi.changeset(%Dadi{}, attrs)
+        refute changeset.valid?, "Non-yesterday date should be invalid in production"
+        assert changeset.errors[:post_date] == {"can't be blank", []}
+      after
+        Application.put_env(:efl, :strict_post_date_validation, false)
+      end
     end
 
     test "allows any date in test environment" do
@@ -76,50 +73,43 @@ defmodule Efl.DadiTest do
       assert changeset.valid?, "Any date should be valid in test environment"
     end
 
-    test "allows any date in dev environment" do
-      # Temporarily set environment to dev
-      original_env = Mix.env()
-      Mix.env(:dev)
-      
-      attrs = @valid_attrs
-      |> Map.put(:ref_category_id, 1)
-      |> Map.put(:post_date, ~D[2024-01-01])
-      
+    test "allows any date when strict validation is off" do
+      Application.put_env(:efl, :strict_post_date_validation, false)
+
+      attrs =
+        @valid_attrs
+        |> Map.put(:ref_category_id, 1)
+        |> Map.put(:post_date, ~D[2024-01-01])
+
       changeset = Dadi.changeset(%Dadi{}, attrs)
-      assert changeset.valid?, "Any date should be valid in dev environment"
-      
-      # Restore original environment
-      Mix.env(original_env)
+      assert changeset.valid?, "Any date should be valid when strict validation is off"
     end
 
     test "validates exact date match in production" do
-      # Temporarily set environment to production
-      original_env = Mix.env()
-      Mix.env(:prod)
-      
-      # Get the exact target date
-      target_date = Efl.TimeUtil.target_date()
-      
-      # Test with exact date match (should be valid)
-      attrs_exact = @valid_attrs
-      |> Map.put(:ref_category_id, 1)
-      |> Map.put(:post_date, target_date)
-      
-      changeset_exact = Dadi.changeset(%Dadi{}, attrs_exact)
-      assert changeset_exact.valid?, "Exact date match should be valid"
-      
-      # Test with different date (should be invalid)
-      different_date = target_date |> Timex.shift(days: 1)
-      attrs_different = @valid_attrs
-      |> Map.put(:ref_category_id, 1)
-      |> Map.put(:post_date, different_date)
-      
-      changeset_different = Dadi.changeset(%Dadi{}, attrs_different)
-      refute changeset_different.valid?, "Different date should be invalid"
-      assert changeset_different.errors[:post_date] == {"can't be blank", []}
-      
-      # Restore original environment
-      Mix.env(original_env)
+      Application.put_env(:efl, :strict_post_date_validation, true)
+      try do
+        target_date = Efl.TimeUtil.target_date()
+
+        attrs_exact =
+          @valid_attrs
+          |> Map.put(:ref_category_id, 1)
+          |> Map.put(:post_date, target_date)
+
+        changeset_exact = Dadi.changeset(%Dadi{}, attrs_exact)
+        assert changeset_exact.valid?, "Exact date match should be valid"
+
+        different_date = target_date |> Timex.shift(days: 1)
+        attrs_different =
+          @valid_attrs
+          |> Map.put(:ref_category_id, 1)
+          |> Map.put(:post_date, different_date)
+
+        changeset_different = Dadi.changeset(%Dadi{}, attrs_different)
+        refute changeset_different.valid?, "Different date should be invalid"
+        assert changeset_different.errors[:post_date] == {"can't be blank", []}
+      after
+        Application.put_env(:efl, :strict_post_date_validation, false)
+      end
     end
   end
 

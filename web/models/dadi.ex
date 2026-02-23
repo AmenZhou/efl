@@ -30,11 +30,18 @@ defmodule Efl.Dadi do
       nil ->
         # No process running, start a new one
         Logger.info("Starting DADI processing...")
-        {:ok, pid} = Task.start_link(fn -> 
+        run_main? = Application.get_env(:efl, :dadi_run_main_in_start, true)
+        {:ok, pid} = Task.start_link(fn ->
           # Register this process with error handling
           try do
             Process.register(self(), :dadi_processor)
-            main()
+            if run_main? do
+              main()
+            else
+              # Test mode: stay alive until explicitly stopped (avoids HTTP/DB in tests).
+              # Loop receiving and ignoring messages so we don't exit on system/accidental messages.
+              test_mode_loop()
+            end
           rescue
             ArgumentError ->
               # Registration failed, process already exists
@@ -75,6 +82,13 @@ defmodule Efl.Dadi do
     end
   end
 
+  # Test mode: receive any message and loop so process stays alive until stop/0 kills it
+  defp test_mode_loop do
+    receive do
+      _ -> test_mode_loop()
+    end
+  end
+
   def changeset(struct, params \\ %{}) do
     struct
     |> changeset_cast(params)
@@ -106,10 +120,9 @@ defmodule Efl.Dadi do
   end
 
   defp validate_post_date(changeset) do
-    # Skip validation in test environment and for development
-    if Mix.env() == :test or Mix.env() == :dev do
-      changeset
-    else
+    # Use config for testability; default to strict (production) when Mix.env() is :prod
+    strict? = Application.get_env(:efl, :strict_post_date_validation, Mix.env() == :prod)
+    if strict? do
       post_date = get_field(changeset, :post_date)
       
       if post_date do
@@ -129,6 +142,8 @@ defmodule Efl.Dadi do
       else
         changeset
       end
+    else
+      changeset
     end
   end
 

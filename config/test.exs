@@ -9,13 +9,19 @@ config :efl, Efl.Endpoint,
 # Print only warnings and errors during test
 config :logger, level: :warn
 
-# Configure your database
+# Allow tests to override strict date validation (default: false in test)
+config :efl, :strict_post_date_validation, false
+
+# Don't run real DADI pipeline in controller tests (avoids HTTP/DB and hanging)
+config :efl, :dadi_run_main_in_start, false
+
+# Configure your database (hostname: "mysql" for compose; override with TEST_DB_HOST if DNS fails)
 config :efl, Efl.Repo,
   adapter: Ecto.Adapters.MyXQL,
   username: "root",
   password: "password",
   database: "classification_utility_test",
-  hostname: "mysql",
+  hostname: System.get_env("TEST_DB_HOST") || "mysql",
   pool: Ecto.Adapters.SQL.Sandbox,
   pool_size: 10,
   queue_target: 5000,

@@ -37,10 +37,9 @@ Thumbs.db
 tmp/
 temp/
 
-# Docker files
+# Docker files (exclude from image; .dockerignore is not self-excluded so Docker can use it)
 Dockerfile*
 docker-compose*.yml
-.dockerignore
 
 # Node modules (if any)
 node_modules/

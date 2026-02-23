@@ -10,13 +10,10 @@ defmodule Efl.HtmlParsers.Dadi.ContentExtractionTest do
       </div>
       """
 
-      result = Post.parse_post("http://test.com")
-      # Mock the html function to return our test HTML
-      # This test verifies the regex extraction logic
-      
-      # Test the private function directly using a test helper
-      content = extract_content_with_regex(html)
-      
+      # Use parse_post_from_html to avoid HTTP/DB; verifies regex extraction and struct
+      result = Post.parse_post_from_html("http://test.com", html)
+      content = result.content
+
       assert content != ""
       assert String.contains?(content, "法拉盛新昌发对面电梯楼有大单间出租")
       assert String.contains?(content, "929-933-7510")

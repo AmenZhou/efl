@@ -9,17 +9,40 @@ defmodule Efl.HtmlParsers.Dadi.Post do
   def parse_post(url) do
     try do
       case html(url) do
-        { :ok, body } ->
-          Logger.info("Post parsed one url: #{url}")
-          content = try do
+        { :ok, body } when is_binary(body) ->
+          parse_post_from_html(url, body)
+        { :ok, _ } ->
+          %PostParser{url: url, content: "", phone: ""}
+        { :error, message } ->
+          log_info = "Error PostParser.Dadi.Post HTML parse error, #{message}"
+          Logger.error(log_info)
+          Efl.Mailer.send_alert(log_info)
+          %PostParser{url: url, content: "", phone: ""}
+      end
+    rescue
+      ex ->
+        log_info = "Post#parse_post url: #{url}, message: #{inspect(ex)}"
+        Logger.error(log_info)
+        Efl.Mailer.send_alert(log_info)
+        %PostParser{url: url, content: "", phone: ""}
+    end
+  end
+
+  @doc """
+  Parse post content from an HTML string (no HTTP). Use for tests or when body is already fetched.
+  """
+  def parse_post_from_html(url, html_string) when is_binary(html_string) do
+    try do
+      Logger.info("Post parsed one url: #{url}")
+      content = try do
             # First try regex extraction since Floki seems to fail on this HTML
-            regex_content = extract_content_with_regex(body)
+            regex_content = extract_content_with_regex(html_string)
             if regex_content != "" do
               Logger.info("Found content with regex extraction: #{String.slice(regex_content, 0, 100)}...")
               regex_content
             else
               # Fallback to Floki if regex fails
-              case Floki.parse_document(body) do
+              case Floki.parse_document(html_string) do
                 {:ok, parsed_doc} ->
                   content_text = Floki.find(".postbody", parsed_doc)
                   |> Floki.text
@@ -53,25 +76,21 @@ defmodule Efl.HtmlParsers.Dadi.Post do
 
           phone = PhoneUtil.find_phone_from_content(content)
 
-          %PostParser{
-            content: content,
-            url: url,
-            phone: phone
-          }
-        { :error, message } ->
-          log_info = "Error PostParser.Dadi.Post HTML parse error, #{message}"
-          Logger.error(log_info)
-          Efl.Mailer.send_alert(log_info)
-          %PostParser{url: url, content: "", phone: ""}
-      end
+      %PostParser{
+        content: content,
+        url: url,
+        phone: phone
+      }
     rescue
       ex ->
-        log_info = "Post#parse_post url: #{url}, message: #{inspect(ex)}"
+        log_info = "Post#parse_post_from_html url: #{url}, message: #{inspect(ex)}"
         Logger.error(log_info)
         Efl.Mailer.send_alert(log_info)
         %PostParser{url: url, content: "", phone: ""}
     end
   end
+
+  def parse_post_from_html(url, _), do: %PostParser{url: url, content: "", phone: ""}
 
   defp extract_content_with_regex(html_string) when is_binary(html_string) do
     # Extract content from postbody div using regex since Floki fails on this HTML

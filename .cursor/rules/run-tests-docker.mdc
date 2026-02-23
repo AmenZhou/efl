@@ -1,0 +1,45 @@
+---
+description: How to run tests in Docker for this project
+alwaysApply: true
+---
+
+# Run Tests in Docker
+
+When asked to run tests, use the project test script:
+
+```bash
+./run_tests.sh
+```
+
+This is the canonical way to run tests: it starts containers if needed, ensures test deps and DB exist (with `TEST_DB_HOST` for MySQL), then runs the suite and prints a summary.
+
+## Optional arguments
+
+- `./run_tests.sh` — all tests with `--max-cases 1`
+- `./run_tests.sh test/models/dadi_test.exs` — one file
+- `./run_tests.sh test/models/ --trace` — directory with trace
+
+## Alternative: fast runner
+
+```bash
+./run_tests_fast.sh
+```
+
+Runs all tests without full setup (use when containers and DB are already ready). No rebuild; code is volume-mounted.
+
+## One-off exec (when containers are up)
+
+Ensure stack is up: `docker-compose up -d`. The script injects `TEST_DB_HOST` (MySQL IP); for manual exec you may need it if "mysql" doesn't resolve:
+
+```bash
+# All tests (script does this with TEST_DB_HOST)
+./run_tests.sh
+
+# Or manually:
+docker-compose exec -e MIX_ENV=test -e TEST_DB_HOST=... app mix test --max-cases 1
+```
+
+## Notes
+
+- Test DB: `classification_utility_test` (config/test.exs). `run_tests.sh` creates it and uses `TEST_DB_HOST` for connectivity.
+- Use `--max-cases 1` to avoid DB connection issues in parallel runs.
