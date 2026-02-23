@@ -21,7 +21,7 @@ defmodule Efl.Proxy.CacheTest do
 
       result = Cache.get_proxy()
       assert {:ok, %{proxy: proxy, record: %CacheProxy{}}} = result
-      assert proxy.ip == '192.168.1.1' or is_list(proxy.ip)
+      assert (is_list(proxy.ip) and proxy.port in 1..65535)
       assert proxy.port in 1..65535
     end
 
