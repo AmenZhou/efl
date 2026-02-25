@@ -10,6 +10,9 @@ defmodule Efl.MyHttp do
   @intermission_time 10_000
   @intermission 10
 
+  # All requests go through a proxy (HttpClient.get(url, proxy)); there is no direct (no-proxy) path.
+  # If the proxy is unreachable or fails, Tesla.Adapter.Hackney returns {:error, reason} and we retry
+  # with another proxy until @max_attempt is reached.
   def request(url, attempts \\ 1)
 
   def request(url, attempts) when rem(attempts, @intermission) == 0 do
@@ -23,8 +26,9 @@ defmodule Efl.MyHttp do
 
     case HttpClient.get(url, proxy) do
       { :ok, %{ body: body, status: status } } ->
+        body_has_icon = String.match?(body || "", ~r/\/img\/dadiicon.ico/)
         Logger.info("#{inspect(body)} #{status}")
-        if !String.match?(body, ~r/\/img\/dadiicon.ico/) do
+        if !body_has_icon do
           Logger.info("Fetch fail, #{url}, NO ACCESS")
           Logger.info("Retry... #{attempts+1} attempts")
           DB.decrease_score(record)

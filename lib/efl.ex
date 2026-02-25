@@ -6,17 +6,20 @@ defmodule Efl do
   def start(_type, _args) do
     import Supervisor.Spec
 
+    # When EFL_SCRIPT_MODE=1 (e.g. production smoke test), skip starting the endpoint to avoid port conflict
+    start_endpoint? = System.get_env("EFL_SCRIPT_MODE") != "1"
+
     # Define workers and child supervisors to be supervised
     children = [
       # Start the Ecto repository
       supervisor(Efl.Repo, []),
       # In-memory proxy cache (loads from DB at startup)
       worker(Efl.Proxy.Cache, []),
-      # Start the endpoint when the application starts
-      supervisor(Efl.Endpoint, []),
+      # Start the endpoint when the application starts (omit in script mode)
+      (start_endpoint? && supervisor(Efl.Endpoint, [])) || nil,
       # Start your own worker by calling: Efl.Worker.start_link(arg1, arg2, arg3)
       # worker(Efl.Worker, [arg1, arg2, arg3]),
-    ]
+    ] |> Enum.reject(&is_nil/1)
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
     # for other strategies and supported options

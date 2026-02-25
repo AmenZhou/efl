@@ -63,21 +63,23 @@ defmodule Efl.Proxy.DB do
     Repo.all(query)
   end
 
+  # Atomic updates by id to avoid Ecto.StaleEntryError when multiple requests
+  # (e.g. Category.raw_items) use the same proxy concurrently.
   def increase_score(struct) do
-    %CacheProxy{ score: score } = struct
-
-    struct
-    |> Ecto.Changeset.change(%{ score: score + 1 })
-    |> Repo.update!
+    %CacheProxy{ id: id } = struct
+    from(p in CacheProxy, where: p.id == ^id, update: [set: [score: fragment("? + 1", p.score), updated_at: ^NaiveDateTime.utc_now()]])
+    |> Repo.update_all([])
+    :ok
   end
 
   def decrease_score(struct) do
-    %CacheProxy{ score: score } = struct
+    %CacheProxy{ id: id, score: score } = struct
     if score > 0 do
-      struct
-      |> Ecto.Changeset.change(%{ score: score - 1 })
-      |> Repo.update!
+      from(p in CacheProxy, where: p.id == ^id and p.score > 0,
+        update: [set: [score: fragment("? - 1", p.score), updated_at: ^NaiveDateTime.utc_now()]])
+      |> Repo.update_all([])
     end
+    :ok
   end
 
   def number_of_proxies do

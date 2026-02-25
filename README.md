@@ -80,6 +80,17 @@ To bulk-load proxies into the `proxies` table (source: [proxifly/free-proxy-list
 
 See `scripts/run_proxy_sql.exs` for inline documentation.
 
+### Production automation tests (full DADI pipeline)
+Same flow as `documents/manual_tests.ex` (delete Dadi, create_all_items, update_contents, create_xls, send email, proxy fetch, single-category run):
+
+- **Script (prod DB):** `MIX_ENV=prod mix run scripts/production_smoke_test.exs`  
+  Optional env: `PRODUCTION_SKIP_EMAIL=1` (skip sending email), `PRODUCTION_SINGLE_CATEGORY=1` (run single-category create_items after main steps).  
+  Run when the web server is stopped to avoid port conflict, or from another host. For same-host runs without stopping the server, use: `EFL_SCRIPT_MODE=1 MIX_ENV=prod mix run scripts/production_smoke_test.exs` (skips starting the HTTP endpoint).
+- **ExUnit (test DB, real HTTP):** `mix test test/integration/production_flow_test.exs --include production:true`  
+  Production-tagged tests are excluded by default; use `--include production:true` to run them.
+
+See `scripts/production_smoke_test.exs` and `test/integration/production_flow_test.exs` for details.
+
 ## Production Commands
 
 ### Server Management
